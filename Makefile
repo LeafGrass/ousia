@@ -41,10 +41,9 @@ include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
 # Set all submodules here
-MODULES	:=	$(SRCROOT)/core \
-			$(SRCROOT)/driver \
-			$(SRCROOT)/support \
-			$(SRCROOT)/framework
+MODULES	:=	$(CORE_PATH) \
+			$(DRIVER_PATH) \
+			$(PLATFORM_PATH)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
