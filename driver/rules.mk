@@ -6,10 +6,10 @@ BUILDDIRS += $(BUILD_PATH)/$(d)
 # TODO here goes on if more sub dirs
 #BUILDDIRS += ... 
 
-CORE_INCLUDES := 
+DRIVER_INCLUDES := 
 
 # Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -Wall
+CFLAGS_$(d) := -I$(d) -Wall -Werror
 
 # Local rules and targets /* add source files here */
 cSRCS_$(d) := 

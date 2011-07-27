@@ -9,7 +9,7 @@ BUILDDIRS += $(BUILD_PATH)/$(d)
 CORE_INCLUDES := 
 
 # Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -Wall
+CFLAGS_$(d) := -I$(d) -Wall -Werror
 
 # Local rules and targets /* add source files here */
 cSRCS_$(d) := 

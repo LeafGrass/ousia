@@ -17,17 +17,17 @@ BUILD_PATH = build
 PLATFORM_PATH := $(SRCROOT)/platform
 CORE_PATH := $(SRCROOT)/core
 DRIVER_PATH := $(SRCROOT)/driver
+FRAMEWORK_PATH := $(SRCROOT)/framework
 SUPPORT_PATH := $(SRCROOT)/support
 SCRIPT_PATH := $(SRCROOT)/script
 SAMPLE_PATH := $(SRCROOT)/sample
 
 # Compilation flags.
-GLOBAL_FLAGS :=	-D
-GLOBAL_CFLAGS :=	-Os -g3 -gdwarf-2  -mcpu=cortex-m3 -mthumb -march=armv7-m \
-					-nostdlib -ffunction-sections -fdata-sections \
-					-Wl,--gc-sections $(GLOBAL_FLAGS)
+GLOBAL_FLAGS :=	-DOUSIA
+GLOBAL_CFLAGS := -Os -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
+				 -nostdlib -ffunction-sections -fdata-sections \
+				 -Wl,--gc-sections $(GLOBAL_FLAGS)
 
-#GLOBAL_CXXFLAGS := -fno-rtti -fno-exceptions -Wall $(GLOBAL_FLAGS)
 GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
                    -x assembler-with-cpp $(GLOBAL_FLAGS)
 
@@ -41,9 +41,9 @@ include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
 # Set all submodules here
-MODULES	:=	$(CORE_PATH) \
-			$(DRIVER_PATH) \
-			$(PLATFORM_PATH)
+MODULES	:= $(PLATFORM_PATH) \
+		   $(CORE_PATH) \
+		   $(DRIVER_PATH)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
