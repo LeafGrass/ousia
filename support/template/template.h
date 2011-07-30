@@ -4,8 +4,8 @@
  * @brief   File template.
  * @date    2011-07-28
  *
- * @history 2011-07-28 Initial revision for some reason
- *          2011-07-28 Second revision for some other reason
+ * @history 2011-07-28 Initial revision
+ *          2011-07-28 Second revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)

@@ -1,11 +1,10 @@
 /* *****************************************************************************
  * @file    core/scheduler.c
  *
- * @brief   File template.
+ * @brief   Implementation of ousia scheduler
  * @date    2011-07-28
  *
- * @history 2011-07-28 Initial revision for some reason
- *          2011-07-28 Second revision for some other reason
+ * @history 2011-07-28 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -16,6 +15,8 @@
  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
+
+#include <ousia/scheduler.h>
 
 /**
  * @brief   sample function

@@ -1,10 +1,12 @@
 VERSION = 0
 SUBLEVEL = 0
-DEVNUM = 1
-NAME = Fresh Fish of LeafGrass
+DEVNUM = 0
+NAME = Chinese Abelia
 
 .DEFAULT_GOAL := sketch
-TARGET	:=	ousia
+OUSIA_TARGET :=	ousia
+OUSIA_PLATFORM := arm-v7m
+MEMORY_TARGET := flash
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)
@@ -14,6 +16,7 @@ SRCROOT := $(OUSIA_HOME)
 endif
 
 BUILD_PATH = build
+INCLUDE_PATH := $(SRCROOT)/include
 PLATFORM_PATH := $(SRCROOT)/platform
 CORE_PATH := $(SRCROOT)/core
 DRIVER_PATH := $(SRCROOT)/driver
@@ -24,15 +27,16 @@ SAMPLE_PATH := $(SRCROOT)/sample
 
 # Compilation flags.
 GLOBAL_FLAGS :=	-DOUSIA
-GLOBAL_CFLAGS := -Os -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
-				 -nostdlib -ffunction-sections -fdata-sections \
+#GLOBAL_CFLAGS := -Os -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
+				 -nostdlib -ffunction-sections -fdata-sections -I$(SRCROOT)/include \
 				 -Wl,--gc-sections $(GLOBAL_FLAGS)
+GLOBAL_CFLAGS := -Os -ffunction-sections -fdata-sections -I$(SRCROOT)/include
 
-GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
+#GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
                    -x assembler-with-cpp $(GLOBAL_FLAGS)
 
-LDDIR    := $(PLATFORM_PATH)/ld
-LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
+#LDDIR    := $(PLATFORM_PATH)/ld
+#LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
            -mcpu=cortex-m3 -mthumb -Xlinker \
            --gc-sections --print-gc-sections --march=armv7-m -Wall
 
@@ -40,10 +44,8 @@ LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
 include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
-# Set all submodules here
-MODULES	:= $(PLATFORM_PATH) \
-		   $(CORE_PATH) \
-		   $(DRIVER_PATH)
+# Set all modules here
+MODULES	:= $(CORE_PATH)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
@@ -57,7 +59,7 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 
 # conditionally upload to whatever the last build was
 install: INSTALL_TARGET = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
-install: $(BUILD_PATH)/$(BOARD).bin
+install: $(BUILD_PATH)/$(OUSIA_TARGET)
 	@echo Install target: $(INSTALL_TARGET)
 	$(UPLOAD_$(INSTALL_TARGET))
 
@@ -68,7 +70,7 @@ ifneq ($(PREV_BUILD_TYPE), $(MEMORY_TARGET))
 	$(shell rm -rf $(BUILD_PATH))
 endif
 
-sketch: build-check MSG_INFO $(BUILD_PATH)/$(BOARD).bin
+sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 
 clean:
 	rm -rf build

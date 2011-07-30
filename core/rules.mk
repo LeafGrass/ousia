@@ -12,7 +12,7 @@ CORE_INCLUDES :=
 CFLAGS_$(d) := -I$(d) -Wall -Werror
 
 # Local rules and targets /* add source files here */
-cSRCS_$(d) := 
+cSRCS_$(d) := scheduler.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 

@@ -1,11 +1,10 @@
 /* *****************************************************************************
- * @file    support/template/template.c
+ * @file    include/ousia/scheduler.h
  *
- * @brief   File template.
+ * @brief   Header of ousia scheduler.
  * @date    2011-07-28
  *
  * @history 2011-07-28 Initial revision
- *          2011-07-28 Second revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -17,7 +16,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <template.h>
+#ifndef __SCHEDULER_H__
+#define __SCHEDULER_H__
 
 /**
  * @brief   sample function
@@ -27,9 +27,7 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-int sample_function(int a, int b, int *pResult)
-{
-    *pResult = a + b;
-    return 0;
-}
+int sample_function(int a, int b, int *pResult);
+
+#endif /* __SCHEDULER_H__ */
 
