@@ -48,10 +48,10 @@ MSG_INFO:
 	@echo "======================================="
 	@echo "[Build info]"
 	@echo ""
-	@echo "TARGET:\t\t"$(OUSIA_TARGET)
-	@echo "NAME:\t\t"$(NAME)
-	@echo "PLATFORM:\t"$(OUSIA_PLATFORM)
-	@echo "MEMORY_TARGET:\t"$(MEMORY_TARGET)
+	@echo "TARGET: "$(OUSIA_TARGET)
+	@echo "NAME: "$(NAME)
+	@echo "PLATFORM: "$(OUSIA_PLATFORM)
+	@echo "MEMORY_TARGET: "$(MEMORY_TARGET)
 	@echo ""
 	@echo "  See 'make help' for more information"
 	@echo "======================================="
