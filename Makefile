@@ -6,13 +6,28 @@ NAME = Chinese Abelia
 .DEFAULT_GOAL := sketch
 OUSIA_TARGET :=	ousia
 OUSIA_PLATFORM := arm-v7m
-MEMORY_TARGET := flash
+BOARD := leach
+MEMORY_TARGET := jtag
+
+# Some target specific things
+ifeq ($(MEMORY_TARGET), ram)
+	LDSCRIPT := $(BOARD)/ram.ld
+	VECT_BASE_ADDR := VECT_TAB_RAM
+endif
+ifeq ($(MEMORY_TARGET), flash)
+	LDSCRIPT := $(BOARD)/flash.ld
+	VECT_BASE_ADDR := VECT_TAB_FLASH
+endif
+ifeq ($(MEMORY_TARGET), jtag)
+	LDSCRIPT := $(BOARD)/jtag.ld
+	VECT_BASE_ADDR := VECT_TAB_BASE
+endif
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)
-SRCROOT := .
+	SRCROOT := .
 else
-SRCROOT := $(OUSIA_HOME)
+	SRCROOT := $(OUSIA_HOME)
 endif
 
 BUILD_PATH = build
@@ -32,12 +47,12 @@ GLOBAL_FLAGS :=	-DOUSIA
 				 -Wl,--gc-sections $(GLOBAL_FLAGS)
 GLOBAL_CFLAGS := -Os -ffunction-sections -fdata-sections -I$(SRCROOT)/include
 
-#GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
+GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
                    -x assembler-with-cpp $(GLOBAL_FLAGS)
 
-#LDDIR    := $(PLATFORM_PATH)/ld
-#LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
-           -mcpu=cortex-m3 -mthumb -Xlinker \
+LDDIR    := $(PLATFORM_PATH)/ld
+LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
+#           -mcpu=cortex-m3 -mthumb -Xlinker \
            --gc-sections --print-gc-sections --march=armv7-m -Wall
 
 # Set up build rules and some useful templates
@@ -45,6 +60,7 @@ include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
 # Set all modules here
+MODULES := $(PLATFORM)/stm32
 MODULES	:= $(CORE_PATH)
 
 # call each module rules.mk

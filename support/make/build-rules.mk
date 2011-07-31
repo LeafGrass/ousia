@@ -1,5 +1,5 @@
 # Useful tools
-#CROSS	:= arm-none-eabi-
+CROSS	:= arm-none-eabi-
 CC		:= $(CROSS)gcc
 CXX     := $(CROSS)g++
 LD      := $(CROSS)ld -v
