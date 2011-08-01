@@ -78,7 +78,7 @@ include $(SUPPORT_PATH)/make/build-templates.mk
 
 # Set all modules here
 MODULES	:= $(CORE_PATH)
-MODULES += $(PLATFORM_PATH)/stm32
+MODULES += $(PLATFORM_PATH)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
