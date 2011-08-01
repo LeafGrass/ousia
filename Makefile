@@ -6,9 +6,19 @@ NAME = Chinese Abelia
 .DEFAULT_GOAL := sketch
 OUSIA_TARGET :=	ousia
 OUSIA_PLATFORM := arm-v7m
-BOARD := leach
 MEMORY_TARGET := jtag
+BOARD := leach
 
+# TODO Here needs improve, for not only depend on this specific hardware
+ifeq ($(BOARD), leach)
+	MCU := STM32F103RB
+	PRODUCT_ID := LEACH001
+	ERROR_LED_PORT := GPIOA
+	ERROR_LED_PIN  := 0
+	DENSITY := STM32_MEDIUM_DENSITY
+endif
+
+# TODO Here needs improve, for not only depend on this specific hardware
 # Some target specific things
 ifeq ($(MEMORY_TARGET), ram)
 	LDSCRIPT := $(BOARD)/ram.ld
@@ -40,28 +50,35 @@ SUPPORT_PATH := $(SRCROOT)/support
 SCRIPT_PATH := $(SRCROOT)/script
 SAMPLE_PATH := $(SRCROOT)/sample
 
-# Compilation flags.
-GLOBAL_FLAGS :=	-DOUSIA
-#GLOBAL_CFLAGS := -Os -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
-				 -nostdlib -ffunction-sections -fdata-sections -I$(SRCROOT)/include \
-				 -Wl,--gc-sections $(GLOBAL_FLAGS)
-GLOBAL_CFLAGS := -Os -ffunction-sections -fdata-sections -I$(SRCROOT)/include
+# TODO Here needs improve, for not only depend on this specific hardware
+GLOBAL_FLAGS :=	-DOUSIA \
+                -D$(DENSITY) \
+                -D$(VECT_BASE_ADDR) \
+                -DBOARD_$(BOARD) \
+                -DMCU_$(MCU) \
+                -DERROR_LED_PORT=$(ERROR_LED_PORT) \
+                -DERROR_LED_PIN=$(ERROR_LED_PIN)
 
-GLOBAL_ASFLAGS  := -mcpu=cortex-m3 -march=armv7-m -mthumb \
-                   -x assembler-with-cpp $(GLOBAL_FLAGS)
+GLOBAL_CFLAGS := -Os -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
+                 -nostdlib -ffunction-sections -fdata-sections \
+                 -Wl,--gc-sections $(GLOBAL_FLAGS) \
+                 #-I$(SRCROOT)/include
 
-LDDIR    := $(PLATFORM_PATH)/ld
-LDFLAGS  = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
-#           -mcpu=cortex-m3 -mthumb -Xlinker \
-           --gc-sections --print-gc-sections --march=armv7-m -Wall
+GLOBAL_ASFLAGS := -mcpu=cortex-m3 -march=armv7-m -mthumb \
+                  -x assembler-with-cpp $(GLOBAL_FLAGS)
+
+LDDIR := $(PLATFORM_PATH)/ld
+LDFLAGS = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
+          -mcpu=cortex-m3 -mthumb -Xlinker \
+          --gc-sections --print-gc-sections --march=armv7-m -Wall
 
 # Set up build rules and some useful templates
 include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
 # Set all modules here
-MODULES := $(PLATFORM)/stm32
 MODULES	:= $(CORE_PATH)
+MODULES += $(PLATFORM_PATH)/stm32
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
@@ -85,12 +102,16 @@ build-check:
 ifneq ($(PREV_BUILD_TYPE), $(MEMORY_TARGET))
 	$(shell rm -rf $(BUILD_PATH))
 endif
+	@echo "MODULES:"
+	@echo $(MODULES)
+	@echo ""
 
 sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 
 clean:
 	rm -rf build
 
+# TODO Here needs improve, for not only depend on this specific hardware
 help:
 	@echo ""
 	@echo "  libmaple Makefile help"

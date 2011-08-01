@@ -36,7 +36,6 @@
 #include "stm32.h"
 #include "util.h"
 #include "delay.h"
-#include "../framework/boards/platform_config.h"
 
 /*
  * Where to put usercode, based on space reserved for bootloader.

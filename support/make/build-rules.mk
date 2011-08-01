@@ -1,6 +1,6 @@
 # Useful tools
-CROSS	:= arm-none-eabi-
-CC		:= $(CROSS)gcc
+CROSS   := arm-none-eabi-
+CC      := $(CROSS)gcc
 CXX     := $(CROSS)g++
 LD      := $(CROSS)ld -v
 AR      := $(CROSS)ar
@@ -26,15 +26,15 @@ BUILDDIRS :=
 TGT_BIN   :=
 
 CFLAGS   = $(GLOBAL_CFLAGS) $(TGT_CFLAGS)
-#CXXFLAGS = $(GLOBAL_CXXFLAGS) $(TGT_CXXFLAGS)
-#ASFLAGS  = $(GLOBAL_ASFLAGS) $(TGT_ASFLAGS)
+CXXFLAGS = $(GLOBAL_CXXFLAGS) $(TGT_CXXFLAGS)
+ASFLAGS  = $(GLOBAL_ASFLAGS) $(TGT_ASFLAGS)
 
 # General directory independent build rules, generate dependency information
 $(BUILD_PATH)/%.o: %.c
 	$(SILENT_CC) $(CC) $(CFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
 
-#$(BUILD_PATH)/%.o: %.cpp
-#	$(SILENT_CXX) $(CXX) $(CFLAGS) $(CXXFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
+$(BUILD_PATH)/%.o: %.cpp
+	$(SILENT_CXX) $(CXX) $(CFLAGS) $(CXXFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
 
-#$(BUILD_PATH)/%.o: %.S
-#	$(SILENT_AS) $(AS) $(ASFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
+$(BUILD_PATH)/%.o: %.S
+	$(SILENT_AS) $(AS) $(ASFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<

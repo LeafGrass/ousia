@@ -7,9 +7,9 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/libmaple
 BUILDDIRS       += $(BUILD_PATH)/$(d)/libmaple/usb
 BUILDDIRS       += $(BUILD_PATH)/$(d)/libmaple/usb/usb_lib
 
-LIBMAPLE_PATH	:= $(BUILD_PATH)/$(d)/libmaple
-
-LIBMAPLE_INCLUDES := -I$(LIBMAPLE_PATH) -I$(LIBMAPLE_PATH)/usb -I$(LIBMAPLE_PATH)/usb/usb_lib
+LIBMAPLE_INCLUDES := -I$(PLATFORM_PATH)/stm32/libmaple \
+					 -I$(PLATFORM_PATH)/stm32/libmaple/usb \
+					 -I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
 
 # Local flags
 CFLAGS_$(d) = -I$(d) $(LIBMAPLE_INCLUDES) -Wall -Werror
@@ -44,7 +44,7 @@ cSRCS_$(d) := libmaple/adc.c                    \
 #             libmaple/usb/usb_lib/usb_mem.c    \
 #             libmaple/usb/usb_lib/usb_regs.c
 
-sSRCS_$(d) := exc.S
+sSRCS_$(d) := libmaple/exc.S
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
@@ -61,3 +61,4 @@ TGT_BIN += $(OBJS_$(d))
 -include        $(DEPS_$(d))
 d               := $(dirstack_$(sp))
 sp              := $(basename $(sp))
+

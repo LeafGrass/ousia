@@ -6,12 +6,12 @@ BUILDDIRS += $(BUILD_PATH)/$(d)
 # TODO here goes on if more sub dirs
 #BUILDDIRS += ... 
 
-CORE_INCLUDES := 
+CORE_INCLUDES := -I$(INCLUDE_PATH)
 
 # Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -Wall -Werror
+CFLAGS_$(d) := -I$(d) $(CORE_INCLUDES) -Wall -Werror
 
-# Local rules and targets /* add source files here */
+# Local rules and targets (add source files here)
 cSRCS_$(d) := scheduler.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

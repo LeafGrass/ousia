@@ -1,14 +1,13 @@
 # main project target
 
-# Here adds includes' searching paths
-#INCLUDES := 
-
-#$(BUILD_PATH)/main.o: $(APP_PATH)/main.c
-#	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+# Here adds includes' searching paths of sample code
+INCLUDES := $(CORE_INCLUDES) \
+            $(LIBMAPLE_INCLUDES)
 
 $(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
 	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
 
+# TODO Now this is not implemented actually.
 $(BUILD_PATH)/(OUSIA_TARGET).a: $(BUILDDIRS) $(TGT_BIN)
 	- rm -f $@
 	$(AR) crv $(BUILD_PATH)/(OUSIA_TARGET).a $(TGT_BIN)
@@ -22,6 +21,7 @@ $(BUILD_PATH)/$(OUSIA_TARGET).elf: $(BUILDDIRS) $(TGT_BIN) $(BUILD_PATH)/main.o
 
 $(BUILD_PATH)/$(OUSIA_TARGET): $(BUILD_PATH)/$(OUSIA_TARGET).bin
 
+# TODO Here needs improve, for not only depend on this specific hardware.
 $(BUILD_PATH)/$(OUSIA_TARGET).bin: $(BUILD_PATH)/$(OUSIA_TARGET).elf
 	$(SILENT_OBJCOPY) $(OBJCOPY) -v -Obinary $(BUILD_PATH)/$(OUSIA_TARGET).elf $@ 1>/dev/null
 	$(SILENT_DISAS) $(DISAS) -d $(BUILD_PATH)/$(OUSIA_TARGET).elf > $(BUILD_PATH)/$(OUSIA_TARGET).disas
