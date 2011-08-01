@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-	git config remote.origin.url "git@github.com:librae8226/stm32_dev_linux.git"
+	git config remote.origin.url "git@github.com:librae8226/ousia.git"
 	echo ''
 	echo "Start synchronizing..."
 	echo ''
@@ -9,11 +9,11 @@ if [ -n "$1" ]; then
 		git add .
 		git commit -a
 		echo "pushing..."
-		git push origin master
+		git push --all
 		git push --tags
 	elif [ $1 == "pull" ]; then
 		echo "pulling..."
-		git pull origin master
+		git pull --all
 	else
 		echo "error arg."
 		echo "USAGE: sync push|pull"
