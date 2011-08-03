@@ -1,4 +1,5 @@
 # Useful tools
+SHELL	:= /bin/bash
 CROSS   := arm-none-eabi-
 CC      := $(CROSS)gcc
 CXX     := $(CROSS)g++

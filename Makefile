@@ -111,6 +111,13 @@ sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 clean:
 	rm -rf build
 
+distclean:
+	rm -rf build tarball
+
+package:
+	mkdir -p tarball
+	$(SHELL) ./script/package.sh
+
 # TODO Here needs improve, for not only depend on this specific hardware
 help:
 	@echo ""
@@ -118,20 +125,22 @@ help:
 	@echo "[Ousia make help]"
 	@echo ""
 	@echo "Compile targets (default MEMORY_TARGET=flash):"
-	@echo "  ram:     Compile sketch code to ram"
-	@echo "  flash:   Compile sketch code to flash"
-	@echo "  jtag:    Compile sketch code to jtag"
-	@echo "  sketch:  Compile sketch code to target MEMORY_TARGET"
+	@echo "  ram:       Compile sketch code to ram"
+	@echo "  flash:     Compile sketch code to flash"
+	@echo "  jtag:      Compile sketch code to jtag"
+	@echo "  sketch:    Compile sketch code to target MEMORY_TARGET"
 	@echo ""
 	@echo "Programming targets:"
-	@echo "  install: Download code to target"
-	@echo "  clean:  Remove all build and object files"
+	@echo "  install:   Download code to target"
+	@echo "  clean:     Remove all build files"
 	@echo ""
 	@echo "Debug targets:"
-	@echo "  debug:   Start an openocd server"
+	@echo "  debug:     Start an openocd server"
 	@echo ""
 	@echo "Other targets:"
-	@echo "  help:   Show this message"
+	@echo "  help:      Show this message"
+	@echo "  package:   Package current revision"
+	@echo "  distclean: Remove all builds and tarballs"
 	@echo "========================================"
 	@echo ""
 
