@@ -2,7 +2,7 @@
 
 # Here adds includes' searching paths of sample code
 INCLUDES := $(CORE_INCLUDES) \
-            $(LIBMAPLE_INCLUDES)
+            $(STM32_INCLUDES)
 
 $(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
 	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<

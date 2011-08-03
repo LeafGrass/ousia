@@ -4,27 +4,44 @@
 
 #include <libmaple.h>
 #include <libmaple_types.h>
-#include <flash.h>
-#include <rcc.h>
-#include <nvic.h>
-#include <systick.h>
 #include <gpio.h>
-#include <adc.h>
-#include <timer.h>
-#include <usb.h>
-#include <usart.h>
+
+#include <utils.h>
+
+void delayMicroseconds(uint32 us)
+{
+    delay_us(us);
+}
+
+void delay(uint32 ms)
+{
+    uint32 i;
+    for (i = 0; i < ms; i++) {
+        delayMicroseconds(1000);
+    }
+}
 
 int main(void)
 {
     int result = 0;
+    int i = 0;
 
     sample_function(10, 20, &result);
+
+    system_init(); 
+    /* led flashes -> sign of system reset ok */
+    for(i = 0; i < 6; i++)
+    {
+        gpio_toggle_bit(GPIOA, 1);
+        delay(50);
+    }   
+
     //printf(>result = %d\n>, result);
 
     //printf(>Build success.\n>);
     for (;;)
     {
-        ;
+        asm volatile("nop");
     }
 
     return 0;
