@@ -41,7 +41,8 @@ $(BUILDDIRS):
 	@mkdir -p $@
 
 MSG_INFO:
-	@echo "======================================="
+	@echo ""
+	@echo "========================================"
 	@echo "[Build info]"
 	@echo ""
 	@echo "TARGET: "$(OUSIA_TARGET)
@@ -50,6 +51,6 @@ MSG_INFO:
 	@echo "MEMORY_TARGET: "$(MEMORY_TARGET)
 	@echo ""
 	@echo "  See 'make help' for more information"
-	@echo "======================================="
-	@echo
+	@echo "========================================"
+	@echo ""
 
