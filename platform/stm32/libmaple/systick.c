@@ -31,10 +31,7 @@
 #include "systick.h"
 
 volatile uint32 systick_uptime_millis;
-
-/* FreeRTOS below */
 static void (*systick_user_callback)(void);
-/* FreeRTOS above */
 
 /**
  * @brief Initialize and enable SysTick.
@@ -83,9 +80,7 @@ void systick_attach_callback(void (*callback)(void)) {
 
 void __exc_systick(void) {
     systick_uptime_millis++;
-	/* FreeRTOS below */
-	if (systick_user_callback) {
+    if (systick_user_callback) {
         systick_user_callback();
     }
-	/* FreeRTOS above */
 }
