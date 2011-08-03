@@ -1,6 +1,8 @@
 # main project target
 
 # Here adds includes' searching paths of sample code
+# TODO Board specific includes should not be here.
+#      It should be something like <platform/stm32/xxx.h>
 INCLUDES := $(CORE_INCLUDES) \
             $(STM32_INCLUDES)
 
@@ -25,15 +27,12 @@ $(BUILD_PATH)/$(OUSIA_TARGET): $(BUILD_PATH)/$(OUSIA_TARGET).bin
 $(BUILD_PATH)/$(OUSIA_TARGET).bin: $(BUILD_PATH)/$(OUSIA_TARGET).elf
 	$(SILENT_OBJCOPY) $(OBJCOPY) -v -Obinary $(BUILD_PATH)/$(OUSIA_TARGET).elf $@ 1>/dev/null
 	$(SILENT_DISAS) $(DISAS) -d $(BUILD_PATH)/$(OUSIA_TARGET).elf > $(BUILD_PATH)/$(OUSIA_TARGET).disas
-#$(BUILD_PATH)/$(OUSIA_TARGET): $(BUILDDIRS) $(TGT_BIN) $(BUILD_PATH)/main.o
-#	$(SILENT_LD) $(CC) $(LDFLAGS) -o $@ $(TGT_BIN) $(BUILD_PATH)/main.o -Wl,-Map,$(BUILD_PATH)/$(OUSIA_TARGET).map
 	@echo " "
 	@echo "Object file sizes:"
 	@find $(BUILD_PATH) -iname *.o | xargs $(SIZE) -t > $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 	@cat $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 	@echo " "
 	@echo "Final Size:"
-#	@$(SIZE) $@
 	@$(SIZE) $<
 	@echo $(MEMORY_TARGET) > $(BUILD_PATH)/build-type
 
@@ -43,7 +42,7 @@ $(BUILDDIRS):
 MSG_INFO:
 	@echo ""
 	@echo "========================================"
-	@echo "[Build info]"
+	@echo "[Build Information]"
 	@echo ""
 	@echo "TARGET: "$(OUSIA_TARGET)
 	@echo "NAME: "$(NAME)

@@ -1,9 +1,7 @@
 This project launched at July 28, 2011.
 
 Developing steps:
-1.	Create a branch for experimental development if needed.
+1.	Create a branch for experimental development.
 2.	Update source files.
-3.	Update docs/notes if needed.
-4.	Update docs/release.
-5.	Tag a new one if a new version commited.
+3.	Tag a new one if a new version commited.
 

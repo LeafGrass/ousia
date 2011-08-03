@@ -76,7 +76,7 @@ LDFLAGS = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
 include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
-# Set all modules here
+# TODO Set all modules here
 MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
 
@@ -122,7 +122,7 @@ package:
 help:
 	@echo ""
 	@echo "========================================"
-	@echo "[Ousia make help]"
+	@echo "[Ousia Make Help]"
 	@echo ""
 	@echo "Compile targets (default MEMORY_TARGET=flash):"
 	@echo "  ram:       Compile sketch code to ram"
