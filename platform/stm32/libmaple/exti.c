@@ -29,18 +29,17 @@
  * @brief External interrupt control routines
  */
 
-#include "libmaple.h"
 #include "exti.h"
+#include "libmaple.h"
 #include "nvic.h"
 #include "bitband.h"
+
+static inline void dispatch_single_exti(uint32 exti_num);
+static inline void dispatch_extis(uint32 start, uint32 stop);
 
 /*
  * Internal state
  */
-
-/* Status bitmaps, for external interrupts with multiplexed IRQs */
-static uint16 exti_9_5_en = 0;
-static uint16 exti_15_10_en = 0;
 
 typedef struct exti_channel {
     void (*handler)(void);
@@ -70,9 +69,6 @@ static exti_channel exti_channels[] = {
  * Convenience routines
  */
 
-static inline void enable_irq(afio_exti_num exti_num);
-static inline void maybe_disable_irq(afio_exti_num exti_num);
-
 /**
  * @brief Register a handler to run upon external interrupt.
  *
@@ -100,14 +96,14 @@ void exti_attach_interrupt(afio_exti_num num,
     /* Set trigger mode */
     switch (mode) {
     case EXTI_RISING:
-        *bb_perip(&EXTI_BASE->RTSR, num) = 1;
+        bb_peri_set_bit(&EXTI_BASE->RTSR, num, 1);
         break;
     case EXTI_FALLING:
-        *bb_perip(&EXTI_BASE->FTSR, num) = 1;
+        bb_peri_set_bit(&EXTI_BASE->FTSR, num, 1);
         break;
     case EXTI_RISING_FALLING:
-        *bb_perip(&EXTI_BASE->RTSR, num) = 1;
-        *bb_perip(&EXTI_BASE->FTSR, num) = 1;
+        bb_peri_set_bit(&EXTI_BASE->RTSR, num, 1);
+        bb_peri_set_bit(&EXTI_BASE->FTSR, num, 1);
         break;
     }
 
@@ -115,10 +111,10 @@ void exti_attach_interrupt(afio_exti_num num,
     afio_exti_select(num, port);
 
     /* Unmask external interrupt request */
-    *bb_perip(&EXTI_BASE->IMR, num) = 1;
+    bb_peri_set_bit(&EXTI_BASE->IMR, num, 1);
 
     /* Enable the interrupt line */
-    enable_irq(num);
+    nvic_irq_enable(exti_channels[num].irq_line);
 }
 
 /**
@@ -128,15 +124,11 @@ void exti_attach_interrupt(afio_exti_num num,
  */
 void exti_detach_interrupt(afio_exti_num num) {
     /* First, mask the interrupt request */
-    *bb_perip(&EXTI_BASE->IMR, num) = 0;
+    bb_peri_set_bit(&EXTI_BASE->IMR, num, 0);
 
     /* Then, clear the trigger selection registers */
-    *bb_perip(&EXTI_BASE->FTSR, num) = 0;
-    *bb_perip(&EXTI_BASE->RTSR, num) = 0;
-
-    /* Next, disable the IRQ, unless it's multiplexed and there are
-     * other active external interrupts on the same IRQ line */
-    maybe_disable_irq(num);
+    bb_peri_set_bit(&EXTI_BASE->FTSR, num, 0);
+    bb_peri_set_bit(&EXTI_BASE->RTSR, num, 0);
 
     /* Finally, unregister the user's handler */
     exti_channels[num].handler = NULL;
@@ -146,107 +138,81 @@ void exti_detach_interrupt(afio_exti_num num) {
  * Interrupt handlers
  */
 
-static inline void clear_pending(uint32 exti_num);
-static inline void dispatch_handler(uint32 exti_num);
-
-/* For AFIO_EXTI_0 through AFIO_EXTI_4, only one handler is associated
- * with each channel, so we don't have to keep track of which channel
- * we came from */
 void __irq_exti0(void) {
-    dispatch_handler(AFIO_EXTI_0);
-    clear_pending(AFIO_EXTI_0);
+    dispatch_single_exti(AFIO_EXTI_0);
 }
 
 void __irq_exti1(void) {
-    dispatch_handler(AFIO_EXTI_1);
-    clear_pending(AFIO_EXTI_1);
+    dispatch_single_exti(AFIO_EXTI_1);
 }
 
 void __irq_exti2(void) {
-    dispatch_handler(AFIO_EXTI_2);
-    clear_pending(AFIO_EXTI_2);
+    dispatch_single_exti(AFIO_EXTI_2);
 }
 
 void __irq_exti3(void) {
-    dispatch_handler(AFIO_EXTI_3);
-    clear_pending(AFIO_EXTI_3);
+    dispatch_single_exti(AFIO_EXTI_3);
 }
 
 void __irq_exti4(void) {
-    dispatch_handler(AFIO_EXTI_4);
-    clear_pending(AFIO_EXTI_4);
+    dispatch_single_exti(AFIO_EXTI_4);
 }
 
 void __irq_exti9_5(void) {
-    /* Figure out which channel it came from  */
-    uint32 pending = GET_BITS(EXTI_BASE->PR, 5, 9);
-    uint32 i;
-
-    /* Dispatch every handler if the pending bit is set */
-    for (i = 0; i < 5; i++) {
-        if (pending & 0x1) {
-            dispatch_handler(AFIO_EXTI_5 + i);
-            clear_pending(AFIO_EXTI_5 + i);
-        }
-        pending >>= 1;
-    }
+    dispatch_extis(5, 9);
 }
 
 void __irq_exti15_10(void) {
-    /* Figure out which channel it came from  */
-    uint32 pending = GET_BITS(EXTI_BASE->PR, 10, 15);
-    uint32 i;
-
-    /* Dispatch every handler if the pending bit is set */
-    for (i = 0; i < 6; i++) {
-        if (pending & 0x1) {
-            dispatch_handler(AFIO_EXTI_10 + i);
-            clear_pending(AFIO_EXTI_10 + i);
-        }
-        pending >>= 1;
-    }
+    dispatch_extis(10, 15);
 }
 
 /*
  * Auxiliary functions
  */
 
-static inline void clear_pending(uint32 exti_num) {
-    *bb_perip(&EXTI_BASE->PR, exti_num) = 1;
-    /* If the pending bit is cleared as the last instruction in an ISR,
-     * it won't actually be cleared in time and the ISR will fire again.
-     * Insert a 2-cycle buffer to allow it to take effect. */
+/* Clear the pending bits for EXTIs whose bits are set in exti_msk.
+ *
+ * If a pending bit is cleared as the last instruction in an ISR, it
+ * won't actually be cleared in time and the ISR will fire again.  To
+ * compensate, this function NOPs for 2 cycles after clearing the
+ * pending bits to ensure it takes effect. */
+static inline void clear_pending_msk(uint32 exti_msk) {
+    EXTI_BASE->PR = exti_msk;
     asm volatile("nop");
     asm volatile("nop");
 }
 
-static inline void dispatch_handler(uint32 exti_num) {
-    ASSERT(exti_channels[exti_num].handler);
-    if (exti_channels[exti_num].handler) {
-        (exti_channels[exti_num].handler)();
-    }
-}
+/* This dispatch routine is for non-multiplexed EXTI lines only; i.e.,
+ * it doesn't check EXTI_PR. */
+static inline void dispatch_single_exti(uint32 exti) {
+    voidFuncPtr handler = exti_channels[exti].handler;
 
-static inline void enable_irq(afio_exti_num exti) {
-    /* Maybe twiddle the IRQ bitmap for extis with multiplexed IRQs */
-    if (exti > 4) {
-        uint16 *bitmap = exti < 10 ? &exti_9_5_en : &exti_15_10_en;
-        *bb_sramp(bitmap, exti) = 1;
+    if (!handler) {
+        return;
     }
 
-    nvic_irq_enable(exti_channels[exti].irq_line);
+    handler();
+    clear_pending_msk(BIT(exti));
 }
 
-static inline void maybe_disable_irq(afio_exti_num exti) {
-    if (exti > 4) {
-        uint16 *bitmap = exti < 10 ? &exti_9_5_en : &exti_15_10_en;
-        *bb_sramp(bitmap, exti) = 0;
-        if (*bitmap == 0) {
-            /* All of the external interrupts which share this IRQ
-             * line are disabled. */
-            nvic_irq_disable(exti_channels[exti].irq_line);
+/* Dispatch routine for EXTIs which share an IRQ. */
+static inline void dispatch_extis(uint32 start, uint32 stop) {
+    uint32 pr = EXTI_BASE->PR;
+    uint32 handled_msk = 0;
+    uint32 exti;
+
+    /* Dispatch user handlers for pending EXTIs. */
+    for (exti = start; exti <= stop; exti++) {
+        uint32 eb = BIT(exti);
+        if (pr & eb) {
+            voidFuncPtr handler = exti_channels[exti].handler;
+            if (handler) {
+                handler();
+                handled_msk |= eb;
+            }
         }
-    } else {
-        nvic_irq_disable(exti_channels[exti].irq_line);
     }
+
+    /* Clear the pending bits for handled EXTIs. */
+    clear_pending_msk(handled_msk);
 }

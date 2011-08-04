@@ -112,7 +112,9 @@ clean:
 	rm -rf build
 
 distclean:
-	rm -rf build tarball
+	rm -rf build
+	rm -rf tarball
+	rm -f tags tags.ut cscope.out
 
 package:
 	mkdir -p tarball
@@ -121,7 +123,7 @@ package:
 # TODO Here needs improve, for not only depend on this specific hardware
 help:
 	@echo ""
-	@echo "========================================"
+	@echo "==========================================================="
 	@echo "[Ousia Make Help]"
 	@echo ""
 	@echo "Compile targets (default MEMORY_TARGET=flash):"
@@ -140,8 +142,8 @@ help:
 	@echo "Other targets:"
 	@echo "  help:      Show this message"
 	@echo "  package:   Package current revision"
-	@echo "  distclean: Remove all builds and tarballs"
-	@echo "========================================"
+	@echo "  distclean: Remove all builds tarballs, and ohter misc."
+	@echo "==========================================================="
 	@echo ""
 
 debug:

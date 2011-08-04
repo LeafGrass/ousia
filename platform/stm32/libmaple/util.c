@@ -141,8 +141,6 @@ void throb(void) {
     }
 #else
     /* No error LED is defined; do nothing. */
-    while (1) {
-		;
-	}
+    while (1) ;
 #endif
 }
