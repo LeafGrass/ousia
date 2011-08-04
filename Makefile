@@ -79,6 +79,7 @@ include $(SUPPORT_PATH)/make/build-templates.mk
 # TODO Set all modules here
 MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
+MODULES += $(FRAMEWORK_PATH)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
@@ -88,13 +89,9 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 
 .PHONY: install sketch clean help debug cscope tags ctags ram flash jtag
 
-# Target upload commands
-
-# conditionally upload to whatever the last build was
-install: INSTALL_TARGET = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
-install: $(BUILD_PATH)/$(OUSIA_TARGET)
-	@echo Install target: $(INSTALL_TARGET)
-	$(UPLOAD_$(INSTALL_TARGET))
+# Download code to target device
+install:
+	$(SHELL) ./script/download.sh
 
 # Force a rebuild if the maple target changed
 PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
@@ -102,9 +99,6 @@ build-check:
 ifneq ($(PREV_BUILD_TYPE), $(MEMORY_TARGET))
 	$(shell rm -rf $(BUILD_PATH))
 endif
-	@echo "MODULES:"
-	@echo $(MODULES)
-	@echo ""
 
 sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 
@@ -126,23 +120,23 @@ help:
 	@echo "==========================================================="
 	@echo "[Ousia Make Help]"
 	@echo ""
-	@echo "Compile targets (default MEMORY_TARGET=flash):"
+	@echo "Build targets (default MEMORY_TARGET=flash):"
 	@echo "  ram:       Compile sketch code to ram"
 	@echo "  flash:     Compile sketch code to flash"
 	@echo "  jtag:      Compile sketch code to jtag"
 	@echo "  sketch:    Compile sketch code to target MEMORY_TARGET"
 	@echo ""
-	@echo "Programming targets:"
-	@echo "  install:   Download code to target"
-	@echo "  clean:     Remove all build files"
+	@echo "Downloading targets:"
+	@echo "  install:   Download binary image to target device"
 	@echo ""
 	@echo "Debug targets:"
 	@echo "  debug:     Start an openocd server"
 	@echo ""
 	@echo "Other targets:"
+	@echo "  clean:     Remove all build files"
+	@echo "  distclean: Remove all builds tarballs, and ohter misc"
 	@echo "  help:      Show this message"
 	@echo "  package:   Package current revision"
-	@echo "  distclean: Remove all builds tarballs, and ohter misc."
 	@echo "==========================================================="
 	@echo ""
 

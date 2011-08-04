@@ -16,8 +16,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __UTILS_H__
-#define __UTILS_H__
+#ifndef __STM32UTILS_H__
+#define __STM32UTILS_H__
 
 /**
  * @brief   sample function
@@ -27,9 +27,11 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-int sample_function2(int a, int b, int *pResult);
+void stm32utils_system_init(void);
 
-void system_init(void);
+/* for printf */
+void stm32utils_io_putc(void *p, char ch);
 
-#endif /* __UTILS_H__ */
+
+#endif /* __STM32UTILS_H__ */
 

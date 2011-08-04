@@ -4,7 +4,8 @@
 # TODO Board specific includes should not be here.
 #      It should be something like <platform/stm32/xxx.h>
 INCLUDES := $(CORE_INCLUDES) \
-            $(STM32_INCLUDES)
+            $(PLATFORM_INCLUDES) \
+			$(FRAMEWORK_INCLUDES)
 
 $(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
 	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<

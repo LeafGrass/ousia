@@ -11,13 +11,9 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/stm32utils
 LIBMAPLE_INCLUDES := -I$(PLATFORM_PATH)/stm32/libmaple \
 					 -I$(PLATFORM_PATH)/stm32/libmaple/usb \
 					 -I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
-STM32UTILS_INCLUDES := -I$(PLATFORM_PATH)/stm32/stm32utils
-
-STM32_INCLUDES := $(LIBMAPLE_INCLUDES) \
-	              $(STM32UTILS_INCLUDES)
 
 # Local flags
-CFLAGS_$(d) = -I$(d) $(STM32_INCLUDES) -Wall -Werror
+CFLAGS_$(d) = -I$(d) $(PLATFORM_INCLUDES) $(LIBMAPLE_INCLUDES) -Wall -Werror
 
 # Local rules and targets
 # libmaple
@@ -52,7 +48,7 @@ cSRCS_$(d) := stm32/libmaple/adc.c \
 sSRCS_$(d) := stm32/libmaple/exc.S
 
 # stm32utils
-cSRCS_$(d) += stm32/stm32utils/utils.c
+cSRCS_$(d) += stm32/stm32utils/stm32utils.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
