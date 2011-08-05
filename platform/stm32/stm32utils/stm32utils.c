@@ -37,18 +37,16 @@
 static void setupFlash(void);
 static void setupClocks(void);
 static void setupNVIC(void);
-/*static void setupADC(void);*/
-/*static void setupTimers(void);*/
+static void setupADC(void);
+static void setupTimers(void);
 static void setupUSART(usart_dev *dev, uint32 baud);
 
 
 /**
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
+ * @brief   stm32 chip intialize
+ * @param   none
+ * @return  none
+ * @note    FIXME should not be called this directly
  */
 void stm32utils_system_init(void)
 {
@@ -58,8 +56,8 @@ void stm32utils_system_init(void)
     systick_init(SYSTICK_RELOAD_VAL);
     gpio_init_all();
     afio_init();
-    /*setupADC();*/
-    /*setupTimers();*/
+    setupADC();
+    setupTimers();
     setupUSART(USARTx, SERIAL_BAUDRATE);
 
     gpio_set_mode(GPIOA, 0, GPIO_OUTPUT_PP);
@@ -70,6 +68,12 @@ void stm32utils_system_init(void)
     gpio_write_bit(GPIOA, 12, 0);
 }
 
+/**
+ * @brief   stm32 chip intialize
+ * @param   none
+ * @return  none
+ * @note    FIXME should not be called this directly
+ */
 void stm32utils_io_putc(void *p, char ch)
 {
     usart_putc(USARTx, ch);
@@ -102,66 +106,65 @@ static void setupNVIC(void)
 #error "You must select a base address for the vector table."
 #endif
 }
-/*
-   static void adcDefaultConfig(const adc_dev* dev)
-   {
-   adc_init(dev);
-   adc_set_extsel(dev, ADC_SWSTART);
-   adc_set_exttrig(dev, 1);
-   adc_enable(dev);
-   adc_calibrate(dev);
-   adc_set_sample_rate(dev, ADC_SMPR_55_5);
-   }
-   static void setupADC(void)
-   {
-   rcc_set_prescaler(RCC_PRESCALER_ADC, RCC_ADCPRE_PCLK_DIV_6);
-   adc_foreach(adcDefaultConfig);
-   }
-   */
-/*
-   static void timerDefaultConfig(timer_dev *dev) {
-   timer_adv_reg_map *regs = (dev->regs).adv;
-   const uint16 full_overflow = 0xFFFF;
-   const uint16 half_duty = 0x8FFF;
-   int channel;
 
-   timer_init(dev);
-   timer_pause(dev);
-
-   regs->CR1 = TIMER_CR1_ARPE;
-   regs->PSC = 1;
-   regs->SR = 0;
-   regs->DIER = 0;
-   regs->EGR = TIMER_EGR_UG;
-
-   switch (dev->type) {
-   case TIMER_ADVANCED:
-   regs->BDTR = TIMER_BDTR_MOE | TIMER_BDTR_LOCK_OFF;
-// fall-through
-case TIMER_GENERAL:
-timer_set_reload(dev, full_overflow);
-
-for (channel = 1; channel <= 4; channel++) {
-timer_set_compare(dev, channel, half_duty);
-timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1, TIMER_OC_PE);
+static void adcDefaultConfig(const adc_dev* dev)
+{
+    adc_init(dev);
+    adc_set_extsel(dev, ADC_SWSTART);
+    adc_set_exttrig(dev, 1);
+    adc_enable(dev);
+    adc_calibrate(dev);
+    adc_set_sample_rate(dev, ADC_SMPR_55_5);
 }
-// fall-through
-case TIMER_BASIC:
-break;
+static void setupADC(void)
+{
+    rcc_set_prescaler(RCC_PRESCALER_ADC, RCC_ADCPRE_PCLK_DIV_6);
+    adc_foreach(adcDefaultConfig);
 }
 
-timer_resume(dev);
+static void timerDefaultConfig(timer_dev *dev) {
+    timer_adv_reg_map *regs = (dev->regs).adv;
+    const uint16 full_overflow = 0xFFFF;
+    const uint16 half_duty = 0x8FFF;
+    int channel;
+
+    timer_init(dev);
+    timer_pause(dev);
+
+    regs->CR1 = TIMER_CR1_ARPE;
+    regs->PSC = 1;
+    regs->SR = 0;
+    regs->DIER = 0;
+    regs->EGR = TIMER_EGR_UG;
+
+    switch (dev->type) {
+    case TIMER_ADVANCED:
+        regs->BDTR = TIMER_BDTR_MOE | TIMER_BDTR_LOCK_OFF;
+        /* fall-through */
+    case TIMER_GENERAL:
+        timer_set_reload(dev, full_overflow);
+
+        for (channel = 1; channel <= 4; channel++) {
+            timer_set_compare(dev, channel, half_duty);
+            timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1, TIMER_OC_PE);
+        }
+        /* fall-through */
+    case TIMER_BASIC:
+        break;
+    }
+
+    timer_resume(dev);
 }
 static void setupTimers(void)
 {
-timer_foreach(timerDefaultConfig);
+    timer_foreach(timerDefaultConfig);
 }
-*/
+
 static void setupUSART(usart_dev *dev, uint32 baud)
 {
     uint32 i = USART_RX_BUF_SIZE;
     /* FIXME: need some preprocess here, according to specific board */
-    if (dev == USART1) {	/* setup responding io */
+    if (dev == USART1) {
         gpio_set_mode(GPIOA, 9, GPIO_AF_OUTPUT_PP);
         gpio_set_mode(GPIOA, 10, GPIO_INPUT_FLOATING);
     }
