@@ -21,7 +21,7 @@ leafkiss contains these components:
                                           
 Ps: (*) represents that the component has been implemented.
     (-) represents that the component hasn't been implemented.
-	(+) represents that the component is under developing.
+    (+) represents that the component is under developing.
 
 ==================================================
 
@@ -29,29 +29,31 @@ Layer 3
 	+-----------------------------------
 	|            application           |
 	+-----------------------------------
-	+----------------------------------+
-	|             framework            |
-	+----------------------------------+
 
 Layer 2
 	+----------------------------------+
 	|           system call            |  
 	+----------------------------------+
-	+----------------+  +--------------+  
-	|       core     |  |              |
-	+----------------+  |    driver    |
-	+-------------------+              |
-	|        port       ~              |  
+	+-----------------+ +--------------+  
+	|       core      | |              |
+	+-----------------+ |    porting   |
+	+-------------------+   framework  |
+	|       driver      ~              |  
 	+-------------------+--------------+
 
 Layer 1
+	+-----------------+----------------+
+	| platform (hal)  ~      port      |
+	+-----------------+----------------+
+
+Layer 0
 	+----------------------------------+
-	|          platform (hal)          |
+	|            hardware              |
 	+----------------------------------+
 
+
+Layer 0: board
 Layer 1: platform
 Layer 2: core, driver, platform
-Layer 3: framework, etc.
-
-
+Layer 3: application
 

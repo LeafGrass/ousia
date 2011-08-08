@@ -7,7 +7,7 @@
 #include <stm32/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#include <tprintf/tprintf.h>
+#include <ulib/tprintf/tprintf.h>
 
 #define VERSION     "v0.0.1"
 
