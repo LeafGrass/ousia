@@ -108,7 +108,7 @@ clean:
 distclean:
 	rm -rf build
 	rm -rf tarball
-	rm -f tags tags.ut cscope.out
+	rm -f tags tags.ut tags.fn cscope.out
 
 package:
 	mkdir -p tarball
