@@ -1,7 +1,7 @@
 VERSION = 0
 SUBLEVEL = 0
-DEVNUM = 1
-NAME = Chinese Abelia
+DEVNUM = 2
+NAME = Glossy Abelia
 
 .DEFAULT_GOAL := sketch
 OUSIA_TARGET :=	ousia
@@ -90,7 +90,7 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 .PHONY: install sketch clean help debug cscope tags ctags ram flash jtag
 
 # Download code to target device
-install:
+install: sketch
 	$(SHELL) ./script/download.sh
 
 # Force a rebuild if the maple target changed

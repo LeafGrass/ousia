@@ -1,9 +1,33 @@
-
 Real-Time Ousia [TM]
 
 "Ousia" is picked from Greek, 
 intend to represent the essence of Real-Time Theory.
 Developed following K-I-S-S principle.
+
+
+Source tree architecture
+------------------------
+core:
+	Ousia core routines.
+docs:
+	Complete documentation of Ousia.
+driver:
+	Different kinds of device drivers based on Ousia.
+	They are all confiurable.
+framework:
+	Framework based on Ousia. Such as print session, shell, etc.
+	They are confiurable, either.
+include:
+	Header files of main routines of Ousia.
+platform:
+	Chip and board specific code. Ousia porting code are placed here.
+sample:
+	Sample code instances.
+script:
+	Useful scripts used while Ousia developing.
+support:
+	Basic supporting stuffs for Ousia developing and building.
+
 
 acknowledgments
 ---------------

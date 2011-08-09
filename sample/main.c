@@ -9,7 +9,8 @@
 
 #include <ulib/tprintf/tprintf.h>
 
-#define VERSION     "v0.0.1"
+#define VERSION     "v0.0.2"
+#define VER_NAME    "Glossy Abelia"
 
 void delayMicroseconds(uint32 us)
 {
@@ -40,37 +41,36 @@ int main(void)
         delay(50);
     }   
 
-    /* Boot Animation */                                                   
-    usart_putc(USART1, 0x0C);   /* clear screen */                         
+    /* Boot Animation */
+    usart_putc(USART1, 0x0C);   /* clear screen */
 
-    printf("Booting...\r\n\r\n");                                          
-    printf("                       _\r\n");                                
-    printf("     _                / /\r\n");                               
-    printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n");     
-    printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n");  
+    printf("Booting...\r\n\r\n");                         
+    printf("                       _\r\n");
+    printf("     _                / /\r\n");
+    printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n");
+    printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n");
     printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n");
     printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n");
-    printf("                      /_/ \\_ _/\r\n" );                       
-    printf("\r\n");                                                        
-    printf("Ousia "); printf(VERSION);                      
-    printf("\r\n\tby Librae - g.leafgrass@gmail.com");                     
-    printf("\r\n\r\n");                                                    
-    printf("Hello, ousia~\r\n");                                          
+    printf("                      /_/ \\_ _/\r\n" );
+    printf("\r\n");
+    printf("Ousia "); printf(VERSION); printf(" "); printf(VER_NAME);
+    printf("\r\n\tby Librae - g.leafgrass@gmail.com");
+    printf("\r\n\r\n");
+    printf("Hello, Ousia ~\r\n");
 
     for (;;) {
-        asm volatile("nop");
         if (USART1->flag_trigger) {
             for (i = 0; i < USART1->cnt_trigger; i++) {
                 ch = usart_getc(USART1);
                 if (ch) {
                     switch( ch ) {
-                    case '\r': 
+                    case '\r':
                         printf( "\r\n" );
                         break;
-                    case '\b': 
+                    case '\b':
                         printf( "\b \b" );
                         break;
-                    default: 
+                    default:
                         printf( "%c", ch );
                         break;
                     }
@@ -83,3 +83,4 @@ int main(void)
 
     return 0;
 }
+
