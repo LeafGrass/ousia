@@ -2,7 +2,7 @@
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
 # Local rules and targets
-cSRCS_$(d) := ulib/tprintf/tprintf.c
+cSRCS_$(d) := ss/serialshell.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 

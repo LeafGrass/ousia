@@ -1,30 +1,18 @@
-# Standard things
-sp := $(sp).x
-dirstack_$(sp) := $(d)
-d := $(dir)
-BUILDDIRS += $(BUILD_PATH)/$(d)
-# TODO here goes on if more sub dirs
-#BUILDDIRS += ... 
+DRIVER_INCLUDES := -I$(DRIVER_PATH)
 
-DRIVER_INCLUDES := 
+BUILDDIRS       += $(BUILD_PATH)/$(d)
 
-# Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -Wall -Werror
+# char
+sp              := $(sp).x
+dirstack_$(sp)  := $(d)
+d               := $(dir)
+BUILDDIRS       += $(BUILD_PATH)/$(d)/char
+include $(DRIVER_PATH)/char/rules.mk
 
-# Local rules and targets /* add source files here */
-cSRCS_$(d) := 
+# block
+sp              := $(sp).x
+dirstack_$(sp)  := $(d)
+d               := $(dir)
+BUILDDIRS       += $(BUILD_PATH)/$(d)/block
+include $(DRIVER_PATH)/block/rules.mk
 
-cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
-
-OBJS_$(d) := $(cFILES_$(d):%.c=$(BUILD_PATH)/%.o)
-
-DEPS_$(d) := $(OBJS_$(d):%.o=%.d)
-
-$(OBJS_$(d)): TGT_CFLAGS := $(CFLAGS_$(d))
-
-TGT_BIN += $(OBJS_$(d))
-
-# Standard things
--include $(DEPS_$(d))
-d := $(dirstack_$(sp))
-sp := $(basename $(sp))
