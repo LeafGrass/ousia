@@ -18,7 +18,7 @@
 
 #include <ousia/scheduler.h>
 
-/**
+/*
  * @brief   sample function
  * @param   a -i- an integer
  *          b -i- another integer

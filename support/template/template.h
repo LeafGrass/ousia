@@ -20,7 +20,7 @@
 #ifndef __TEMPLATE_H__
 #define __TEMPLATE_H__
 
-/**
+/*
  * @brief   sample function
  * @param   a -i- an integer
  *          b -i- another integer

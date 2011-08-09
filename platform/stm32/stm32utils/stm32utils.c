@@ -42,7 +42,7 @@ static void setupTimers(void);
 static void setupUSART(usart_dev *dev, uint32 baud);
 
 
-/**
+/*
  * @brief   stm32 chip intialize
  * @param   none
  * @return  none

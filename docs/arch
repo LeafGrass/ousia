@@ -1,8 +1,8 @@
-================================================== 
-leafkiss contains these components:       
-                                          
-    (-)User interface                   
-        (-)Shell                        
+==================================================
+leafkiss contains these components:
+
+    (-)User interface
+        (-)Shell
     (-)Kernel                           
         (+)Scheduler                    
         (+)Interrupts                   
@@ -14,7 +14,7 @@ leafkiss contains these components:
         (+)Device drivers               
         (-)Multi platforms porting      
     (-)Communication                    
-        (-)Ethernet                     
+        (-)Ethernet
     (-)Security                         
                                           
     (*)Makefile                         
@@ -31,19 +31,19 @@ Layer 3
 	+-----------------------------------
 
 Layer 2
+    +----------------------------------+
+    |            framework             |
 	+----------------------------------+
-	|           system call            |  
 	+----------------------------------+
-	+-----------------+ +--------------+  
-	|       core      | |              |
-	+-----------------+ |    porting   |
-	+-------------------+   framework  |
-	|       driver      ~              |  
-	+-------------------+--------------+
+	|               core               |
+	+----------------------------------+
+	+----------------------------------+
+	|              driver              |
+	+----------------------------------+
 
 Layer 1
 	+-----------------+----------------+
-	| platform (hal)  ~      port      |
+	|  platform (hal) ~      port      |
 	+-----------------+----------------+
 
 Layer 0
@@ -51,9 +51,8 @@ Layer 0
 	|            hardware              |
 	+----------------------------------+
 
-
-Layer 0: board
-Layer 1: platform
-Layer 2: core, driver, platform
 Layer 3: application
+Layer 2: os core routines
+Layer 1: hardware abstraction layer
+Layer 0: board
 
