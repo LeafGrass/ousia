@@ -2,7 +2,7 @@
 sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
-BUILDDIRS       += $(BUILD_PATH)/$(d)
+#BUILDDIRS       += $(BUILD_PATH)/$(d)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/usb_lib

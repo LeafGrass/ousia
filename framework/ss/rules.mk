@@ -3,14 +3,13 @@ sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
 #BUILDDIRS       += $(BUILD_PATH)/$(d)
-BUILDDIRS       += $(BUILD_PATH)/$(d)/ulib
-BUILDDIRS       += $(BUILD_PATH)/$(d)/ulib/tprintf
+BUILDDIRS       += $(BUILD_PATH)/$(d)/ss
 
 # Local flags
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
 # Local rules and targets
-cSRCS_$(d) := ulib/tprintf/tprintf.c
+cSRCS_$(d) := ss/serialshell.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 
