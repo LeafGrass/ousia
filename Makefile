@@ -114,7 +114,6 @@ package:
 	mkdir -p tarball
 	$(SHELL) ./script/package.sh
 
-# TODO Here needs improve, for not only depend on this specific hardware
 help:
 	@echo ""
 	@echo "==========================================================="
@@ -143,18 +142,6 @@ help:
 debug:
 	$(OPENOCD_WRAPPER) debug
 
-cscope:
-	rm -rf *.cscope
-	find . -name '*.[hcS]' -o -name '*.cpp' | xargs cscope -b
-
-tags:
-	etags `find . -name "*.c" -o -name "*.cpp" -o -name "*.h"`
-	@echo "Made TAGS file for EMACS code browsing"
-
-ctags:
-	ctags -R *
-	@echo "Made tags file for VIM code browsing"
-
 ram:
 	@$(MAKE) MEMORY_TARGET=ram --no-print-directory sketch
 
@@ -164,5 +151,3 @@ flash:
 jtag:
 	@$(MAKE) MEMORY_TARGET=jtag --no-print-directory sketch
 
-doxygen:
-	doxygen $(SUPPORT_PATH)/doxygen/Doxyfile

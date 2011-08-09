@@ -1,3 +1,11 @@
+# Standard things
+sp              := $(sp).x
+dirstack_$(sp)  := $(d)
+d               := $(dir)
+#BUILDDIRS       += $(BUILD_PATH)/$(d)
+BUILDDIRS       += $(BUILD_PATH)/$(d)/ulib
+BUILDDIRS       += $(BUILD_PATH)/$(d)/ulib/tprintf
+
 # Local flags
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 

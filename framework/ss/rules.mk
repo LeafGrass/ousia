@@ -1,3 +1,10 @@
+# Standard things
+sp              := $(sp).x
+dirstack_$(sp)  := $(d)
+d               := $(dir)
+#BUILDDIRS       += $(BUILD_PATH)/$(d)
+BUILDDIRS       += $(BUILD_PATH)/$(d)/ss
+
 # Local flags
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
