@@ -8,7 +8,7 @@ Developed following K-I-S-S principle.
 Source tree architecture
 ------------------------
 core:
-	Ousia core routines.
+	Ousia core routines. Ousia porting code are also placed here.
 docs:
 	Complete documentation of Ousia.
 driver:
@@ -20,7 +20,7 @@ framework:
 include:
 	Header files of main routines of Ousia.
 platform:
-	Chip and board specific code. Ousia porting code are placed here.
+	Chip and board specific code.
 sample:
 	Sample code instances.
 script:
