@@ -55,7 +55,7 @@ int main(void)
 
     /* led flashes -> sign of system reset ok */
     for(i = 0; i < 6; i++) {
-        gpio_toggle_bit(GPIOA, 1);
+        gpio_toggle_bit(GPIOA, 0);
         delay(50);
     }   
 
