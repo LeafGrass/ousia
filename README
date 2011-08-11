@@ -1,7 +1,10 @@
 Real-Time Ousia [TM]
+COPYRIGHT (C) LEAFGRASS
 
-"Ousia" is picked from Greek, 
-intend to represent the essence of Real-Time Theory.
+Introduction
+------------
+"Ousia" is picked from Greek.
+Mainly intend to represent the essence of Real-Time Theory.
 Developed following K-I-S-S principle.
 
 
@@ -27,6 +30,7 @@ script:
 	Useful scripts used while Ousia developing.
 support:
 	Basic supporting stuffs for Ousia developing and building.
+	Useful template files are placed here, such as porting code template.
 
 
 acknowledgments
