@@ -19,7 +19,7 @@ driver:
 	They are all confiurable.
 framework:
 	Framework based on Ousia. Such as print session, shell, etc.
-	They are confiurable, either.
+	They are scalable and confiurable, either.
 include:
 	Header files of main routines of Ousia.
 platform:
@@ -35,7 +35,7 @@ support:
 
 acknowledgments
 ---------------
-Some parts of the project are originally based on libmaple.
+Parts of make system and libmaple stm32 low-level driver are borrowed from libmaple.
 Thanks to their excellent works!
 - http://leaflabs.com
 
