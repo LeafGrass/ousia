@@ -1,2 +1,6 @@
 stm32 porting code is placed here.
 
+TODO
+	Copy files in this folder to "core/port/", then build.
+	Do not add files in this folder to makefile.
+
