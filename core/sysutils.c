@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    platform/stm32/stm32utils/utils.h
+ * @file    core/sysutils.c
  *
- * @brief   stm32 library libmaple utilities
+ * @brief   Ousia system utilities
  *
- * @log     2011-08-03 Initial revision
+ * @log     2011-08-12 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -15,22 +15,26 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __STM32UTILS_H__
-#define __STM32UTILS_H__
+#include <ousia/sysutils.h>
 
+#if (1)
+#else
+#include <stdarg.h>
 /*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
+ * @brief   ousia print mechanism
+ * @param   fmt -i- a formatted string
  * @return  an integer
- * @note    just use it and take it easy
+ * @note    none
  */
-void stm32utils_system_init(void);
+int os_printf(const char *fmt, ...)
+{
+    va_list args;
+    int r = 0;
 
-/* for printf */
-void stm32utils_io_putc(void *p, char ch);
+    va_start(args, fmt);
+    va_end(args);
 
-
-#endif /* __STM32UTILS_H__ */
+    return r;
+}
+#endif
 

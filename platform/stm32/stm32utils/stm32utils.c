@@ -2,9 +2,8 @@
  * @file    platform/stm32/stm32utils/stm32utils.c
  *
  * @brief   stm32 library utilities
- * @date    2011-08-03
  *
- * @history 2011-08-03 Initial revision
+ * @log     2011-08-03 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)

@@ -2,9 +2,8 @@
  * @file    include/ousia/scheduler.h
  *
  * @brief   Header of ousia scheduler.
- * @date    2011-07-28
  *
- * @history 2011-07-28 Initial revision
+ * @log     2011-07-28 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)

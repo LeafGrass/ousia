@@ -2,9 +2,8 @@
  * @file    sample/main.c
  *
  * @brief   sample code
- * @date    2011-08-10
  *
- * @history 2011-08-10 Initial revision
+ * @log     2011-08-10 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -16,10 +15,9 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <ousia/scheduler.h>
+#include <ousia/sysutils.h>
+
 #include <stm32/libmaple/libmaple.h>
 #include <stm32/libmaple/libmaple_types.h>
 #include <stm32/libmaple/gpio.h>
@@ -51,7 +49,7 @@ int main(void)
 
     sample_function(10, 20, &result);
 
-    init_printf(NULL, stm32utils_io_putc);
+    init_os_printf(NULL, stm32utils_io_putc);
     stm32utils_system_init(); 
 
     /* led flashes -> sign of system reset ok */
@@ -63,19 +61,19 @@ int main(void)
     /* Boot Animation */
     usart_putc(USART1, 0x0C);   /* clear screen */
 
-    printf("Booting...\r\n\r\n");                         
-    printf("                       _\r\n");
-    printf("     _                / /\r\n");
-    printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n");
-    printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n");
-    printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n");
-    printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n");
-    printf("                      /_/ \\_ _/\r\n" );
-    printf("\r\n");
-    printf("Ousia "); printf(VERSION); printf(" "); printf(VER_NAME);
-    printf("\r\n\tby Librae - g.leafgrass@gmail.com");
-    printf("\r\n\r\n");
-    printf("Hello, Ousia ~\r\n");
+    os_printf("Booting...\r\n\r\n");
+    os_printf("                       _\r\n");
+    os_printf("     _                / /\r\n");
+    os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n");
+    os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n");
+    os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n");
+    os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n");
+    os_printf("                      /_/ \\_ _/\r\n" );
+    os_printf("\r\n");
+    os_printf("Ousia "); os_printf(VERSION); os_printf(" "); os_printf(VER_NAME);
+    os_printf("\r\n\tby Librae - g.leafgrass@gmail.com");
+    os_printf("\r\n\r\n");
+    os_printf("Hello, Ousia ~\r\n");
 
     for (;;) {
         if (USART1->flag_trigger) {
@@ -84,13 +82,13 @@ int main(void)
                 if (ch) {
                     switch( ch ) {
                     case '\r':
-                        printf( "\r\n" );
+                        os_printf( "\r\n" );
                         break;
                     case '\b':
-                        printf( "\b \b" );
+                        os_printf( "\b \b" );
                         break;
                     default:
-                        printf( "%c", ch );
+                        os_printf( "%c", ch );
                         break;
                     }
                 }

@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    platform/stm32/stm32utils/utils.h
+ * @file    core/sysutils.h
  *
- * @brief   stm32 library libmaple utilities
+ * @brief   Header of sysutils.c
  *
- * @log     2011-08-03 Initial revision
+ * @log     2011-08-12 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -15,22 +15,16 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __STM32UTILS_H__
-#define __STM32UTILS_H__
+#ifndef __SYSUTILS_H__
+#define __SYSUTILS_H__
 
-/*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
- */
-void stm32utils_system_init(void);
+#if (1)
+#define init_os_printf  init_printf
+#define os_printf   tfp_printf
+#define os_sprintf  tfp_sprintf
+#else
+int os_printf(const char *fmt, ...);
+#endif
 
-/* for printf */
-void stm32utils_io_putc(void *p, char ch);
-
-
-#endif /* __STM32UTILS_H__ */
+#endif /* __SYSUTILS_H__ */
 
