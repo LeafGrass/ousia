@@ -46,6 +46,7 @@ MSG_INFO:
 	@echo "[Build Information]"
 	@echo ""
 	@echo "TARGET: "$(OUSIA_TARGET)
+	@echo "VERSION: "$(VERSION)"."$(SUBLEVEL)"."$(DEVNUM)
 	@echo "NAME: "$(NAME)
 	@echo "PLATFORM: "$(OUSIA_PLATFORM)
 	@echo "MEMORY_TARGET: "$(MEMORY_TARGET)
