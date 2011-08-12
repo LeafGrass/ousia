@@ -17,6 +17,7 @@
  * ****************************************************************************/
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <ousia/scheduler.h>
 #include <stm32/libmaple/libmaple.h>

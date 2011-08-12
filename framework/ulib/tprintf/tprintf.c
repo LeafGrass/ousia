@@ -232,4 +232,3 @@ void tfp_sprintf(char* s,char *fmt, ...)
 	va_end(va);
 	}
 
-
