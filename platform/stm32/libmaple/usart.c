@@ -32,7 +32,7 @@
 
 /**
  * @file usart.c
- * @author Marti Bolivar <mbolivar@leaflabs.com,
+ * @author Marti Bolivar <mbolivar@leaflabs.com>,
  *         Perry Hung <perry@leaflabs.com>
  * @brief USART control routines
  */
