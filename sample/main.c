@@ -15,6 +15,7 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <ousia/ousia.h>
 #include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
 
@@ -23,8 +24,6 @@
 #include <stm32/libmaple/gpio.h>
 #include <stm32/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
-
-#include <ulib/tprintf/tprintf.h>
 
 #define VERSION     "v0.0.2"
 #define VER_NAME    "Glossy Abelia"

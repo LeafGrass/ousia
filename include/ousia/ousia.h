@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/sysutils.h
+ * @file    include/ousia/ousia.h
  *
- * @brief   Header of sysutils.c
+ * @brief   micro implementation of stdarg.h of libc
  *
- * @log     2011-08-12 Initial revision
+ * @log     2011-08-14 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
@@ -15,18 +15,9 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __SYSUTILS_H__
-#define __SYSUTILS_H__
+#ifndef __OUSIA_H__
 
-#ifdef OUSIA_USE_TPRINTF
-#define init_os_printf  init_printf
-#define os_printf   tfp_printf
-#define os_sprintf  tfp_sprintf
-#else
-void init_os_printf(void *putp, void (*putf)(void *, char));
-int os_printf(const char *p_fmt, ...);
-void os_sprintf(char *p_buf, const char *p_fmt, ...);
-#endif /* OUSIA_USE_TPRINTF */
+#include <port/ousia_cfg.h>
+#include <port/ousia_port.h>
 
-#endif /* __SYSUTILS_H__ */
-
+#endif /*__OUSIA_H__*/
