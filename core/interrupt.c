@@ -1,7 +1,7 @@
 /* *****************************************************************************
- * @file    core/port/ousia_port.c
+ * @file    core/interrupt.c
  *
- * @brief   porting code types and macros
+ * @brief   Core IRQ controller
  *
  * @log     2011-08-14 Initial revision
  *
@@ -15,12 +15,15 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __OUSIA_PORT_H__
-#define __OUSIA_PORT_H__
+#include <ousia/ousia.h>
+#include <ousia/interrupt.h>
 
-typedef char int8;
-typedef unsigned char uint8;
-typedef int int32;
-typedef unsigned int uint32;
+/*
+ * @brief   sample function
+ * @param   a -i- an integer
+ *          b -i- another integer
+ *          pResult -o- result
+ * @return  an integer
+ * @note    just use it and take it easy
+ */
 
-#endif /* OUSIA_PORT_H */

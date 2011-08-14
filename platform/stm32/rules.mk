@@ -62,7 +62,7 @@ $(OBJS_$(d)): TGT_ASFLAGS :=
 TGT_BIN += $(OBJS_$(d))
 
 # Standard things
--include        $(DEPS_$(d))
-d               := $(dirstack_$(sp))
-sp              := $(basename $(sp))
+-include $(DEPS_$(d))
+d := $(dirstack_$(sp))
+sp := $(basename $(sp))
 
