@@ -1,21 +1,21 @@
 # main project target
 
 # Here adds includes' searching paths of sample code
-# TODO Board specific includes should not be here.
-#      It should be something like <platform/stm32/xxx.h>
 INCLUDES := $(CORE_INCLUDES) \
             $(PLATFORM_INCLUDES) \
 			$(FRAMEWORK_INCLUDES)
 
 $(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
 	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+#	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -l$(BUILD_PATH)/ousia -o $@ -c $<
 
-# TODO Now this is not implemented actually.
-$(BUILD_PATH)/(OUSIA_TARGET).a: $(BUILDDIRS) $(TGT_BIN)
+$(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO $(BUILDDIRS) $(TGT_BIN)
 	- rm -f $@
-	$(AR) crv $(BUILD_PATH)/(OUSIA_TARGET).a $(TGT_BIN)
+	$(SILENT_AR) $(AR) crv $(BUILD_PATH)/lib$(OUSIA_TARGET).a $(TGT_BIN)
 
-library: $(BUILD_PATH)/$(OUSIA_TARGET).a
+library: $(BUILD_PATH)/lib$(OUSIA_TARGET).a
+	@find $(BUILD_PATH) -iname *.o | xargs $(SIZE) -t > $(BUILD_PATH)/$(OUSIA_TARGET).sizes
+	@cat $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 
 .PHONY: library
 

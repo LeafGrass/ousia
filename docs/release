@@ -1,6 +1,17 @@
 Ousia Release Notes
 ===================
 
+2011-08-14 v0.0.3a
+------------------
+Brief:
+    Update system architecture, support static library.
+Bug fixes:
+    None.
+New features:
+    Build static library is now supported.
+Known issues:
+	Portable issues. To build the ousia code with specific user projects.
+
 2011-08-09 v0.0.2
 -----------------
 Brief:

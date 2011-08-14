@@ -18,7 +18,7 @@ driver:
 	Different kinds of device drivers based on Ousia.
 	They are all confiurable.
 framework:
-	Framework based on Ousia. Such as print session, shell, vfs, etc.
+	Framework based on Ousia. Such as shell, vfs, etc.
 	They are scalable and confiurable, either.
 include:
 	Header files of main routines of Ousia.
