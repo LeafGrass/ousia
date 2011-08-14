@@ -1,7 +1,7 @@
 /* *****************************************************************************
- * @file    include/ousia/interrupt.h
+ * @file    framework/vfs/fileopt.c
  *
- * @brief   header of ousia IRQ controller
+ * @brief   file operation, a micro virtual file system for ousia
  *
  * @log     2011-08-14 Initial revision
  *
@@ -15,8 +15,7 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __INTERRUPT_H__
-#define __INTERRUPT_H__
+#include <vfs/fileopt.h>
 
 /*
  * @brief   sample function
@@ -26,6 +25,4 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-
-#endif /* __INTERRUPT_H__ */
 

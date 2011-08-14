@@ -1,7 +1,7 @@
 /* *****************************************************************************
  * @file    core/sysutils.c
  *
- * @brief   Ousia system utilities
+ * @brief   ousia system utilities
  *
  * @log     2011-08-12 Initial revision
  *
@@ -15,7 +15,6 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <ousia/ousia.h>
 #include <ulib/stdarg.h>
 #include <ousia/sysutils.h>
 

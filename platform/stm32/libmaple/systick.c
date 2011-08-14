@@ -30,8 +30,12 @@
 
 #include "systick.h"
 
-volatile uint32 systick_uptime_millis;
+#define SYSTICK_USE_CALLBACK /* Improve efficiency in __exc_systick */
+
+static volatile uint32 systick_uptime_millis;
+#ifdef SYSTICK_USE_CALLBACK
 static void (*systick_user_callback)(void);
+#endif /* SYSTICK_USE_CALLBACK */
 
 /**
  * @brief Initialize and enable SysTick.
@@ -50,7 +54,7 @@ void systick_init(uint32 reload_val) {
  * Clock the system timer with the core clock, but don't turn it
  * on or enable interrupt.
  */
-void systick_disable() {
+void systick_disable(void) {
     SYSTICK_BASE->CSR = SYSTICK_CSR_CLKSOURCE_CORE;
 }
 
@@ -58,11 +62,18 @@ void systick_disable() {
  * Clock the system timer with the core clock and turn it on;
  * interrupt every 1 ms, for systick_timer_millis.
  */
-void systick_enable() {
+void systick_enable(void) {
     /* re-enables init registers without changing reload val */
     SYSTICK_BASE->CSR = (SYSTICK_CSR_CLKSOURCE_CORE   |
                          SYSTICK_CSR_ENABLE           |
                          SYSTICK_CSR_TICKINT_PEND);
+}
+
+/**
+ * @brief Returns the system uptime, in milliseconds.
+ */
+uint32 systick_uptime(void) {
+    return systick_uptime_millis;
 }
 
 /**
@@ -71,7 +82,10 @@ void systick_enable() {
  * To detach a callback, call this function again with a null argument.
  */
 void systick_attach_callback(void (*callback)(void)) {
+#ifdef SYSTICK_USE_CALLBACK
     systick_user_callback = callback;
+#endif
+    return;
 }
 
 /*
@@ -80,7 +94,7 @@ void systick_attach_callback(void (*callback)(void)) {
 
 void __exc_systick(void) {
     systick_uptime_millis++;
-    if (systick_user_callback) {
-        systick_user_callback();
-    }
+#ifdef SYSTICK_USE_CALLBACK
+    systick_user_callback();
+#endif
 }

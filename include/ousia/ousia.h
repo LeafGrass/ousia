@@ -17,7 +17,12 @@
 
 #ifndef __OUSIA_H__
 
-#include <port/ousia_cfg.h>
 #include <port/ousia_port.h>
+
+typedef enum _os_status
+{
+    OS_ERR = -1,
+    OS_OK = 0
+} os_status;
 
 #endif /*__OUSIA_H__*/

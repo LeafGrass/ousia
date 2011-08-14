@@ -2,13 +2,13 @@
 sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
-BUILDDIRS       += $(BUILD_PATH)/$(d)/ss
+BUILDDIRS       += $(BUILD_PATH)/$(d)/vfs
 
 # Local flags
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
 # Local rules and targets
-cSRCS_$(d) := ss/serialshell.c
+cSRCS_$(d) := vfs/fileopt.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 

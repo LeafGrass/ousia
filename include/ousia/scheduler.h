@@ -1,7 +1,7 @@
 /* *****************************************************************************
  * @file    include/ousia/scheduler.h
  *
- * @brief   Header of ousia scheduler.
+ * @brief   header of ousia scheduler.
  *
  * @log     2011-07-28 Initial revision
  *
@@ -18,15 +18,7 @@
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
-/*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
- */
-int sample_function(int a, int b, int *pResult);
+void os_start(void);
 
 #endif /* __SCHEDULER_H__ */
 

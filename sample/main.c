@@ -15,7 +15,6 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <ousia/ousia.h>
 #include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
 
@@ -45,8 +44,6 @@ int main(void)
     int result = 0;
     int i = 0;
     char ch = 0;
-
-    sample_function(10, 20, &result);
 
     init_os_printf(NULL, stm32utils_io_putc);
     stm32utils_system_init(); 

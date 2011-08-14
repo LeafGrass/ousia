@@ -1,7 +1,7 @@
 /* *****************************************************************************
  * @file    core/scheduler.c
  *
- * @brief   Implementation of ousia scheduler
+ * @brief   implementation of ousia scheduler
  *
  * @log     2011-07-28 Initial revision
  *
@@ -15,19 +15,32 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <ousia/ousia.h>
 #include <ousia/scheduler.h>
 
+static os_status _scheduler_start(void);
+
 /*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
+ * @brief   start ousia scheduler to work
+ * @param   none
+ * @return  os_status
+ * @note    none
  */
-int sample_function(int a, int b, int *pResult)
+void os_start(void)
 {
-    *pResult = a + b;
-    return 0;
+    os_status stat = OS_ERR;
+    stat = _scheduler_start();
+}
+
+/*
+ * @brief   start ousia scheduler to work
+ * @param   none
+ * @return  os_status
+ * @note    none
+ */
+static os_status _scheduler_start(void)
+{
+    os_status stat = OS_OK;
+    return stat;
 }
 

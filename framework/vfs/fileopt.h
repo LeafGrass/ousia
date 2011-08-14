@@ -1,7 +1,7 @@
 /* *****************************************************************************
- * @file    include/ousia/interrupt.h
+ * @file    framework/vfs/fileopt.h
  *
- * @brief   header of ousia IRQ controller
+ * @brief   header of fileopt.c
  *
  * @log     2011-08-14 Initial revision
  *
@@ -15,8 +15,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __INTERRUPT_H__
-#define __INTERRUPT_H__
+#ifndef __FILEOPT_H__
+#define __FILEOPT_H__
 
 /*
  * @brief   sample function
@@ -27,5 +27,5 @@
  * @note    just use it and take it easy
  */
 
-#endif /* __INTERRUPT_H__ */
+#endif /* __FILEOPT_H__ */
 

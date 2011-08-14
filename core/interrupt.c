@@ -1,7 +1,7 @@
 /* *****************************************************************************
  * @file    core/interrupt.c
  *
- * @brief   Core IRQ controller
+ * @brief   core IRQ controller
  *
  * @log     2011-08-14 Initial revision
  *

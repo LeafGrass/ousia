@@ -139,8 +139,9 @@ help:
 	@echo "==========================================================="
 	@echo ""
 
+OPENOCD_WRAPPER := openocd -f ./support/openocd/stm32.cfg
 debug:
-	$(OPENOCD_WRAPPER) debug
+	$(OPENOCD_WRAPPER)
 
 ram:
 	@$(MAKE) MEMORY_TARGET=ram --no-print-directory sketch

@@ -1,7 +1,7 @@
 /* *****************************************************************************
  * @file    core/sysutils.h
  *
- * @brief   Header of sysutils.c
+ * @brief   header of sysutils.c
  *
  * @log     2011-08-12 Initial revision
  *
@@ -17,6 +17,8 @@
 
 #ifndef __SYSUTILS_H__
 #define __SYSUTILS_H__
+
+#include <port/ousia_cfg.h>
 
 #ifdef OUSIA_USE_TPRINTF
 #define init_os_printf  init_printf

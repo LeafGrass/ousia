@@ -101,7 +101,7 @@ void tfp_sprintf(char* s,char *fmt, ...);
 void tfp_format(void* putp,void (*putf) (void*,char),char *fmt, va_list va);
 
 
-#endif
+#endif /* __TFP_PRINTF__ */
 
 
 
