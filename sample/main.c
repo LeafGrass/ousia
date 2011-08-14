@@ -45,6 +45,8 @@ int main(void)
     int i = 0;
     char ch = 0;
 
+    os_init();
+
     init_os_printf(NULL, stm32utils_io_putc);
     stm32utils_system_init(); 
 
@@ -52,7 +54,7 @@ int main(void)
     for(i = 0; i < 6; i++) {
         gpio_toggle_bit(GPIOA, 0);
         delay(50);
-    }   
+    }
 
     /* Boot Animation */
     usart_putc(USART1, 0x0C);   /* clear screen */

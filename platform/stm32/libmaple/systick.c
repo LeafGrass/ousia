@@ -85,7 +85,6 @@ void systick_attach_callback(void (*callback)(void)) {
 #ifdef SYSTICK_USE_CALLBACK
     systick_user_callback = callback;
 #endif
-    return;
 }
 
 /*

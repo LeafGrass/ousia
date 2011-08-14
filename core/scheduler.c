@@ -18,18 +18,19 @@
 #include <ousia/ousia.h>
 #include <ousia/scheduler.h>
 
-static os_status _scheduler_start(void);
+static os_status _scheduler_init(void);
 
 /*
- * @brief   start ousia scheduler to work
+ * @brief   the very first init of ousia
  * @param   none
- * @return  os_status
- * @note    none
+ * @return  none
+ * @note    this function should be called before all other syscalls
  */
-void os_start(void)
+void os_init(void)
 {
     os_status stat = OS_ERR;
-    stat = _scheduler_start();
+    _os_port_init();
+    stat = _scheduler_init();
 }
 
 /*
@@ -38,7 +39,7 @@ void os_start(void)
  * @return  os_status
  * @note    none
  */
-static os_status _scheduler_start(void)
+static os_status _scheduler_init(void)
 {
     os_status stat = OS_OK;
     return stat;

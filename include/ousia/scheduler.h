@@ -18,7 +18,7 @@
 #ifndef __SCHEDULER_H__
 #define __SCHEDULER_H__
 
-void os_start(void);
+void os_init(void);
 
 #endif /* __SCHEDULER_H__ */
 

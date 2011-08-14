@@ -65,7 +65,7 @@ void _os_exit_critical(void)
  * @brief   register callback function of system tick handler
  * @param   pointer to callback function
  * @return  none
- * @note    none
+ * @note    WARNNIG if libmaple for stm32 is used, this function must be called
  */
 static void __systick_register_callback(void (*callback)(void))
 {
