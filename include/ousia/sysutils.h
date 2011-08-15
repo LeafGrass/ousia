@@ -18,9 +18,5 @@
 #ifndef __SYSUTILS_H__
 #define __SYSUTILS_H__
 
-void init_os_printf(void *putp, void (*putf)(void *, char));
-int os_printf(const char *p_fmt, ...);
-void os_sprintf(char *p_buf, const char *p_fmt, ...);
-
 #endif /* __SYSUTILS_H__ */
 

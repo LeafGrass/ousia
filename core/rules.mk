@@ -13,11 +13,11 @@ CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
 CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall -Werror
 
 # Local rules and targets (add source files here)
-cSRCS_$(d) := ulib/tprintf.c \
-              port/ousia_port.c \
+cSRCS_$(d) := port/ousia_port.c \
+              tprintf.c \
               scheduler.c \
               sysutils.c \
-			  interrupt.c
+              interrupt.c
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

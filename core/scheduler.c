@@ -16,6 +16,7 @@
  * ****************************************************************************/
 
 #include <ousia/ousia.h>
+#include <ousia/tprintf.h>
 #include <ousia/scheduler.h>
 
 static os_status _scheduler_init(void);

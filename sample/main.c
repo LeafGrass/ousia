@@ -17,6 +17,7 @@
 
 #include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
+#include <ousia/tprintf.h>
 
 #include <stm32/libmaple/libmaple.h>
 #include <stm32/libmaple/libmaple_types.h>
@@ -47,7 +48,7 @@ int main(void)
 
     os_init();
 
-    init_os_printf(NULL, stm32utils_io_putc);
+    os_init_printf(NULL, stm32utils_io_putc);
     stm32utils_system_init(); 
 
     /* led flashes -> sign of system reset ok */

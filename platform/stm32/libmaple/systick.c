@@ -49,7 +49,7 @@ void systick_init(uint32 reload_val) {
     SYSTICK_BASE->RVR = reload_val;
 #ifdef SYSTICK_USE_CALLBACK
     /* make sure the systick callback has been attached */
-    ASSERT(systick_user_callback);
+    ASSERT(systick_user_callback != NULL);
 #endif
     systick_enable();
 }

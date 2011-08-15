@@ -19,11 +19,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
-#include <ulib/tprintf.h>
+#include <ousia/tprintf.h>
 
 typedef void (*putcf) (void*,char);
 static putcf stdout_putf;
 static void* stdout_putp;
+
+static void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
 
 
 #ifdef PRINTF_LONG_SUPPORT
@@ -123,7 +125,7 @@ static void putchw(void* putp,putcf putf,int n, char z, char* bf)
         putf(putp,ch);
 }
 
-void tfp_format(void* putp,putcf putf,const char *fmt, va_list va)
+static void tfp_format(void* putp,putcf putf,const char *fmt, va_list va)
 {
     char bf[12];
 
