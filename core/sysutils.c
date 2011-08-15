@@ -6,7 +6,7 @@
  * @log     2011-08-12 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -15,15 +15,42 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <port/ousia_port.h>
 #include <ulib/stdarg.h>
 #include <ousia/sysutils.h>
 
 #ifdef OUSIA_USE_TPRINTF
-#else
+#include <ulib/tprintf.h>
+
+void init_os_printf(void *putp, void (*putf)(void *, char))
+{
+    init_printf(putp, putf);
+}
+int os_printf(const char *p_fmt, ...)
+{
+    va_list args;
+    int r = 0;
+
+    va_start(args, p_fmt);
+    tfp_printf(p_fmt, args);
+    va_end(args);
+
+    return r;
+}
+void os_sprintf(char *p_buf, const char *p_fmt, ...)
+{
+    va_list args;
+
+    va_start(args, p_fmt);
+    tfp_sprintf(p_buf, p_fmt, args);
+    va_end(args);
+}
+
+#else  /* OUSIA_USE_TPRINTF */
 /*
  * @brief   init ousia print mechanism
  * @param   putp -i- NULL
- *          putf -i- callback function of hardware putchar driver
+ *          putf -i- callback function of hardware ioputc driver
  * @return  an integer
  * @note    none
  */

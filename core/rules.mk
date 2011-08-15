@@ -6,7 +6,6 @@ BUILDDIRS += $(BUILD_PATH)/$(d)
 BUILDDIRS += $(BUILD_PATH)/$(d)/cds
 BUILDDIRS += $(BUILD_PATH)/$(d)/port
 BUILDDIRS += $(BUILD_PATH)/$(d)/ulib
-BUILDDIRS += $(BUILD_PATH)/$(d)/ulib/tprintf
 
 CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
 
@@ -14,7 +13,7 @@ CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
 CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall -Werror
 
 # Local rules and targets (add source files here)
-cSRCS_$(d) := ulib/tprintf/tprintf.c \
+cSRCS_$(d) := ulib/tprintf.c \
               port/ousia_port.c \
               scheduler.c \
               sysutils.c \

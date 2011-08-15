@@ -4,11 +4,11 @@
  * @brief   File template.
  * @date    2011-07-28
  *
- * @history 2011-07-28 Initial revision
+ * @log     2011-07-28 Initial revision
  *          2011-07-28 Second revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF

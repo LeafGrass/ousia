@@ -6,7 +6,7 @@
  * @log     2011-07-28 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF

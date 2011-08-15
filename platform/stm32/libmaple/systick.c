@@ -35,7 +35,7 @@
 static volatile uint32 systick_uptime_millis;
 #ifdef SYSTICK_USE_CALLBACK
 static void (*systick_user_callback)(void);
-#endif /* SYSTICK_USE_CALLBACK */
+#endif
 
 /**
  * @brief Initialize and enable SysTick.
@@ -47,6 +47,10 @@ static void (*systick_user_callback)(void);
  */
 void systick_init(uint32 reload_val) {
     SYSTICK_BASE->RVR = reload_val;
+#ifdef SYSTICK_USE_CALLBACK
+    /* make sure the systick callback has been attached */
+    ASSERT(systick_user_callback);
+#endif
     systick_enable();
 }
 

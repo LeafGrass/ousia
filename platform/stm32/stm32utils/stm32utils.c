@@ -6,7 +6,7 @@
  * @log     2011-08-03 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -42,10 +42,10 @@ static void setupUSART(usart_dev *dev, uint32 baud);
 
 
 /*
- * @brief   stm32 chip intialize
+ * @brief   stm32 board specific init
  * @param   none
  * @return  none
- * @note    FIXME should not be called this directly
+ * @note    none
  */
 void stm32utils_system_init(void)
 {
@@ -68,15 +68,15 @@ void stm32utils_system_init(void)
 }
 
 /**
- * @brief   stm32 chip intialize
- * @param   none
+ * @brief   stm32 io putchar routine
+ * @param   p -i- device pointer
+ *          ch -i- data to transmit
  * @return  none
- * @note    FIXME should not be called this directly
+ * @note    none
  */
 void stm32utils_io_putc(void *p, char ch)
 {
     usart_putc(USARTx, ch);
-    return;
 }
 
 static void setupFlash(void)

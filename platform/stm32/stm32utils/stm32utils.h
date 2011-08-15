@@ -6,7 +6,7 @@
  * @log     2011-08-03 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (librae8226@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -18,17 +18,7 @@
 #ifndef __STM32UTILS_H__
 #define __STM32UTILS_H__
 
-/*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
- */
 void stm32utils_system_init(void);
-
-/* for printf */
 void stm32utils_io_putc(void *p, char ch);
 
 

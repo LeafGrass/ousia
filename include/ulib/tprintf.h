@@ -93,12 +93,12 @@ regs Kusti, 23.10.2004
 
 #include <ulib/stdarg.h>
 
-void init_printf(void* putp,void (*putf) (void*,char));
+void init_printf(void *putp,void (*putf) (void*, char));
 
-void tfp_printf(char *fmt, ...);
-void tfp_sprintf(char* s,char *fmt, ...);
+void tfp_printf(const char *fmt, ...);
+void tfp_sprintf(char *s, const char *fmt, ...);
 
-void tfp_format(void* putp,void (*putf) (void*,char),char *fmt, va_list va);
+void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
 
 
 #endif /* __TFP_PRINTF__ */
