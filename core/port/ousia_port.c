@@ -16,12 +16,15 @@
  * ****************************************************************************/
 
 #include <stm32/libmaple/systick.h>
+#include <stm32/stm32utils/stm32utils.h>
+#include <ousia/tprintf.h>
 #include <port/ousia_port.h>
 
 static uint32 critical_nest;
 
 static void __systick_register_callback(void (*callback)(void));
 static void __os_port_systick_handler(void);
+static void __os_port_init_printf(void *putp,void (*putf) (void*, char));
 
 /*
  * @brief   porting related init
@@ -32,6 +35,7 @@ static void __os_port_systick_handler(void);
 void _os_port_init(void)
 {
     __systick_register_callback(&__os_port_systick_handler);
+    __os_port_init_printf(NULL, stm32utils_io_putc);
 }
 
 /*
@@ -89,7 +93,7 @@ static void __os_port_systick_handler(void)
  * @return  none
  * @note    none
  */
-void __os_port_printf(void *putp,void (*putf) (void*, char));
+static void __os_port_init_printf(void *putp,void (*putf) (void*, char))
 {
     init_printf(putp, putf);
 }
