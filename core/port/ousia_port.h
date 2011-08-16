@@ -59,6 +59,7 @@ void _os_exit_critical(void);
 #define os_exit_critical()  _os_exit_critical()
 
 void _os_port_init(void);
+void __os_port_printf(void);
 
 #endif /* OUSIA_PORT_H */
 

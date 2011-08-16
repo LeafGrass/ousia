@@ -18,5 +18,7 @@
 #ifndef __SYSUTILS_H__
 #define __SYSUTILS_H__
 
+void os_init(void);
+
 #endif /* __SYSUTILS_H__ */
 

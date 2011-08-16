@@ -15,24 +15,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <ousia/ousia.h>
 #include <ousia/tprintf.h>
 #include <ousia/scheduler.h>
-
-static os_status _scheduler_init(void);
-
-/*
- * @brief   the very first init of ousia
- * @param   none
- * @return  none
- * @note    this function should be called before all other syscalls
- */
-void os_init(void)
-{
-    os_status stat = OS_ERR;
-    _os_port_init();
-    stat = _scheduler_init();
-}
 
 /*
  * @brief   start ousia scheduler to work
@@ -40,7 +24,7 @@ void os_init(void)
  * @return  os_status
  * @note    none
  */
-static os_status _scheduler_init(void)
+os_status _scheduler_init(void)
 {
     os_status stat = OS_OK;
     return stat;

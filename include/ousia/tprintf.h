@@ -91,13 +91,9 @@ regs Kusti, 23.10.2004
 #ifndef __TFP_PRINTF__
 #define __TFP_PRINTF__
 
-#include <ulib/stdarg.h>
-
 void init_printf(void *putp,void (*putf) (void*, char));
 void tfp_printf(const char *fmt, ...);
 void tfp_sprintf(char *s, const char *fmt, ...);
-
-//void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
 
 #define os_init_printf  init_printf
 #define os_printf   tfp_printf

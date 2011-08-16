@@ -16,8 +16,7 @@
  * ****************************************************************************/
 
 #ifndef __OUSIA_H__
-
-#include <port/ousia_port.h>
+#define __OUSIA_H__
 
 typedef enum _os_status
 {

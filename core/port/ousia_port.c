@@ -82,3 +82,15 @@ static void __os_port_systick_handler(void)
 {
     return;
 }
+
+/*
+ * @brief   system tick timer interrupt handler
+ * @param   pointer to callback function
+ * @return  none
+ * @note    none
+ */
+void __os_port_printf(void *putp,void (*putf) (void*, char));
+{
+    init_printf(putp, putf);
+}
+

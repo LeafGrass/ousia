@@ -16,13 +16,21 @@
  * ****************************************************************************/
 
 #include <port/ousia_port.h>
+#include <ousia/ousia.h>
+#include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
 
 /*
- * @brief   init ousia print mechanism
- * @param   putp -i- NULL
- *          putf -i- callback function of hardware ioputc driver
- * @return  an integer
- * @note    none
+ * @brief   the very first init of ousia
+ * @param   none
+ * @return  none
+ * @note    this function should be called before all other syscalls
  */
+void os_init(void)
+{
+    os_status stat = OS_ERR;
+    _os_port_init();
+    stat = _scheduler_init();
+}
+
 
