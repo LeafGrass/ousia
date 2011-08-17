@@ -47,8 +47,6 @@ int main(void)
     char ch = 0;
 
     os_init();
-
-    os_init_printf(NULL, stm32utils_io_putc);
     stm32utils_system_init(); 
 
     /* led flashes -> sign of system reset ok */

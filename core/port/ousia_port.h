@@ -52,12 +52,11 @@ typedef unsigned long long uint64;
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
 
-void _os_enter_critical(void);
-void _os_exit_critical(void);
-
 #define os_enter_critical() _os_enter_critical()
 #define os_exit_critical()  _os_exit_critical()
 
+void _os_enter_critical(void);
+void _os_exit_critical(void);
 void _os_port_init(void);
 
 #endif /* OUSIA_PORT_H */

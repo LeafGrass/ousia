@@ -23,8 +23,8 @@
 static uint32 critical_nest;
 
 static void __systick_register_callback(void (*callback)(void));
-static void __os_port_systick_handler(void);
-static void __os_port_init_printf(void *putp,void (*putf) (void*, char));
+static void __port_systick_handler(void);
+static void __port_init_printf(void *putp,void (*putf) (void*, char));
 
 /*
  * @brief   porting related init
@@ -34,8 +34,8 @@ static void __os_port_init_printf(void *putp,void (*putf) (void*, char));
  */
 void _os_port_init(void)
 {
-    __systick_register_callback(&__os_port_systick_handler);
-    __os_port_init_printf(NULL, stm32utils_io_putc);
+    __systick_register_callback(&__port_systick_handler);
+    __port_init_printf(NULL, stm32utils_io_putc);
 }
 
 /*
@@ -77,23 +77,24 @@ static void __systick_register_callback(void (*callback)(void))
 }
 
 /*
- * @brief   system tick timer interrupt handler
- * @param   pointer to callback function
+ * @brief   systick timer interrupt user handler
+ * @param   none
  * @return  none
  * @note    none
  */
-static void __os_port_systick_handler(void)
+static void __port_systick_handler(void)
 {
     return;
 }
 
 /*
- * @brief   system tick timer interrupt handler
- * @param   pointer to callback function
+ * @brief   band printf callback to low-level io control
+ * @param   putp -i- generally none
+ *          putf -i- low-level printf specific io implementation
  * @return  none
  * @note    none
  */
-static void __os_port_init_printf(void *putp,void (*putf) (void*, char))
+static void __port_init_printf(void *putp,void (*putf)(void *, char))
 {
     init_printf(putp, putf);
 }
