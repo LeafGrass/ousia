@@ -16,6 +16,7 @@ Real-Time Ousia contains these components:
     (-)Communication                    
         (-)Ethernet
     (-)Security                         
+	(-)Automation Test Suite
                                           
     (*)Makefile                         
                                           

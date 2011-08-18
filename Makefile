@@ -5,7 +5,7 @@ NAME = Glossy Abelia
 
 .DEFAULT_GOAL := sketch
 OUSIA_TARGET :=	ousia
-OUSIA_PLATFORM := arm-v7m
+TARGET_PLATFORM := stm32
 MEMORY_TARGET := jtag
 BOARD := leach
 
@@ -67,7 +67,7 @@ GLOBAL_CFLAGS := -O2 -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
 GLOBAL_ASFLAGS := -mcpu=cortex-m3 -march=armv7-m -mthumb \
                   -x assembler-with-cpp $(GLOBAL_FLAGS)
 
-LDDIR := $(PLATFORM_PATH)/ld
+LDDIR := $(PLATFORM_PATH)/$(TARGET_PLATFORM)/ld
 LDFLAGS = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
           -mcpu=cortex-m3 -mthumb -Xlinker \
           --gc-sections --print-gc-sections --march=armv7-m -Wall

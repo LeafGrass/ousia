@@ -48,7 +48,7 @@ MSG_INFO:
 	@echo "TARGET: "$(OUSIA_TARGET)
 	@echo "VERSION: "$(VERSION)"."$(SUBLEVEL)"."$(DEVNUM)
 	@echo "NAME: "$(NAME)
-	@echo "PLATFORM: "$(OUSIA_PLATFORM)
+	@echo "PLATFORM: "$(TARGET_PLATFORM)
 	@echo "MEMORY_TARGET: "$(MEMORY_TARGET)
 	@echo ""
 	@echo "  See 'make help' for more information"
