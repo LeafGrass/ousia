@@ -1,4 +1,4 @@
-Real-Time Ousia [TM]
+Real-Time Ousia
 COPYRIGHT (C) LEAFGRASS
 
 Introduction
@@ -35,7 +35,7 @@ support:
 
 acknowledgments
 ---------------
-Parts of make system and libmaple stm32 low-level driver are borrowed from libmaple.
+Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
 Thanks to their excellent works!
 - http://leaflabs.com
 
