@@ -2,10 +2,9 @@
  * @file    support/template/template.c
  *
  * @brief   File template.
- * @date    2011-07-28
  *
  * @log     2011-07-28 Initial revision
- *          2011-07-28 Second revision
+ *          2011-07-29 Second revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)

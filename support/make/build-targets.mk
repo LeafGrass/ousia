@@ -5,8 +5,8 @@ INCLUDES := $(CORE_INCLUDES) \
             $(PLATFORM_INCLUDES) \
 			$(FRAMEWORK_INCLUDES)
 
-$(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
-	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+#$(BUILD_PATH)/main.o: $(SAMPLE_PATH)/main.c
+#	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
 #	$(SILENT_CC) $(CC) $(CFLAGS) $(INCLUDES) -l$(BUILD_PATH)/ousia -o $@ -c $<
 
 $(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO $(BUILDDIRS) $(TGT_BIN)
@@ -19,8 +19,9 @@ library: $(BUILD_PATH)/lib$(OUSIA_TARGET).a
 
 .PHONY: library
 
-$(BUILD_PATH)/$(OUSIA_TARGET).elf: $(BUILDDIRS) $(TGT_BIN) $(BUILD_PATH)/main.o
-	$(SILENT_LD) $(CC) $(LDFLAGS) -o $@ $(TGT_BIN) $(BUILD_PATH)/main.o -Wl,-Map,$(BUILD_PATH)/$(OUSIA_TARGET).map
+#$(BUILD_PATH)/$(OUSIA_TARGET).elf: $(BUILDDIRS) $(TGT_BIN) $(BUILD_PATH)/main.o
+$(BUILD_PATH)/$(OUSIA_TARGET).elf: $(BUILDDIRS) $(TGT_BIN)
+	$(SILENT_LD) $(CC) $(LDFLAGS) -o $@ $(TGT_BIN) -Wl,-Map,$(BUILD_PATH)/$(OUSIA_TARGET).map
 
 $(BUILD_PATH)/$(OUSIA_TARGET): $(BUILD_PATH)/$(OUSIA_TARGET).bin
 
@@ -50,6 +51,7 @@ MSG_INFO:
 	@echo "NAME: "$(NAME)
 	@echo "PLATFORM: "$(TARGET_PLATFORM)
 	@echo "MEMORY_TARGET: "$(MEMORY_TARGET)
+	@echo "PROJECT: "$(PROJECT_NAME)
 	@echo ""
 	@echo "  See 'make help' for more information"
 	@echo "========================================"

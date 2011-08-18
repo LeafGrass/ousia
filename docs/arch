@@ -1,28 +1,27 @@
 ==================================================
-Real-Time Ousia contains these components:
+Real-Time Ousia (would) contain these components:
 
-    (-)User interface
-        (-)Shell
-    (-)Kernel                           
-        (+)Scheduler                    
-        (+)Interrupts                   
-        (-)Modes                        
-        (-)Memory Management            
-        (-)Virtual Memory               
-        (+)Multitasking                 
-        (-)Disk access and file systems 
-        (+)Device drivers               
-        (-)Multi platforms porting      
-    (-)Communication                    
-        (-)Ethernet
-    (-)Security                         
-	(-)Automation Test Suite
-                                          
-    (*)Makefile                         
-                                          
-Ps: (*) represents that the component has been implemented.
-    (-) represents that the component hasn't been implemented.
-    (+) represents that the component is under developing.
+    (-) User interface
+        (-) Shell
+    (-) Kernel
+        (+) Scheduler
+        (+) Interrupt Handler
+        (-) Memory Management/Protection
+        (+) Multitasking
+        (-) File System
+		(-) Virtual File System
+        (+) Device Driver
+        (-) Multi Platform Porting
+    (-) Communication
+	    (-) IP Stack
+    (-) Security
+	(-) Automation Test Suite
+
+    (*) Build System
+
+Ps: (*) Has been implemented.
+    (-) Hasn't been implemented yet.
+    (+) Under developing.
 
 ==================================================
 

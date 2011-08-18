@@ -42,7 +42,6 @@ void delay(uint32 ms)
 
 int main(void)
 {
-    int result = 0;
     int i = 0;
     char ch = 0;
 

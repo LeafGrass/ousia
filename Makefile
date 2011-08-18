@@ -8,6 +8,7 @@ OUSIA_TARGET :=	ousia
 TARGET_PLATFORM := stm32
 MEMORY_TARGET := jtag
 BOARD := leach
+PROJECT_NAME := sample
 
 # TODO Here needs improve, for not only depend on this specific hardware
 ifeq ($(BOARD), leach)
@@ -48,7 +49,7 @@ DRIVER_PATH := $(SRCROOT)/driver
 FRAMEWORK_PATH := $(SRCROOT)/framework
 SUPPORT_PATH := $(SRCROOT)/support
 SCRIPT_PATH := $(SRCROOT)/script
-SAMPLE_PATH := $(SRCROOT)/sample
+PROJECT_PATH := $(SRCROOT)/project
 
 # TODO Here needs improve, for not only depend on this specific hardware
 GLOBAL_FLAGS :=	-DOUSIA \
@@ -77,9 +78,12 @@ include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
 # TODO Set all modules here
+# Ousia source code
 MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
 MODULES += $(FRAMEWORK_PATH)
+# User application code
+MODULES += $(PROJECT_PATH)/$(PROJECT_NAME)
 
 # call each module rules.mk
 $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
