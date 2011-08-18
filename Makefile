@@ -83,6 +83,7 @@ MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
 MODULES += $(FRAMEWORK_PATH)
 # User application code
+# FIXME If 'make library' MODULES below should be commented out
 MODULES += $(PROJECT_PATH)/$(PROJECT_NAME)
 
 # call each module rules.mk
