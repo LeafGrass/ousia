@@ -4,10 +4,10 @@ DEVNUM = 2
 NAME = Glossy Abelia
 
 OUSIA_TARGET = ousia
-TARGET_PLATFORM = x86
-PROJECT_NAME = sample_x86
-#TARGET_PLATFORM = stm32
-#PROJECT_NAME = sample_stm32
+#TARGET_PLATFORM = x86
+#PROJECT_NAME = sample_x86
+TARGET_PLATFORM = stm32
+PROJECT_NAME = sample_stm32
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)

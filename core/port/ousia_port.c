@@ -15,9 +15,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <stdlib.h>
-
-#include <x86/x86utils/x86utils.h>
+#include <stm32/libmaple/systick.h>
+#include <stm32/stm32utils/stm32utils.h>
 #include <ousia/tprintf.h>
 #include <port/ousia_port.h>
 
@@ -36,7 +35,7 @@ static void __port_init_printf(void *putp,void (*putf) (void*, char));
 void _os_port_init(void)
 {
     __systick_register_callback(&__port_systick_handler);
-    __port_init_printf(NULL, x86utils_io_putc);
+    __port_init_printf(NULL, stm32utils_io_putc);
 }
 
 /*
@@ -74,7 +73,7 @@ void _os_exit_critical(void)
  */
 static void __systick_register_callback(void (*callback)(void))
 {
-    return;
+    systick_attach_callback(callback);
 }
 
 /*
