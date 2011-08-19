@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    sample/main.c
+ * @file    sample_stm32/main.c
  *
  * @brief   sample code
  *

@@ -3,36 +3,11 @@ SUBLEVEL = 0
 DEVNUM = 2
 NAME = Glossy Abelia
 
-.DEFAULT_GOAL := sketch
-OUSIA_TARGET :=	ousia
-TARGET_PLATFORM := stm32
-MEMORY_TARGET := jtag
-BOARD := leach
-PROJECT_NAME := sample
-
-# TODO Here needs improve, for not only depend on this specific hardware
-ifeq ($(BOARD), leach)
-	MCU := STM32F103RB
-	PRODUCT_ID := LEACH001
-	ERROR_LED_PORT := GPIOA
-	ERROR_LED_PIN  := 0
-	DENSITY := STM32_MEDIUM_DENSITY
-endif
-
-# TODO Here needs improve, for not only depend on this specific hardware
-# Some target specific things
-ifeq ($(MEMORY_TARGET), ram)
-	LDSCRIPT := $(BOARD)/ram.ld
-	VECT_BASE_ADDR := VECT_TAB_RAM
-endif
-ifeq ($(MEMORY_TARGET), flash)
-	LDSCRIPT := $(BOARD)/flash.ld
-	VECT_BASE_ADDR := VECT_TAB_FLASH
-endif
-ifeq ($(MEMORY_TARGET), jtag)
-	LDSCRIPT := $(BOARD)/jtag.ld
-	VECT_BASE_ADDR := VECT_TAB_BASE
-endif
+OUSIA_TARGET = ousia
+TARGET_PLATFORM = x86
+PROJECT_NAME = sample_x86
+#TARGET_PLATFORM = stm32
+#PROJECT_NAME = sample_stm32
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)
@@ -40,7 +15,6 @@ ifeq ($(OUSIA_HOME),)
 else
 	SRCROOT := $(OUSIA_HOME)
 endif
-
 BUILD_PATH = build
 INCLUDE_PATH := $(SRCROOT)/include
 PLATFORM_PATH := $(SRCROOT)/platform
@@ -51,39 +25,22 @@ SUPPORT_PATH := $(SRCROOT)/support
 SCRIPT_PATH := $(SRCROOT)/script
 PROJECT_PATH := $(SRCROOT)/project
 
-# TODO Here needs improve, for not only depend on this specific hardware
-GLOBAL_FLAGS :=	-DOUSIA \
-                -D$(DENSITY) \
-                -D$(VECT_BASE_ADDR) \
-                -DBOARD_$(BOARD) \
-                -DMCU_$(MCU) \
-                -DERROR_LED_PORT=$(ERROR_LED_PORT) \
-                -DERROR_LED_PIN=$(ERROR_LED_PIN)
+# FIXME This solution results to a problem.
+#       In target platform directory, we must use too many .mk files.
+#       i.e. Three files for now: rules.mk, config.mk and target.mk.
+include $(PLATFORM_PATH)/$(TARGET_PLATFORM)/config.mk
 
-GLOBAL_CFLAGS := -O2 -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
-                 -nostdlib -ffunction-sections -fdata-sections \
-                 -Wl,--gc-sections $(GLOBAL_FLAGS) \
-                 #-I$(SRCROOT)/include
-
-GLOBAL_ASFLAGS := -mcpu=cortex-m3 -march=armv7-m -mthumb \
-                  -x assembler-with-cpp $(GLOBAL_FLAGS)
-
-LDDIR := $(PLATFORM_PATH)/$(TARGET_PLATFORM)/ld
-LDFLAGS = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
-          -mcpu=cortex-m3 -mthumb -Xlinker \
-          --gc-sections --print-gc-sections --march=armv7-m -Wall
+.DEFAULT_GOAL := sketch
 
 # Set up build rules and some useful templates
 include $(SUPPORT_PATH)/make/build-rules.mk
 include $(SUPPORT_PATH)/make/build-templates.mk
 
-# TODO Set all modules here
-# Ousia source code
+# Ousia source modules
 MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
 MODULES += $(FRAMEWORK_PATH)
 # User application code
-# FIXME If 'make library' MODULES below should be commented out
 MODULES += $(PROJECT_PATH)/$(PROJECT_NAME)
 
 # call each module rules.mk
@@ -142,6 +99,21 @@ help:
 	@echo "  help:      Show this message"
 	@echo "  package:   Package current revision"
 	@echo "==========================================================="
+	@echo ""
+
+MSG_INFO:
+	@echo ""
+	@echo "========================================"
+	@echo "[Build Information]"
+	@echo ""
+	@echo "TARGET: "$(OUSIA_TARGET)
+	@echo "VERSION: "$(VERSION)"."$(SUBLEVEL)"."$(DEVNUM)
+	@echo "NAME: "$(NAME)
+	@echo "PLATFORM: "$(TARGET_PLATFORM)
+	@echo "PROJECT: "$(PROJECT_NAME)
+	@echo ""
+	@echo "  See 'make help' for more information"
+	@echo "========================================"
 	@echo ""
 
 OPENOCD_WRAPPER := openocd -f ./support/openocd/stm32.cfg

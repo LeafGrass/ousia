@@ -1,9 +1,3 @@
-PLATFORM_INCLUDES := -I$(PLATFORM_PATH)
-
-# TODO Add specific platform related module.
-#      Should only include one platform module each time.
-
-ifeq ($(MCU), STM32F103RB)
-include $(PLATFORM_PATH)/stm32/rules.mk
-endif
+# Add specific platform related module.
+include $(PLATFORM_PATH)/$(TARGET_PLATFORM)/rules.mk
 

@@ -1,6 +1,4 @@
 # Useful tools
-SHELL	:= /bin/bash
-CROSS   := arm-none-eabi-
 CC      := $(CROSS)gcc
 CXX     := $(CROSS)g++
 LD      := $(CROSS)ld -v
@@ -23,8 +21,10 @@ ifndef V
     SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
 endif
 
-BUILDDIRS :=
-TGT_BIN   :=
+BUILDDIRS     :=
+TGT_BIN       :=
+USR_BUILDDIRS :=
+USR_TGT_BIN   :=
 
 CFLAGS   = $(GLOBAL_CFLAGS) $(TGT_CFLAGS)
 CXXFLAGS = $(GLOBAL_CXXFLAGS) $(TGT_CXXFLAGS)
@@ -39,3 +39,4 @@ $(BUILD_PATH)/%.o: %.cpp
 
 $(BUILD_PATH)/%.o: %.S
 	$(SILENT_AS) $(AS) $(ASFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
+

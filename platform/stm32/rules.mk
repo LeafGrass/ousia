@@ -13,7 +13,7 @@ LIBMAPLE_INCLUDES := -I$(PLATFORM_PATH)/stm32/libmaple \
 					 -I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
 
 # Local flags
-CFLAGS_$(d) = -I$(d) $(PLATFORM_INCLUDES) $(LIBMAPLE_INCLUDES) -Wall -Werror
+CFLAGS_$(d) = -I$(d) $(LIBMAPLE_INCLUDES) -Wall -Werror
 
 # Local rules and targets
 # libmaple

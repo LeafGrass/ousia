@@ -20,6 +20,9 @@
 
 #include <port/ousia_cfg.h>
 
+#ifdef OUSIA_USE_LIBMAPLE
+#include <stm32/libmaple/libmaple_types.h>
+#else
 typedef signed char int8;
 typedef unsigned char uint8;
 typedef signed short int16;
@@ -28,9 +31,23 @@ typedef signed int int32;
 typedef unsigned int uint32;
 typedef signed long long int64;
 typedef unsigned long long uint64;
+#endif /* OUSIA_USE_LIBMAPLE */
 
-#define OS_SET_INTERRUPT_MASK()
-#define OS_CLEAR_INTERRUPT_MASK()
+#define OS_SET_INTERRUPT_MASK() \
+    __asm volatile \
+    ( \
+        "   mov r0, %0         \n" \
+        "   msr basepri, r0    \n" \
+        ::"i"(191):"r0" \
+    )
+
+#define OS_CLEAR_INTERRUPT_MASK() \
+    __asm volatile \
+    ( \
+        "   mov r0, #0         \n" \
+        "   msr basepri, r0    \n" \
+        :::"r0" \
+    )
 
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
