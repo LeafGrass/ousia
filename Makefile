@@ -1,13 +1,17 @@
+# Ousia Makefile
+# Contact - g.leafgrass@gmail.com
+
 VERSION = 0
 SUBLEVEL = 0
 DEVNUM = 2
 NAME = Glossy Abelia
 
+# TODO @OUSIA_TARGET the name of target binary file
+#      @TARGET_PLATFORM specific directory name in folder $(PLATFORM_PATH)
+#      @PROJECT_NAME specific directory name in folder $(PROJECT_PATH)
 OUSIA_TARGET = ousia
-#TARGET_PLATFORM = x86
-#PROJECT_NAME = sample_x86
 TARGET_PLATFORM = stm32
-PROJECT_NAME = sample_stm32
+PROJECT_NAME = sample_$(TARGET_PLATFORM)
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)
@@ -49,7 +53,7 @@ $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
 # Main target
 include $(SUPPORT_PATH)/make/build-targets.mk
 
-.PHONY: install sketch clean help debug cscope tags ctags ram flash jtag
+.PHONY: install sketch lib clean help debug cscope tags ctags ram flash jtag update_port
 
 # Download code to target device
 install: sketch
@@ -62,7 +66,20 @@ ifneq ($(PREV_BUILD_TYPE), $(MEMORY_TARGET))
 	$(shell rm -rf $(BUILD_PATH))
 endif
 
-sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
+sketch: MSG_INFO build-check update $(BUILD_PATH)/$(OUSIA_TARGET)
+
+lib: $(BUILD_PATH)/lib$(OUSIA_TARGET).a
+	@find $(BUILD_PATH) -iname *.o | xargs $(SIZE) -t > $(BUILD_PATH)/$(OUSIA_TARGET).sizes
+#	@cat $(BUILD_PATH)/$(OUSIA_TARGET).sizes
+
+$(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO update $(BUILDDIRS) $(TGT_BIN)
+	$(shell rm -f $@)
+	$(SILENT_AR) $(AR) cr $(BUILD_PATH)/lib$(OUSIA_TARGET).a $(TGT_BIN)
+
+# FIXME Better not run these line each time
+update:
+	$(shell rm -rf $(CORE_PATH)/port)
+	$(shell cp -rf $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port $(CORE_PATH)/port)
 
 clean:
 	rm -rf build
