@@ -9,3 +9,6 @@ Developing steps:
 6.	Commit it.
 7.	Tag a new one if a new version commited.
 
+Change platform:
+	Only modify the header TODO in root Makefile
+	- Assign specific TARGET_PLATFORM and PROJECT_NAME
