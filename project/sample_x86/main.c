@@ -20,8 +20,8 @@
 #include <ousia/tprintf.h>
 #include <ousia/sysutils.h>
 
-#define VERSION     "v0.0.2"
-#define VER_NAME    "Glossy Abelia"
+#define VERSION     "v0.0.3"
+#define VER_NAME    "Sweet Hibiscus"
 
 int main(void)
 {

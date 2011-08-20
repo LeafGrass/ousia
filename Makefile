@@ -3,8 +3,8 @@
 
 VERSION = 0
 SUBLEVEL = 0
-DEVNUM = 2
-NAME = Glossy Abelia
+DEVNUM = 3
+NAME = Sweet Hibiscus
 
 # TODO @OUSIA_TARGET the name of target binary file
 #      @TARGET_PLATFORM specific directory name in folder $(PLATFORM_PATH)

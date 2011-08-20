@@ -26,8 +26,8 @@
 #include <stm32/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#define VERSION     "v0.0.2"
-#define VER_NAME    "Glossy Abelia"
+#define VERSION     "v0.0.3"
+#define VER_NAME    "Sweet Hibiscus"
 
 void delayMicroseconds(uint32 us)
 {
