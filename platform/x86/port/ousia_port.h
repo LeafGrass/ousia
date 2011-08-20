@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    core/port/ousia_port.c
+ * @file    platform/x86/port/ousia_port.c
  *
  * @brief   porting code types and macros
  *

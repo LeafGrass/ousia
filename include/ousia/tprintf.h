@@ -92,10 +92,12 @@ regs Kusti, 23.10.2004
 #define __TFP_PRINTF__
 
 void _init_printf(void);
+void tfp_putchar(char ch);
 void tfp_printf(const char *fmt, ...);
 void tfp_sprintf(char *s, const char *fmt, ...);
 
 #define os_init_printf  init_printf
+#define os_putchar  tfp_putchar
 #define os_printf   tfp_printf
 #define os_sprintf  tfp_sprintf
 

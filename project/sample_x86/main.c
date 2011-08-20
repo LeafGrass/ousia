@@ -31,6 +31,8 @@ int main(void)
     stat = stat;
     x86utils_system_init(); 
 
+    os_putchar(0x0C);   /* clear screen */
+
     os_printf("\r\nBooting...\r\n\r\n");
     os_printf("                       _\r\n");
     os_printf("     _                / /\r\n");

@@ -22,8 +22,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <port/ousia_port.h>
 #ifdef OUSIA_USE_ULIB
 #include <ulib/stdarg.h>
+#include <ulib/stddef.h>
 #else
 #include <stdarg.h>
+#include <stddef.h>
 #endif
 #include <ousia/tprintf.h>
 
@@ -211,6 +213,11 @@ abort:;
 void _init_printf(void)
 {
     _port_init_printf(&stdout_putp, &stdout_putf);
+}
+
+void tfp_putchar(char ch)
+{
+    stdout_putf(NULL, ch);
 }
 
 void tfp_printf(const char *fmt, ...)

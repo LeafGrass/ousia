@@ -58,7 +58,7 @@ int main(void)
     }
 
     /* Boot Animation */
-    usart_putc(USART1, 0x0C);   /* clear screen */
+    os_putchar(0x0C);   /* clear screen */
 
     os_printf("Booting...\r\n\r\n");
     os_printf("                       _\r\n");

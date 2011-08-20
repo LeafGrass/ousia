@@ -1,14 +1,1 @@
-This project launched at July 28, 2011.
 
-Developing steps:
-1.	Choose a branch to work on.
-2.	Update source code, include those version related strings.
-3.	Modify related makefile and config file.
-4.	Update Ousia Syscall Reference Document if necessary.
-5.	Update Ousia Release Notes if necessary.
-6.	Commit it.
-7.	Tag a new one if a new version commited.
-
-Change platform:
-	Only modify the header TODO in root Makefile
-	- Assign specific TARGET_PLATFORM and PROJECT_NAME

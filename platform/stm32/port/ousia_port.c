@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    core/port/ousia_port.c
+ * @file    platform/stm32/port/ousia_port.c
  *
  * @brief   ousia system utilities
  *
