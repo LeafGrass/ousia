@@ -43,7 +43,7 @@ support:
 Core Developing Steps
 ---------------------
 -	Choose or create a branch to work on.
--   Update source code, include those version related strings.
+-	Update source code, include those version related strings.
 -	Modify related makefile and config file.
 -	Update Ousia Syscall Reference Document if necessary.
 -	Update Ousia Release Notes if necessary.
@@ -53,35 +53,35 @@ Core Developing Steps
 
 Porting Steps
 -------------
--   Create a directory named PLATFORM_NAME in folder "platform".
--   Create three files: rules.mk config.mk target.mk.
-    @rules.mk: makefile source code related rules
-    @config.mk: parameters or flags for toolchains and environment
-    @target.mk: rules for building target
--   Create a directory named "port" here then create three files in it.
-    @ousia_cfg.h: os scalability related configuration.
-    @ousia_port.h: header of porting code.
-    @ousia_port.c: implentation of porting.
--   Create other porting related stuffs, such as linker scripts, if necessary.
--   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
+-	Create a directory named PLATFORM_NAME in folder "platform".
+-	Create three files: rules.mk config.mk target.mk.
+	@rules.mk: makefile source code related rules
+	@config.mk: parameters or flags for toolchains and environment
+	@target.mk: rules for building target
+-	Create a directory named "port" here then create three files in it.
+	@ousia_cfg.h: os scalability related configuration.
+	@ousia_port.h: header of porting code.
+	@ousia_port.c: implentation of porting.
+-	Create other porting related stuffs, such as linker scripts, if necessary.
+-	Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
 
--   Ps: If modify porting related code, should not edit directly in "core/port",
+-	Ps: If modify porting related code, should not edit directly in "core/port",
 do that in specific platform directory instead, e.g. "platform/stm32/port".
 Because makefile will copy them into "core/port" automatically.
 
 
 Create User Project Steps
 -------------------------
--   Create a directory named PROJECT_NAME in folder "project".
--   Add user source code.
--   Create a file rules.mk to specify source code related rules for makefile.
--   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
--   Ps: Refer to existing projects for further detailed information.
+-	Create a directory named PROJECT_NAME in folder "project".
+-	Add user source code.
+-	Create a file rules.mk to specify source code related rules for makefile.
+-	Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
+-	Ps: Refer to existing projects for further detailed information.
 
 
 Build A Different Platform
 --------------------------
 Only modify the header TODO in root Makefile
--   Assign specific TARGET_PLATFORM and PROJECT_NAME
+-	Assign specific TARGET_PLATFORM and PROJECT_NAME
 
 
