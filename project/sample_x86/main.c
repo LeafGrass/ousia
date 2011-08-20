@@ -16,6 +16,7 @@
  * ****************************************************************************/
 
 #include <x86/x86utils/x86utils.h>
+#include <ousia/ousia.h>
 #include <ousia/tprintf.h>
 #include <ousia/sysutils.h>
 
@@ -24,7 +25,10 @@
 
 int main(void)
 {
-    os_init();
+    os_status stat = OS_OK;
+
+    stat = os_init();
+    stat = stat;
     x86utils_system_init(); 
 
     os_printf("\r\nBooting...\r\n\r\n");

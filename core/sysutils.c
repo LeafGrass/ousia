@@ -18,6 +18,7 @@
 #include <port/ousia_port.h>
 #include <ousia/ousia.h>
 #include <ousia/scheduler.h>
+#include <ousia/tprintf.h>
 #include <ousia/sysutils.h>
 
 /*
@@ -26,11 +27,14 @@
  * @return  none
  * @note    this function should be called before all other syscalls
  */
-void os_init(void)
+os_status os_init(void)
 {
     os_status stat = OS_ERR;
+    _init_printf();
     _os_port_init();
     stat = _scheduler_init();
+
+    return stat;
 }
 
 

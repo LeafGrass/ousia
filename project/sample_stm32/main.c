@@ -15,6 +15,7 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <ousia/ousia.h>
 #include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
 #include <ousia/tprintf.h>
@@ -44,8 +45,10 @@ int main(void)
 {
     int i = 0;
     char ch = 0;
+    os_status stat = OS_OK;
 
-    os_init();
+    stat = os_init();
+    stat = stat;
     stm32utils_system_init(); 
 
     /* led flashes -> sign of system reset ok */

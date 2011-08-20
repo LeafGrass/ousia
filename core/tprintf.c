@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 #include <ousia/tprintf.h>
 
-typedef void (*putcf) (void*,char);
+typedef void (*putcf) (void *dev, char ch);
 static putcf stdout_putf;
 static void* stdout_putp;
 
@@ -208,10 +208,9 @@ abort:;
 }
 
 
-void init_printf(void* putp,void (*putf) (void*,char))
+void _init_printf(void)
 {
-    stdout_putf=putf;
-    stdout_putp=putp;
+    _port_init_printf(&stdout_putp, &stdout_putf);
 }
 
 void tfp_printf(const char *fmt, ...)
