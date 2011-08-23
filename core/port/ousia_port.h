@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    platform/stm32/port/ousia_port.c
+ * @file    platform/x86/port/ousia_port.c
  *
  * @brief   porting code types and macros
  *
@@ -19,11 +19,7 @@
 #define __OUSIA_PORT_H__
 
 #include <port/ousia_cfg.h>
-#include <stm32/libmaple/util.h>
 
-#ifdef OUSIA_USE_LIBMAPLE
-#include <stm32/libmaple/libmaple_types.h>
-#else
 typedef signed char int8;
 typedef unsigned char uint8;
 typedef signed short int16;
@@ -32,28 +28,12 @@ typedef signed int int32;
 typedef unsigned int uint32;
 typedef signed long long int64;
 typedef unsigned long long uint64;
-#endif /* OUSIA_USE_LIBMAPLE */
 
-#define OS_SET_INTERRUPT_MASK() \
-    __asm volatile \
-    ( \
-        "   mov r0, %0         \n" \
-        "   msr basepri, r0    \n" \
-        ::"i"(191):"r0" \
-    )
-
-#define OS_CLEAR_INTERRUPT_MASK() \
-    __asm volatile \
-    ( \
-        "   mov r0, #0         \n" \
-        "   msr basepri, r0    \n" \
-        :::"r0" \
-    )
+#define OS_SET_INTERRUPT_MASK()
+#define OS_CLEAR_INTERRUPT_MASK()
 
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
-
-#define OS_ASSERT(exp)  ASSERT(exp)
 
 #define os_enter_critical() _os_enter_critical()
 #define os_exit_critical()  _os_exit_critical()
@@ -62,6 +42,7 @@ void _os_enter_critical(void);
 void _os_exit_critical(void);
 void _os_port_init(void);
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
+void _systick_register_callback(void (*callback)(void));
 
 #endif /* OUSIA_PORT_H */
 

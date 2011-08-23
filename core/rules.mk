@@ -16,6 +16,7 @@ CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall
 cSRCS_$(d) := port/ousia_port.c \
               tprintf.c \
               scheduler.c \
+              systimer.c \
               sysutils.c \
               interrupt.c
 sSRCS_$(d) :=

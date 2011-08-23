@@ -21,8 +21,9 @@
 
 static uint32 critical_nest;
 
-static void __systick_register_callback(void (*callback)(void));
+#if 0
 static void __port_systick_handler(void);
+#endif
 
 /*
  * @brief   porting related init
@@ -32,7 +33,7 @@ static void __port_systick_handler(void);
  */
 void _os_port_init(void)
 {
-    __systick_register_callback(&__port_systick_handler);
+    return;
 }
 
 /*
@@ -81,19 +82,21 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-static void __systick_register_callback(void (*callback)(void))
+void _systick_register_callback(void (*callback)(void))
 {
     systick_attach_callback(callback);
 }
 
+#if 0
 /*
  * @brief   systick timer interrupt user handler
  * @param   none
  * @return  none
- * @note    none
+ * @note    see systick_interrupt for real implementation
  */
 static void __port_systick_handler(void)
 {
     return;
 }
+#endif
 

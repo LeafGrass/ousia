@@ -10,7 +10,7 @@ NAME = Sweet Hibiscus
 #      @TARGET_PLATFORM specific directory name in folder $(PLATFORM_PATH)
 #      @PROJECT_NAME specific directory name in folder $(PROJECT_PATH)
 OUSIA_TARGET = ousia
-TARGET_PLATFORM = stm32
+TARGET_PLATFORM = x86
 PROJECT_NAME = sample_$(TARGET_PLATFORM)
 
 # Useful paths
