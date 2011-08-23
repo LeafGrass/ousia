@@ -19,6 +19,7 @@
 #define __OUSIA_PORT_H__
 
 #include <port/ousia_cfg.h>
+#include <stm32/libmaple/util.h>
 
 #ifdef OUSIA_USE_LIBMAPLE
 #include <stm32/libmaple/libmaple_types.h>
@@ -51,6 +52,8 @@ typedef unsigned long long uint64;
 
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
+
+#define OS_ASSERT(exp)  ASSERT(exp)
 
 #define os_enter_critical() _os_enter_critical()
 #define os_exit_critical()  _os_exit_critical()

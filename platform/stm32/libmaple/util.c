@@ -115,7 +115,7 @@ void throb(void) {
 #ifdef HAVE_ERROR_LED
     int32  slope   = 1;
     uint32 CC      = 0x0000;
-    uint32 TOP_CNT = 0x0200;
+    uint32 TOP_CNT = 0x0400;
     uint32 i       = 0;
 
     gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);

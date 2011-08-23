@@ -18,6 +18,10 @@
 #ifndef __OUSIA_H__
 #define __OUSIA_H__
 
+#include <port/ousia_port.h>
+
+#define OS_HEART_THROB_RATE 1000
+
 typedef enum _os_status
 {
     OS_ERR = -1,
@@ -25,3 +29,4 @@ typedef enum _os_status
 } os_status;
 
 #endif /*__OUSIA_H__*/
+
