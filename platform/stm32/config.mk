@@ -20,7 +20,8 @@ ifeq ($(MEMORY_TARGET), jtag)
 	VECT_BASE_ADDR := VECT_TAB_BASE
 endif
 
-GLOBAL_FLAGS :=	-DOUSIA \
+GLOBAL_FLAGS := -DOUSIA \
+                -D__PLATFORM__=__STM32__ \
                 -D$(DENSITY) \
                 -D$(VECT_BASE_ADDR) \
                 -DBOARD_$(BOARD) \

@@ -92,7 +92,7 @@ void _systick_register_callback(void (*callback)(void))
  * @brief   systick timer interrupt user handler
  * @param   none
  * @return  none
- * @note    see systick_interrupt for real implementation
+ * @note    see _systick_interrupt for real implementation
  */
 static void __port_systick_handler(void)
 {

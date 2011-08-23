@@ -51,7 +51,7 @@ Layer 0
     +----------------------------------+
 
 Layer 3: application
-Layer 2: framework, os core routines and drivers
+Layer 2: os core routines, frameworks and drivers
 Layer 1: hardware abstraction layer
 Layer 0: specific board
 
