@@ -8,4 +8,5 @@ $(BUILD_PATH)/$(OUSIA_TARGET): $(BUILDDIRS) $(TGT_BIN) $(USR_BUILDDIRS) $(USR_TG
 	@echo " "
 	@echo "Final Size:"
 	@$(SIZE) $(BUILD_PATH)/$(OUSIA_TARGET)
+	@echo $(TARGET_PLATFORM) > $(BUILD_PATH)/build-type
 

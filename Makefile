@@ -10,7 +10,7 @@ NAME = Sweet Hibiscus
 #      @TARGET_PLATFORM specific directory name in folder $(PLATFORM_PATH)
 #      @PROJECT_NAME specific directory name in folder $(PROJECT_PATH)
 OUSIA_TARGET = ousia
-TARGET_PLATFORM = x86
+TARGET_PLATFORM = stm32
 PROJECT_NAME = sample_$(TARGET_PLATFORM)
 
 # Useful paths
@@ -62,7 +62,7 @@ install: sketch
 # Force a rebuild if the maple target changed
 PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
 build-check:
-ifneq ($(PREV_BUILD_TYPE), $(MEMORY_TARGET))
+ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
 endif
 

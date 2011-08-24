@@ -10,7 +10,7 @@ $(BUILD_PATH)/$(OUSIA_TARGET).bin: $(BUILD_PATH)/$(OUSIA_TARGET).elf
 	@echo " "
 	@echo "Final Size:"
 	@$(SIZE) $<
-	@echo $(MEMORY_TARGET) > $(BUILD_PATH)/build-type
+	@echo $(TARGET_PLATFORM) > $(BUILD_PATH)/build-type
 
 $(BUILD_PATH)/$(OUSIA_TARGET).elf: $(BUILDDIRS) $(TGT_BIN) $(USR_BUILDDIRS) $(USR_TGT_BIN)
 	$(SILENT_LD) $(CC) $(LDFLAGS) -o $@ $(TGT_BIN) $(USR_TGT_BIN) -Wl,-Map,$(BUILD_PATH)/$(OUSIA_TARGET).map
