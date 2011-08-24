@@ -85,7 +85,7 @@ clean:
 	rm -rf build
 
 distclean:
-	rm -rf build
+	rm -rf $(BUILD_PATH)
 	rm -rf tarball
 	rm -f tags tags.ut tags.fn cscope.out
 
