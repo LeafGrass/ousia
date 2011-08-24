@@ -25,11 +25,30 @@
  *****************************************************************************/
 
 /**
- *  @brief General STM32 chip-specific definitions
+ * @file stm32.h
+ * @brief STM32 chip-specific definitions
  */
 
 #ifndef _STM32_H_
 #define _STM32_H_
+
+/*
+ * User-specific configuration.
+ *
+ * The #defines here depend upon how libmaple is used.  Because of the
+ * potential for a mismatch between them and the actual libmaple
+ * usage, you should try to keep their number to an absolute minimum.
+ */
+
+/**
+ * \def PCLK1
+ * Clock speed of APB1 peripherals, in Hz.
+ */
+
+/**
+ * \def PCLK2
+ * Clock speed of APB2 peripherals, in Hz.
+ */
 
 #ifndef PCLK1
 #define PCLK1   36000000U
@@ -37,6 +56,19 @@
 #ifndef PCLK2
 #define PCLK2   72000000U
 #endif
+
+/*
+ * Density-specific configuration.
+ */
+
+/**
+ * \def NR_INTERRUPTS
+ *
+ * Number of interrupts in the NVIC.  This define is automatically
+ * generated whenever the proper density is defined (currently, this
+ * is restricted to defining one of STM32_MEDIUM_DENSITY and
+ * STM32_HIGH_DENSITY).
+ */
 
 #ifdef STM32_MEDIUM_DENSITY
     #define NR_INTERRUPTS 43
@@ -48,18 +80,18 @@
 #endif
 #endif
 
-/* MCU-specific configuration */
+/*
+ * MCU-specific configuration.
+ *
+ * If you add something here, make sure to include documentation for
+ * it in the __DOXYGEN_PREDEFINED_HACK section, below.
+ */
+
 #if defined(MCU_STM32F103RB)
     /* e.g., LeafLabs Maple */
 
-    /* Number of GPIO ports (GPIOA, GPIOB, etc.) */
     #define NR_GPIO_PORTS              4
-
-    /* SRAM size, in bytes */
     #define SRAM_SIZE             0x5000
-
-    /* Multiplier to convert microseconds into loop iterations in
-     * delay_us() (See delay.h) */
     #define DELAY_US_MULT             12
 
 #elif defined(MCU_STM32F103ZE)
@@ -94,5 +126,32 @@
 
 #endif
 
-#endif
+/* MCU-specific config documentation.
+ *
+ * Doxygen refuses to trust us when we \def something that it doesn't
+ * notice as a #define.  To work around this, we put
+ * __DOXYGEN_PREDEFINED_HACK into our Doxyfile's PREDEFINED, so that
+ * this section is considered part of the code by doxygen, but not by
+ * an actual compile. */
 
+#ifdef __DOXYGEN_PREDEFINED_HACK
+
+    /**
+     * Number of GPIO ports
+     */
+    #define NR_GPIO_PORTS
+
+    /* SRAM_SIZE intentionally not documented as I'm not convinced
+     * it's a good idea [mbolivar]. */
+
+    /**
+     * @brief Multiplier to convert microseconds into loop iterations
+     *        in delay_us().
+     *
+     * @see delay_us()
+     */
+    #define DELAY_US_MULT
+
+#endif  /* __DOXYGEN_PREDEFINED_HACK */
+
+#endif /* _STM32_H_ */

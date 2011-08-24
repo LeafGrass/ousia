@@ -35,6 +35,7 @@ static void* stdout_putp;
 
 static void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
 
+/*#define PRINTF_LONG_SUPPORT*/
 
 #ifdef PRINTF_LONG_SUPPORT
 

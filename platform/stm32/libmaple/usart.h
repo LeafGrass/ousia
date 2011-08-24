@@ -246,11 +246,10 @@ typedef struct usart_dev {
     uint8 rx_buf[USART_RX_BUF_SIZE]; /**< Actual RX buffer used by rb */
     rcc_clk_id clk_id;               /**< RCC clock information */
     nvic_irq_num irq_num;            /**< USART NVIC interrupt */
-	/* counter of usart (re)trigger times */
-	uint8 cnt_trigger;
-	/* flag of whether usart is triggered, 
-	 * auto cleared while any call to usart_getc() */
-	uint8 flag_trigger;
+	uint8 cnt_trigger;               /**< counter of usart (re)trigger times */
+	uint8 flag_trigger;              /**< flag of whether usart is triggered,
+                                       * auto cleared while any call to
+                                       * usart_getc() */
 } usart_dev;
 
 extern usart_dev *USART1;
