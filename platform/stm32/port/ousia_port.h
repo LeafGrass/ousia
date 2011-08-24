@@ -34,6 +34,8 @@ typedef signed long long int64;
 typedef unsigned long long uint64;
 #endif /* OUSIA_USE_LIBMAPLE */
 
+#define OS_THROB_RATE   1000
+
 #define OS_SET_INTERRUPT_MASK() \
     __asm volatile \
     ( \

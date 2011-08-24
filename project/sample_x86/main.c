@@ -47,6 +47,11 @@ int main(void)
     os_printf("\r\n\r\n");
     os_printf("Hello, Ousia ~\r\n");
 
+    while(1)
+    {
+        __asm("nop");
+    }
+
     return 0;
 }
 

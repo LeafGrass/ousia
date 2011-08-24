@@ -20,8 +20,6 @@
 
 #include <port/ousia_port.h>
 
-#define OS_HEART_THROB_RATE 1000
-
 typedef enum _os_status
 {
     OS_ERR = -1,

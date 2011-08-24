@@ -20,6 +20,8 @@
 #include <ousia/tprintf.h>
 #include <ousia/systimer.h>
 
+static unsigned long long _systime;
+
 static void __systick_interrupt(void);
 
 /*
@@ -30,6 +32,7 @@ static void __systick_interrupt(void);
  */
 void _os_timer_init(void)
 {
+    _systime = 0;
     _systick_register_callback(&__systick_interrupt);
 }
 
@@ -41,5 +44,10 @@ void _os_timer_init(void)
  */
 static void __systick_interrupt(void)
 {
+    _systime++;
+    if(_systime%100 == 0)
+    {
+        os_printf("%d\n", _systime);
+    }
     return;
 }

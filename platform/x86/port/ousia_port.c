@@ -85,6 +85,7 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  */
 void _systick_register_callback(void (*callback)(void))
 {
+    x86utils_attach_systick_callback(callback);
     return;
 }
 

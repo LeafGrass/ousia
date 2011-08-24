@@ -16,7 +16,20 @@
  * ****************************************************************************/
 
 #include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdlib.h>
+#include <signal.h>
 #include <x86/x86utils/x86utils.h>
+
+#define X86_MILLISEC_PER_SEC    1000000
+#define OS_THROB_RATE   100
+
+static void (*systick_user_callback)(void);
+static unsigned long long _uptime;
+
+static void __timer_init(void);
+static void __pseudo_systick(int sig);
 
 /*
  * @brief   x86 specific init
@@ -26,7 +39,9 @@
  */
 void x86utils_system_init(void)
 {
-    return;
+    printf("%s\n", __FUNCTION__);
+    signal(SIGALRM, __pseudo_systick);
+    __timer_init();
 }
 
 /**
@@ -39,5 +54,48 @@ void x86utils_system_init(void)
 void x86utils_io_putc(void *p, char ch)
 {
     putchar(ch);
+}
+
+/**
+ * @brief   attach usr systick callback function
+ * @param   callback_fn -i- address of user callback function
+ * @return  none
+ * @note    none
+ */
+void x86utils_attach_systick_callback(void (*callback_fn)(void))
+{
+    systick_user_callback = callback_fn;
+}
+
+/**
+ * @brief   x86 timer init
+ * @param   none
+ * @return  none
+ * @note    temporarily only support linux
+ */
+static void __timer_init(void)
+{
+    struct itimerval itv, oldtv;
+
+    _uptime = 0;
+
+    itv.it_interval.tv_sec = 0;
+    itv.it_interval.tv_usec = X86_MILLISEC_PER_SEC/OS_THROB_RATE;
+    itv.it_value.tv_sec = 2;
+    itv.it_value.tv_usec = 0;
+
+    setitimer(ITIMER_REAL, &itv, &oldtv);
+}
+
+/**
+ * @brief   use linux timer to implement a systick
+ * @param   sig -i- signal (no use here)
+ * @return  none
+ * @note    none
+ */
+static void __pseudo_systick(int sig)
+{
+    _uptime++;
+    systick_user_callback();
 }
 
