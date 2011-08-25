@@ -50,7 +50,7 @@ int main(void)
 
     stat = os_init();
     os_assert(stat == OS_OK);
-    stm32utils_board_init(); 
+    stm32utils_board_init();
 
     /* led flashes -> sign of system reset ok */
     for(i = 0; i < 6; i++) {
