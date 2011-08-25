@@ -1,4 +1,0 @@
-Hardware specific porting code is placed here.
-Copies of different platforms are still there in their own directories in
-$(SRCROOT)/platform.
-

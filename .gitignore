@@ -1,4 +1,5 @@
 /build
+/core/port
 *.swp
 tag*
 cscope*
