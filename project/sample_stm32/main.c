@@ -19,6 +19,7 @@
 #include <ousia/scheduler.h>
 #include <ousia/sysutils.h>
 #include <ousia/tprintf.h>
+#include <ousia/debug.h>
 
 #include <stm32/libmaple/libmaple.h>
 #include <stm32/libmaple/libmaple_types.h>
@@ -48,8 +49,8 @@ int main(void)
     os_status stat = OS_OK;
 
     stat = os_init();
-    stat = stat;
-    stm32utils_system_init(); 
+    os_assert(stat == OS_OK);
+    stm32utils_board_init(); 
 
     /* led flashes -> sign of system reset ok */
     for(i = 0; i < 6; i++) {

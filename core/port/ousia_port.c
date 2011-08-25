@@ -16,6 +16,7 @@
  * ****************************************************************************/
 
 #include <stm32/libmaple/systick.h>
+#include <stm32/libmaple/util.h>
 #include <stm32/stm32utils/stm32utils.h>
 #include <port/ousia_port.h>
 
@@ -61,6 +62,19 @@ void _os_exit_critical(void)
     {
         OS_ENABLE_INTERRUPTS();
     }
+}
+
+/*
+ * @brief   a simple wrap of lower level assert
+ * @param   file -i- __FILE__
+ *          line -i- __LINE__
+ *          exp -i- assert expression
+ * @return  none
+ * @note    may not needed
+ */
+void _os_port_assert_fail(const char* file, int line, const char *exp)
+{
+    _fail(file, line, exp);
 }
 
 /*

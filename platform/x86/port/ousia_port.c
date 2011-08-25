@@ -65,6 +65,19 @@ void _os_exit_critical(void)
 }
 
 /*
+ * @brief   a simple wrap of lower level assert
+ * @param   file -i- __FILE__
+ *          line -i- __LINE__
+ *          exp -i- assert expression
+ * @return  none
+ * @note    may not needed
+ */
+void _os_port_assert_fail(const char* file, int line, const char *exp)
+{
+    return;
+}
+
+/*
  * @brief   band printf callback to low-level io control
  * @param   stdout_putp -i/o- generally none
  *          stdout_putf -i/o- low-level printf specific io implementation

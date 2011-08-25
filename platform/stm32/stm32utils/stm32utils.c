@@ -47,7 +47,7 @@ static void setupUSART(usart_dev *dev, uint32 baud);
  * @return  none
  * @note    none
  */
-void stm32utils_system_init(void)
+void stm32utils_board_init(void)
 {
     setupFlash();
     setupClocks();

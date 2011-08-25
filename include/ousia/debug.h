@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    platform/stm32/stm32utils/utils.h
+ * @file    include/ousia/debug.h
  *
- * @brief   stm32 library libmaple utilities
+ * @brief   debuging services
  *
- * @log     2011-08-03 Initial revision
+ * @log     2011-08-25 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
@@ -15,12 +15,28 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __STM32UTILS_H__
-#define __STM32UTILS_H__
+#ifndef __DEBUG_H__
+#define __DEBUG_H__
 
-void stm32utils_board_init(void);
-void stm32utils_io_putc(void *p, char ch);
+void _os_assert_fail(const char* file, int line, const char *exp);
 
+#define DEBUG_NONE      0
+#define DEBUG_FAULT     1
+#define DEBUG_ALL       2
 
-#endif /* __STM32UTILS_H__ */
+#define DEBUG_LEVEL DEBUG_ALL
+
+#if (DEBUG_LEVEL >= DEBUG_ALL)
+#define _OS_ASSERT(exp) \
+    if (exp) { \
+    } else { \
+        _os_assert_fail(__FILE__, __LINE__, #exp); \
+    }
+#else
+#define ASSERT(exp) (void)((0))
+#endif
+
+#define os_assert(exp)   _OS_ASSERT(exp)
+
+#endif /* __DEBUG_H__ */
 

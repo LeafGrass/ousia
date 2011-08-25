@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    platform/stm32/stm32utils/utils.h
+ * @file    core/debug.c
  *
- * @brief   stm32 library libmaple utilities
+ * @brief   debuging services
  *
- * @log     2011-08-03 Initial revision
+ * @log     2011-08-25 Initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
@@ -15,12 +15,15 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __STM32UTILS_H__
-#define __STM32UTILS_H__
+#include <port/ousia_port.h>
+#include <ousia/ousia.h>
+#include <ousia/scheduler.h>
+#include <ousia/tprintf.h>
+#include <ousia/sysutils.h>
+#include <ousia/debug.h>
 
-void stm32utils_board_init(void);
-void stm32utils_io_putc(void *p, char ch);
-
-
-#endif /* __STM32UTILS_H__ */
+void _os_assert_fail(const char* file, int line, const char *exp)
+{
+    _os_port_assert_fail(file, line, exp);
+}
 

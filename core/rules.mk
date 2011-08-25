@@ -18,7 +18,8 @@ cSRCS_$(d) := port/ousia_port.c \
               scheduler.c \
               systimer.c \
               sysutils.c \
-              interrupt.c
+              interrupt.c \
+              debug.c
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

@@ -18,8 +18,6 @@
 #ifndef __OUSIA_H__
 #define __OUSIA_H__
 
-#include <port/ousia_port.h>
-
 typedef enum _os_status
 {
     OS_ERR = -1,
