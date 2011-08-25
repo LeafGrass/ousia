@@ -18,7 +18,7 @@
 #ifndef __DEBUG_H__
 #define __DEBUG_H__
 
-void _os_assert_fail(const char* file, int line, const char *exp);
+void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
 #define DEBUG_NONE      0
 #define DEBUG_FAULT     1

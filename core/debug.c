@@ -22,8 +22,16 @@
 #include <ousia/sysutils.h>
 #include <ousia/debug.h>
 
-void _os_assert_fail(const char* file, int line, const char *exp)
+/*
+ * @brief   os assert failing routine
+ * @param   file -i- __FILE__
+ *          line -i- __LINE__
+ *          exp -i- assert expression
+ * @return  none
+ * @note    may call porting assert service or implemented solely
+ */
+void _os_assert_fail(const char *p_file, int line, const char *p_exp)
 {
-    _os_port_assert_fail(file, line, exp);
+    _os_port_assert_fail(p_file, line, p_exp);
 }
 
