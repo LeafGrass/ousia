@@ -44,7 +44,9 @@ void _os_timer_init(void)
  */
 static void __systick_interrupt(void)
 {
+    os_enter_critical();
     _systime++;
+    os_exit_critical();
 
     return;
 }
