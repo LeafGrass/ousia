@@ -248,8 +248,8 @@ typedef struct usart_dev {
     nvic_irq_num irq_num;            /**< USART NVIC interrupt */
 	uint8 cnt_trigger;               /**< counter of usart (re)trigger times */
 	uint8 flag_trigger;              /**< flag of whether usart is triggered,
-                                       * auto cleared while any call to
-                                       * usart_getc() */
+                                       *< auto cleared while any call to
+                                       *< usart_getc() */
 } usart_dev;
 
 extern usart_dev *USART1;
@@ -285,8 +285,7 @@ static inline void usart_disable_all(void) {
  * @param byte Byte to transmit.
  */
 static inline void usart_putc(usart_dev* dev, uint8 byte) {
-    uint8 buf[] = {byte};
-    while (!usart_tx(dev, buf, 1))
+    while (!usart_tx(dev, &byte, 1))
         ;
 }
 

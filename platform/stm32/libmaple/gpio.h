@@ -212,7 +212,7 @@ static inline void gpio_write(gpio_dev *dev, uint32 val) {
  *
  * Pin must have previously been configured to input mode.
  *
- * @param dev GPIO device.
+ * @param dev GPIO device whose pin to test.
  * @param pin Pin on dev to test.
  * @return True if the pin is set, false otherwise.
  */
