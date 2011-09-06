@@ -30,7 +30,7 @@ framework:
 include:
 	Header files of main routines of Ousia.
 platform:
-	Chip and board specific code.
+	Chip and board specific code, e.g. low-level library.
 project:
 	Project source code. Include several sample project instances.
 script:

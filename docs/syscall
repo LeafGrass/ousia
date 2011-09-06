@@ -2,13 +2,26 @@ Ousia Syscall Reference Document
 ================================
 
 
+os_assert
+---------
+@brief      normal assert
+@note       macro - os_assert(exp)
+
 os_init
 -------
-/*
- * @brief   the very first init of ousia
- * @param   none
- * @return  none
- * @note    this function should be called before all other syscalls
- */
-void os_init(void)
+@brief      the very first init of ousia
+@param      none
+@return     none
+@note       this function should be called before all other syscalls
+@prototype  void os_init(void)
+
+os_enter_critical
+-----------------
+@brief      enter critical, general interrupts will be disabled
+@note       macro - os_enter_critical()
+
+os_exit_critical
+----------------
+@brief      exit critical, general interrupts will be enabled
+@note       macro - os_exit_critical()
 
