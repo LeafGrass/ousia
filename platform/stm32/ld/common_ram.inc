@@ -1,50 +1,17 @@
-/* Linker script for STM32 (by Lanchon with Mods by LeafLabs) */
-
-OUTPUT_FORMAT ("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
-SEARCH_DIR(.)
 /*
- * Link against libgcc, libc, and libm
+ * Linker script for RAM builds.
+ *
+ * Original author "lanchon" from ST forums, with modifications by LeafLabs.
  */
-GROUP(libgcc.a libc.a libm.a)
 
-/* These force the linker to search for particular symbols from
- * the start of the link process and thus ensure the user's
- * overrides are picked up
- */
-INCLUDE names.inc
-
-/* STM32 vector table. See stm32_vector_table.S  */
-EXTERN(__cs3_stm32_vector_table)
-
-/* libcs3 C start function. See cs3.h */
-EXTERN(__cs3_start_c)
-
-/* main entry point */
-EXTERN(main)
-
-/* Initial stack pointer value. */
-EXTERN(__cs3_stack)
-PROVIDE(__cs3_stack = __cs3_region_start_ram + __cs3_region_size_ram);
-
-/* Reset vector and chip reset entry point. See start.S */
-EXTERN(_start)
-ENTRY(_start)
-PROVIDE(__cs3_reset = _start);
-
-/* Beginning of the heap */
-PROVIDE(__cs3_heap_start = _end);
-
-/* End of the heap */
-PROVIDE(__cs3_heap_end = __cs3_region_start_ram + LENGTH(ram));
-
+INCLUDE common_header.inc
 
 SECTIONS
 {
-  .text :
+    .text :
       {
         CREATE_OBJECT_SYMBOLS
         __cs3_region_start_ram = .;
-        *(.cs3.region-head.ram)
 
         /*
          * STM32 vector table
@@ -110,51 +77,51 @@ SECTIONS
         LONG (__cs3_region_start_ram)
         LONG (__cs3_region_init_size_ram)
         LONG (__cs3_region_zero_size_ram)
-      } > ram
+      } > REGION_TEXT
 
-  /*
-   * .ARM.exidx exception unwinding
-   */
-  __exidx_start = .;
-  .ARM.exidx :
+    /*
+     * .ARM.exidx exception unwinding
+     */
+    __exidx_start = .;
+    .ARM.exidx :
       {
         *(.ARM.exidx* .gnu.linkonce.armexidx.*)
-      } > ram
-  __exidx_end = .;
+      } > REGION_TEXT
+    __exidx_end = .;
 
-  /*
-   * End of text
-   */
-  .text.align :
+    /*
+     * End of text
+     */
+    .text.align :
       {
         . = ALIGN(8);
         _etext = .;
+      } > REGION_TEXT
+
+    .cs3.rom :
+      {
+        __cs3_region_start_rom = .;
+        *(.rom)
+        . = ALIGN (8);
       } > ram
 
-   .cs3.rom :
-   {
-     __cs3_region_start_rom = .;
-     *(.cs3.region-head.rom)
-     *(.rom)
-     . = ALIGN (8);
-   } >ram
+    .cs3.rom.bss :
+      {
+        *(.rom.b)
+        . = ALIGN (8);
+      } > ram
 
-   .cs3.rom.bss :
-   {
-     *(.rom.b)
-     . = ALIGN (8);
-   } >ram
-   /* __cs3_region_end_rom is deprecated */
-   __cs3_region_end_rom = __cs3_region_start_rom + LENGTH(ram);
-   __cs3_region_size_rom = LENGTH(ram);
-   __cs3_region_init_rom = LOADADDR (.cs3.rom);
-   __cs3_region_init_size_rom = SIZEOF(.cs3.rom);
-   __cs3_region_zero_size_rom = SIZEOF(.cs3.rom.bss);
+    /* __cs3_region_end_rom is deprecated */
+    __cs3_region_end_rom = __cs3_region_start_rom + LENGTH(ram);
+    __cs3_region_size_rom = LENGTH(ram);
+    __cs3_region_init_rom = LOADADDR (.cs3.rom);
+    __cs3_region_init_size_rom = SIZEOF(.cs3.rom);
+    __cs3_region_zero_size_rom = SIZEOF(.cs3.rom.bss);
 
-  /*
-   * Start of data
-   */
-  .data :
+    /*
+     * Start of data
+     */
+    .data :
       {
         KEEP(*(.jcr))
         *(.got.plt) *(.got)
@@ -163,9 +130,9 @@ SECTIONS
         *(.ram)
         . = ALIGN (8);
         _edata = .;
-      } > ram
+      } > REGION_DATA
 
-  .bss :
+    .bss :
       {
         *(.shbss)
         *(.bss .bss.* .gnu.linkonce.b.*)
@@ -174,48 +141,48 @@ SECTIONS
         . = ALIGN (8);
         _end = .;
         __end = .;
-      } > ram
+      } > REGION_BSS
 
-  /* __cs3_region_end_ram is deprecated */
-  __cs3_region_end_ram = __cs3_region_start_ram + LENGTH(ram);
-  __cs3_region_size_ram = LENGTH(ram);
-  __cs3_region_init_ram = LOADADDR (.text);
-  __cs3_region_init_size_ram = _edata - ADDR (.text);
-  __cs3_region_zero_size_ram = _end - _edata;
-  __cs3_region_num = 1;
+    /* __cs3_region_end_ram is deprecated */
+    __cs3_region_end_ram = __cs3_region_start_ram + LENGTH(ram);
+    __cs3_region_size_ram = LENGTH(ram);
+    __cs3_region_init_ram = LOADADDR (.text);
+    __cs3_region_init_size_ram = _edata - ADDR (.text);
+    __cs3_region_zero_size_ram = _end - _edata;
+    __cs3_region_num = 1;
 
-  /*
-   * Debugging sections
-   */
-  .stab 0 (NOLOAD) : { *(.stab) }
-  .stabstr 0 (NOLOAD) : { *(.stabstr) }
-  /* DWARF debug sections.
-   * Symbols in the DWARF debugging sections are relative to the beginning
-   * of the section so we begin them at 0.  */
-  /* DWARF 1 */
-  .debug          0 : { *(.debug) }
-  .line           0 : { *(.line) }
-  /* GNU DWARF 1 extensions */
-  .debug_srcinfo  0 : { *(.debug_srcinfo) }
-  .debug_sfnames  0 : { *(.debug_sfnames) }
-  /* DWARF 1.1 and DWARF 2 */
-  .debug_aranges  0 : { *(.debug_aranges) }
-  .debug_pubnames 0 : { *(.debug_pubnames) }
-  /* DWARF 2 */
-  .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
-  .debug_abbrev   0 : { *(.debug_abbrev) }
-  .debug_line     0 : { *(.debug_line) }
-  .debug_frame    0 : { *(.debug_frame) }
-  .debug_str      0 : { *(.debug_str) }
-  .debug_loc      0 : { *(.debug_loc) }
-  .debug_macinfo  0 : { *(.debug_macinfo) }
-  /* SGI/MIPS DWARF 2 extensions */
-  .debug_weaknames 0 : { *(.debug_weaknames) }
-  .debug_funcnames 0 : { *(.debug_funcnames) }
-  .debug_typenames 0 : { *(.debug_typenames) }
-  .debug_varnames  0 : { *(.debug_varnames) }
+    /*
+     * Debugging sections
+     */
+    .stab 0 (NOLOAD) : { *(.stab) }
+    .stabstr 0 (NOLOAD) : { *(.stabstr) }
+    /* DWARF debug sections.
+     * Symbols in the DWARF debugging sections are relative to the beginning
+     * of the section so we begin them at 0.  */
+    /* DWARF 1 */
+    .debug          0 : { *(.debug) }
+    .line           0 : { *(.line) }
+    /* GNU DWARF 1 extensions */
+    .debug_srcinfo  0 : { *(.debug_srcinfo) }
+    .debug_sfnames  0 : { *(.debug_sfnames) }
+    /* DWARF 1.1 and DWARF 2 */
+    .debug_aranges  0 : { *(.debug_aranges) }
+    .debug_pubnames 0 : { *(.debug_pubnames) }
+    /* DWARF 2 */
+    .debug_info     0 : { *(.debug_info .gnu.linkonce.wi.*) }
+    .debug_abbrev   0 : { *(.debug_abbrev) }
+    .debug_line     0 : { *(.debug_line) }
+    .debug_frame    0 : { *(.debug_frame) }
+    .debug_str      0 : { *(.debug_str) }
+    .debug_loc      0 : { *(.debug_loc) }
+    .debug_macinfo  0 : { *(.debug_macinfo) }
+    /* SGI/MIPS DWARF 2 extensions */
+    .debug_weaknames 0 : { *(.debug_weaknames) }
+    .debug_funcnames 0 : { *(.debug_funcnames) }
+    .debug_typenames 0 : { *(.debug_typenames) }
+    .debug_varnames  0 : { *(.debug_varnames) }
 
-  .note.gnu.arm.ident 0 : { KEEP (*(.note.gnu.arm.ident)) }
-  .ARM.attributes 0 : { KEEP (*(.ARM.attributes)) }
-  /DISCARD/ : { *(.note.GNU-stack) }
+    .note.gnu.arm.ident 0 : { KEEP (*(.note.gnu.arm.ident)) }
+    .ARM.attributes 0 : { KEEP (*(.ARM.attributes)) }
+    /DISCARD/ : { *(.note.GNU-stack) }
 }
