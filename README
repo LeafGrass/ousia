@@ -53,12 +53,12 @@ Core Developing Steps
 
 Porting Steps
 -------------
--	Create a directory named PLATFORM_NAME in folder "platform".
+-	Create a directory named PLATFORM_NAME in folder "platform", then enter it.
 -	Create three files: rules.mk config.mk target.mk.
 	@rules.mk: makefile source code related rules
 	@config.mk: parameters or flags for toolchains and environment
 	@target.mk: rules for building target
--	Create a directory named "port" here then create three files in it.
+-	Create a directory named "port" there then create three files in it.
 	@ousia_cfg.h: os scalability related configuration.
 	@ousia_port.h: header of porting code.
 	@ousia_port.c: implentation of porting.
