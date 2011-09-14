@@ -1,18 +1,12 @@
 Real-Time Ousia
 COPYRIGHT (C) LEAFGRASS
 
+
 Introduction
 ------------
 "Ousia" is picked from Greek.
 Mainly intend to represent the essence of Real-Time Theory.
 Developed following K-I-S-S principle.
-
-
-Acknowledgments
----------------
-Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
-Thanks to their excellent works!
-- http://leaflabs.com
 
 
 Source Tree Architecture
@@ -84,4 +78,10 @@ Build A Different Platform
 Only modify the header TODO in root Makefile
 -	Assign specific TARGET_PLATFORM and PROJECT_NAME
 
+
+Acknowledgments
+---------------
+Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
+Thanks to their excellent works!
+- http://leaflabs.com
 
