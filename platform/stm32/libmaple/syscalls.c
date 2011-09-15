@@ -24,25 +24,28 @@
  * SOFTWARE.
  *****************************************************************************/
 
+/**
+ * @file syscalls.c
+ * @brief Low level system routines used by Newlib for basic I/O and
+ * memory allocation.
+ */
+
 #include "libmaple.h"
 
 #include <sys/stat.h>
 #include <errno.h>
 
-/* Set by the linker script */
-extern int _end;
-
-/* FIXME these should be determined by the linker script.
- *
- * Doing so will allow the heap to be configured on a per-board basis.
- * Current values are just stopgaps for a heap in built-in SRAM.
- *
- * STACK_RESERVED_BYTES is just a hack to ensure a minimum stack size.
- * It should probably go away as well. */
-#define STACK_RESERVED_BYTES 1024
-#define HEAP_START           ((caddr_t)&_end)
-#define HEAP_END             ((caddr_t)((uint32)STM32_SRAM_END -        \
-                                        STACK_RESERVED_BYTES))
+/* If CONFIG_HEAP_START (or CONFIG_HEAP_END) isn't defined, then
+ * assume _lm_heap_start (resp. _lm_heap_end) is appropriately set by
+ * the linker */
+#ifndef CONFIG_HEAP_START
+extern char _lm_heap_start;
+#define CONFIG_HEAP_START               ((caddr_t)&_lm_heap_start)
+#endif
+#ifndef CONFIG_HEAP_END
+extern char _lm_heap_end;
+#define CONFIG_HEAP_END                 ((caddr_t)&_lm_heap_end)
+#endif
 
 /*
  * _sbrk -- Increment the program break.
@@ -55,10 +58,11 @@ caddr_t _sbrk(int incr) {
     caddr_t ret;
 
     if (pbreak == NULL) {
-        pbreak = HEAP_START;
+        pbreak = CONFIG_HEAP_START;
     }
 
-    if ((HEAP_END - pbreak < incr) || (pbreak - HEAP_START < -incr)) {
+    if ((CONFIG_HEAP_END - pbreak < incr) ||
+        (pbreak - CONFIG_HEAP_START < -incr)) {
         errno = ENOMEM;
         return (caddr_t)-1;
     }

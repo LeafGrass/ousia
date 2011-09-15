@@ -243,13 +243,16 @@ typedef struct usart_dev {
     usart_reg_map *regs;             /**< Register map */
     ring_buffer *rb;                 /**< RX ring buffer */
     uint32 max_baud;                 /**< Maximum baud */
-    uint8 rx_buf[USART_RX_BUF_SIZE]; /**< Actual RX buffer used by rb */
+    uint8 rx_buf[USART_RX_BUF_SIZE]; /**< @brief Deprecated.
+                                      * Actual RX buffer used by rb.
+                                      * This field will be removed in
+                                      * a future release. */
     rcc_clk_id clk_id;               /**< RCC clock information */
     nvic_irq_num irq_num;            /**< USART NVIC interrupt */
 	uint8 cnt_trigger;               /**< counter of usart (re)trigger times */
 	uint8 flag_trigger;              /**< flag of whether usart is triggered,
-                                       *< auto cleared while any call to
-                                       *< usart_getc() */
+                                      * auto cleared while any call to
+                                      * usart_getc() */
 } usart_dev;
 
 extern usart_dev *USART1;
