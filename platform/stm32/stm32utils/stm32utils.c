@@ -65,6 +65,17 @@ void stm32utils_board_init(void)
     gpio_write_bit(GPIOA, 1, 0);
     gpio_set_mode(GPIOA, 12, GPIO_OUTPUT_PP);
     gpio_write_bit(GPIOA, 12, 0);
+
+    /*
+    gpio_set_mode(GPIOC, 0, GPIO_OUTPUT_PP);
+    gpio_write_bit(GPIOC, 0, 1);
+    gpio_set_mode(GPIOC, 1, GPIO_OUTPUT_PP);
+    gpio_write_bit(GPIOC, 1, 1);
+    gpio_set_mode(GPIOC, 2, GPIO_OUTPUT_PP);
+    gpio_write_bit(GPIOC, 2, 1);
+    gpio_set_mode(GPIOC, 3, GPIO_OUTPUT_PP);
+    gpio_write_bit(GPIOC, 3, 1);
+    */
 }
 
 /**

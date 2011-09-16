@@ -55,6 +55,12 @@ int main(void)
     /* led flashes -> sign of system reset ok */
     for(i = 0; i < 6; i++) {
         gpio_toggle_bit(GPIOA, 0);
+        /*
+        gpio_toggle_bit(GPIOC, 0);
+        gpio_toggle_bit(GPIOC, 1);
+        gpio_toggle_bit(GPIOC, 2);
+        gpio_toggle_bit(GPIOC, 3);
+        */
         delay(50);
     }
 
@@ -83,6 +89,7 @@ int main(void)
                     switch( ch ) {
                     case '\r':
                         os_printf( "\r\n" );
+                        /*gpio_toggle_bit(GPIOC, 0);*/
                         break;
                     case '\b':
                         os_printf( "\b \b" );
