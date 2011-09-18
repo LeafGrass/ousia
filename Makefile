@@ -89,9 +89,9 @@ distclean:
 	rm -rf tarball
 	rm -f tags tags.ut tags.fn cscope.out
 
-package:
+tarball:
 	mkdir -p tarball
-	$(SHELL) ./script/package.sh
+	$(SHELL) ./script/tarball.sh
 
 help:
 	@echo ""
@@ -114,7 +114,7 @@ help:
 	@echo "  clean:     Remove all build files"
 	@echo "  distclean: Remove all builds tarballs, and ohter misc"
 	@echo "  help:      Show this message"
-	@echo "  package:   Package current revision"
+	@echo "  tarball:	Package current revision into a tarball"
 	@echo "==========================================================="
 	@echo ""
 

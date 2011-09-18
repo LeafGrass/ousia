@@ -1,0 +1,8 @@
+NOTE!
+	To build "libcs3_stm32_src/" & "bootloader/", we need to cd into them and
+make seperately.
+
+	"libcs3_stm32_src" is a library of stm32 cpu low-level startup code.
+	"bootloader" is based on maple-bootloader, in order to make board works in
+usb dfu mode.
+

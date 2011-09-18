@@ -334,7 +334,10 @@ def usage():
     -b baud     Baud speed (default: 115200)
     -a addr     Target address
 
+    e.g.
     ./stm32loader.py -e -w -v example/main.bin
+    ./stm32loader.py -p/dev/ttyUSB0 -evw ./build/maple_boot.bin
+    ./stm32loader.py -p/dev/ttyUSB0 -a0x08005000 -evw ./maple.bin
 
     """ % sys.argv[0]
 
