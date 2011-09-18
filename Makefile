@@ -12,6 +12,8 @@ NAME = Sweet Hibiscus
 OUSIA_TARGET = ousia
 TARGET_PLATFORM = stm32
 PROJECT_NAME = sample_$(TARGET_PLATFORM)
+# jtag, serial or dfu
+DOWNLOAD = dfu
 
 # Useful paths
 ifeq ($(OUSIA_HOME),)
@@ -53,11 +55,24 @@ $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
 # Main target
 include $(SUPPORT_PATH)/make/build-targets.mk
 
-.PHONY: install sketch lib clean help debug cscope tags ctags ram flash jtag update_port
+.PHONY: install bootloader sketch lib clean help debug cscope tags ctags ram flash jtag update_port
 
 # Download code to target device
-install: sketch
+install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
+ifeq ($(DOWNLOAD), jtag)
 	$(SHELL) ./script/download.sh
+endif
+ifeq ($(DOWNLOAD), serial)
+	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
+endif
+ifeq ($(DOWNLOAD), dfu)
+	dfu-util -a1 -d 1EAF:0003 -D $(BUILD_PATH)/$(OUSIA_TARGET).bin
+endif
+
+BOOTLOADER_BIN = $(PLATFORM_PATH)/$(TARGET_PLATFORM)/bootloader/build/maple_boot.bin
+
+bootloader: $(BOOTLOADER_BIN)
+	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $^
 
 # Force a rebuild if the maple target changed
 PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)

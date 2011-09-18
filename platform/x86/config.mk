@@ -10,5 +10,6 @@ GLOBAL_ASFLAGS := $(GLOBAL_FLAGS)
 
 # Build Environment
 SHELL	:= /bin/bash
+PYTHON	:= /usr/bin/python
 CROSS   :=
 

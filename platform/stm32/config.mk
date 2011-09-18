@@ -45,5 +45,6 @@ LDFLAGS = -T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
 
 # Build Environment
 SHELL	:= /bin/bash
+PYTHON	:= /usr/bin/python
 CROSS   := arm-none-eabi-
 

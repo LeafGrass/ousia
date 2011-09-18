@@ -53,15 +53,16 @@ int main(void)
     stm32utils_board_init();
 
     /* led flashes -> sign of system reset ok */
-    for(i = 0; i < 6; i++) {
+    for(i = 0; i < 128; i++) {
         gpio_toggle_bit(GPIOA, 0);
+        gpio_toggle_bit(GPIOA, 5);
         /*
         gpio_toggle_bit(GPIOC, 0);
         gpio_toggle_bit(GPIOC, 1);
         gpio_toggle_bit(GPIOC, 2);
         gpio_toggle_bit(GPIOC, 3);
         */
-        delay(50);
+        delay(25);
     }
 
     /* Boot Animation */
