@@ -322,6 +322,7 @@ class CommandInterface:
 
 def usage():
     print """Usage: %s [-hqVewvr] [-l length] [-p port] [-b baud] [-a addr] [file.bin]
+
     -h          This help
     -q          Quiet
     -V          Verbose
@@ -336,8 +337,8 @@ def usage():
 
     e.g.
     ./stm32loader.py -e -w -v example/main.bin
-    ./stm32loader.py -p/dev/ttyUSB0 -evw ./build/maple_boot.bin
-    ./stm32loader.py -p/dev/ttyUSB0 -a0x08005000 -evw ./maple.bin
+    ./stm32loader.py -p/dev/ttyUSB0 -ewv ./build/maple_boot.bin
+    ./stm32loader.py -p/dev/ttyUSB0 -a0x08005000 -ewv ./maple.bin
 
     """ % sys.argv[0]
 
