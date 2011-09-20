@@ -59,7 +59,7 @@ Porting Steps
 -	Create other porting related stuffs, such as linker scripts, if necessary.
 -	Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
 
--	Ps: If modify porting related code, should not edit directly in "core/port",
+Ps: If modify porting related code, should not edit directly in "core/port",
 do that in specific platform directory instead, e.g. "platform/stm32/port".
 Because makefile will copy them into "core/port" automatically.
 
@@ -77,6 +77,17 @@ Build A Different Platform
 --------------------------
 Only modify the header TODO in root Makefile
 -	Assign specific TARGET_PLATFORM and PROJECT_NAME
+
+
+Download Code to Target Chip
+----------------------------
+-	Modify related User Customization Items in Makefile in source tree root.
+-	Do proper Operation on hardware (i.e. change boot mode or reset or something).
+-	Then type 'make install' is ok.
+
+Ps: For stm32, there maybe a bootloader, 'make bootloader' will Download
+bootloader code to chip via serial. And for x86, no code downloading procedure
+is needed.
 
 
 Acknowledgments

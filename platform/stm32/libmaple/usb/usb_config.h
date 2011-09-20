@@ -28,7 +28,7 @@
 #define RESET_DELAY               (100000)
 #define USB_CONFIG_MAX_POWER      (100 >> 1)
 
-#if defined(BOARD_leach)
+#if defined(BOARD_leach) || defined(BOARD_leach_high)
 
 	#define VCOM_ID_PRODUCT      0x0004
 	#define USB_DISC_DEV         GPIOC
