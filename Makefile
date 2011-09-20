@@ -6,15 +6,21 @@ SUBLEVEL = 0
 DEVNUM = 3
 NAME = Sweet Hibiscus
 
+########################################
+# User Customization Items
+########################################
 # TODO @OUSIA_TARGET the name of target binary file
 #      @TARGET_PLATFORM specific directory name in folder $(PLATFORM_PATH)
 #      @PROJECT_NAME specific directory name in folder $(PROJECT_PATH)
+#      @DOWNLOAD_MODE jtag, serial or dfu
 OUSIA_TARGET = ousia
 TARGET_PLATFORM = stm32
 PROJECT_NAME = sample_$(TARGET_PLATFORM)
-# jtag, serial or dfu
-DOWNLOAD = dfu
+DOWNLOAD_MODE = dfu
 
+########################################
+# System Rules and Configurations
+########################################
 # Useful paths
 ifeq ($(OUSIA_HOME),)
 	SRCROOT := .
@@ -59,13 +65,13 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 
 # Download code to target device
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
-ifeq ($(DOWNLOAD), jtag)
+ifeq ($(DOWNLOAD_MODE), jtag)
 	$(SHELL) ./script/download.sh
 endif
-ifeq ($(DOWNLOAD), serial)
+ifeq ($(DOWNLOAD_MODE), serial)
 	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
 endif
-ifeq ($(DOWNLOAD), dfu)
+ifeq ($(DOWNLOAD_MODE), dfu)
 	dfu-util -a1 -d 1EAF:0003 -D $(BUILD_PATH)/$(OUSIA_TARGET).bin
 endif
 
