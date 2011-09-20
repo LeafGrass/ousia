@@ -35,10 +35,17 @@
 
 #include "common.h"
 
-#define LED_BANK GPIOA
-#define LED      5
-#define BLINK_FAST 0x50000
-#define BLINK_SLOW 0x100000
+//#define BOOTLOADER_USE_USART
+//#define BOOTLOADER_USE_C0
+
+#define LED_BANK    GPIOA
+#define LED         5
+#ifdef BOOTLOADER_USE_C0
+#define LED_BANK_C0 GPIOC
+#define LED_C0      0
+#endif
+#define BLINK_FAST  0x50000
+#define BLINK_SLOW  0x100000
 
 #define BUTTON_BANK GPIOC
 #define BUTTON      9

@@ -30,40 +30,51 @@
 #include "common.h"
 
 /* macro'd register and peripheral definitions */
-#define RCC   ((u32)0x40021000)
-#define FLASH ((u32)0x40022000)
-#define GPIOA ((u32)0x40010800)
-#define GPIOC ((u32)0x40011000)
+#define RCC		((u32)0x40021000)
+#define FLASH	((u32)0x40022000)
+#define GPIOA	((u32)0x40010800)
+#define GPIOC	((u32)0x40011000)
+#define USART1	((u32)0x40013800)
 
-#define RCC_CR      RCC
-#define RCC_CFGR    (RCC + 0x04)
-#define RCC_CIR     (RCC + 0x08)
-#define RCC_AHBENR  (RCC + 0x14)
-#define RCC_APB2ENR (RCC + 0x18)
-#define RCC_APB1ENR (RCC + 0x1C)
+#define RCC_CR			RCC
+#define RCC_CFGR        (RCC + 0x04)
+#define RCC_CIR         (RCC + 0x08)
+#define RCC_APB2RSTR    (RCC + 0x0C)
+#define RCC_APB1RSTR    (RCC + 0x10)
+#define RCC_AHBENR      (RCC + 0x14)
+#define RCC_APB2ENR     (RCC + 0x18)
+#define RCC_APB1ENR     (RCC + 0x1C)
 
-#define FLASH_ACR     (FLASH + 0x00)
-#define FLASH_KEYR    (FLASH + 0x04)
-#define FLASH_OPTKEYR (FLASH + 0x08)
-#define FLASH_SR      (FLASH + 0x0C)
-#define FLASH_CR      (FLASH + 0x10)
-#define FLASH_AR      (FLASH + 0x14)
-#define FLASH_OBR     (FLASH + 0x1C)
-#define FLASH_WRPR    (FLASH + 0x20)
+#define USART1_SR		USART1
+#define USART1_DR		(USART1 + 0x04)
+#define USART1_BRR		(USART1 + 0x08)
+#define USART1_CR1		(USART1 + 0x0C)
+#define USART1_CR2		(USART1 + 0x10)
+#define USART1_CR3		(USART1 + 0x14)
+#define USART1_GPTR		(USART1 + 0x18)
 
-#define FLASH_KEY1     0x45670123
-#define FLASH_KEY2     0xCDEF89AB
-#define FLASH_RDPRT    0x00A5
-#define FLASH_SR_BSY   0x01
-#define FLASH_CR_PER   0x02
-#define FLASH_CR_PG    0x01
-#define FLASH_CR_START 0x40
+#define FLASH_ACR		(FLASH + 0x00)
+#define FLASH_KEYR		(FLASH + 0x04)
+#define FLASH_OPTKEYR	(FLASH + 0x08)
+#define FLASH_SR		(FLASH + 0x0C)
+#define FLASH_CR		(FLASH + 0x10)
+#define FLASH_AR		(FLASH + 0x14)
+#define FLASH_OBR		(FLASH + 0x1C)
+#define FLASH_WRPR		(FLASH + 0x20)
 
-#define GPIO_CRL(port)  port
-#define GPIO_CRH(port)  (port+0x04)
-#define GPIO_IDR(port)  (port+0x08)
-#define GPIO_ODR(port)  (port+0x0c)
-#define GPIO_BSRR(port) (port+0x10)
+#define FLASH_KEY1		0x45670123
+#define FLASH_KEY2		0xCDEF89AB
+#define FLASH_RDPRT		0x00A5
+#define FLASH_SR_BSY	0x01
+#define FLASH_CR_PER	0x02
+#define FLASH_CR_PG		0x01
+#define FLASH_CR_START	0x40
+
+#define GPIO_CRL(port)	port
+#define GPIO_CRH(port)	(port+0x04)
+#define GPIO_IDR(port)	(port+0x08)
+#define GPIO_ODR(port)	(port+0x0c)
+#define GPIO_BSRR(port)	(port+0x10)
 
 #define SCS_BASE   ((u32)0xE000E000)
 #define NVIC_BASE  (SCS_BASE + 0x0100)
@@ -171,11 +182,16 @@ bool readPin   (u32 bank, u8 pin);
 void strobePin (u32 bank, u8 pin, u8 count, u32 rate);
 
 void systemHardReset(void);
-void systemReset   (void);
-void setupCLK      (void);
-void setupLED      (void);
-void setupFLASH    (void);
-void setupBUTTON   (void);
+void systemReset    (void);
+void setupCLK       (void);
+void setupLED       (void);
+void setupFLASH     (void);
+void setupBUTTON    (void);
+#ifdef BOOTLOADER_USE_USART
+void setupUSART     (u32 pclk2, u32 baudrate);
+void io_putc        (u8 ch);
+void io_putstr      (const u8 *str[]);
+#endif
 bool checkUserCode (u32 usrAddr);
 void jumpToUser    (u32 usrAddr);
 

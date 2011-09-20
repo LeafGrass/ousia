@@ -35,8 +35,8 @@ cSRCS_$(d) := stm32/libmaple/adc.c \
               stm32/libmaple/systick.c \
               stm32/libmaple/timer.c \
               stm32/libmaple/usart.c \
-              stm32/libmaple/util.c
-#              stm32/libmaple/usb/descriptors.c \
+              stm32/libmaple/util.c \
+              stm32/libmaple/usb/descriptors.c \
               stm32/libmaple/usb/usb.c \
               stm32/libmaple/usb/usb_callbacks.c \
               stm32/libmaple/usb/usb_hardware.c \

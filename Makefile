@@ -55,7 +55,7 @@ $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
 # Main target
 include $(SUPPORT_PATH)/make/build-targets.mk
 
-.PHONY: install bootloader sketch lib clean help debug cscope tags ctags ram flash jtag update_port
+.PHONY: install bootloader sketch lib clean help debug cscope tags ctags ram flash jtag update
 
 # Download code to target device
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
@@ -79,6 +79,9 @@ PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
 build-check:
 ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
+else
+	@echo "Code is ready."
+	@echo ""
 endif
 
 sketch: MSG_INFO build-check update $(BUILD_PATH)/$(OUSIA_TARGET)
@@ -93,8 +96,11 @@ $(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO update $(BUILDDIRS) $(TGT_BIN)
 
 # FIXME Better not run these line each time
 update:
+ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
+	$(shell rm -rf $(BUILD_PATH))
 	$(shell rm -rf $(CORE_PATH)/port)
 	$(shell cp -rf $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port $(CORE_PATH)/port)
+endif
 
 clean:
 	rm -rf build

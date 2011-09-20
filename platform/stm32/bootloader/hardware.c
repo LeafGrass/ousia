@@ -130,6 +130,13 @@ void setupBUTTON (void) {
   rwmVal |= 0x00000040;
   SET_REG(GPIO_CRH(GPIOC),rwmVal);
 
+#ifdef BOOTLOADER_USE_C0
+  /* Setup GPIOC Pin 0 as PP Out */
+  rwmVal =  GET_REG(GPIO_CRL(GPIOC));
+  rwmVal &= 0xFFFFFFF0;
+  rwmVal |= 0x00000001;
+  SET_REG(GPIO_CRL(GPIOC),rwmVal);
+#endif
 }
 
 void setupFLASH() {
@@ -143,6 +150,54 @@ void setupFLASH() {
   /* wait for it to come on */
   while ((pRCC->CR & 0x02) == 0x00) {}
 }
+
+#ifdef BOOTLOADER_USE_USART
+void setupUSART(u32 pclk2, u32 baudrate) {
+  float temp;
+  u16 mantissa;
+  u16 fraction;
+  u32 rwmVal;
+
+  temp = (float)(pclk2*1000000)/(baudrate*16);
+  mantissa = temp;
+  fraction = (temp - mantissa)*16;
+  mantissa <<= 4;
+  mantissa += fraction;
+
+  rwmVal = GET_REG(RCC_APB2ENR);
+  rwmVal |= 0x00004004;
+  SET_REG(RCC_APB2ENR, rwmVal);
+
+  rwmVal = GET_REG(GPIO_CRH(GPIOA));
+  rwmVal &= 0xFFFFFB4F;
+  rwmVal |= 0x000004B0;
+  SET_REG(GPIO_CRH(GPIOA), rwmVal);
+
+  rwmVal = GET_REG(RCC_APB2RSTR);
+  rwmVal |= 0x00004000;
+  rwmVal &= 0xFFFFBFFF;
+  SET_REG(RCC_APB2RSTR, rwmVal);
+
+  rwmVal = mantissa;
+  SET_REG(USART1_BRR, rwmVal);
+  rwmVal |= 0x0200C;
+  SET_REG(USART1_CR1, rwmVal);
+
+  io_putc('\r');
+}
+
+void io_putc(u8 ch) {
+  SET_REG(USART1_DR, (u8)ch);
+  while ((GET_REG(USART1_SR)&0x40) == 0);
+}
+
+void io_putstr(const u8 *str[]) {
+  u32 i = 0;
+  while (str[i] != '\0') {
+    io_putc(str[i++]);
+  }
+}
+#endif
 
 bool checkUserCode (u32 usrAddr) {
   u32 sp = *(vu32*) usrAddr;

@@ -34,36 +34,50 @@
 #include "common.h"
 
 int main() {
-  systemReset(); // peripherals but not PC
+  systemReset(); /* peripherals but not PC */
   setupCLK();
   setupLED();
+#ifdef BOOTLOADER_USE_USART
+  setupUSART(72, 9600);
+#endif
   setupUSB();
   setupBUTTON();
   setupFLASH();
 
-  strobePin(LED_BANK,LED,STARTUP_BLINKS,BLINK_FAST);
+  strobePin(LED_BANK, LED, STARTUP_BLINKS, BLINK_FAST);
+#ifdef BOOTLOADER_USE_USART
+  io_putstr("bootloader starup ...\r\n");
+#endif
 
   /* wait for host to upload program or halt bootloader */
-  bool no_user_jump = !checkUserCode(USER_CODE_FLASH) && !checkUserCode(USER_CODE_RAM) || readPin(BUTTON_BANK,BUTTON);
+  bool no_user_jump = !checkUserCode(USER_CODE_FLASH) &&
+    !checkUserCode(USER_CODE_RAM) ||
+    readPin(BUTTON_BANK, BUTTON);
   int delay_count = 0;
 
-  while ((delay_count++ < BOOTLOADER_WAIT) 
-	 || no_user_jump) {
-
-    strobePin(LED_BANK,LED,1,BLINK_SLOW);
-
+  while ((delay_count++ < BOOTLOADER_WAIT) || no_user_jump) {
+    strobePin(LED_BANK, LED, 1, BLINK_SLOW);
     if (dfuUploadStarted()) {
-      dfuFinishUpload(); // systemHardReset from DFU once done
+      dfuFinishUpload(); /* systemHardReset from DFU once done */
     }
   }
   
   if (checkUserCode(USER_CODE_RAM)) {
+#ifdef BOOTLOADER_USE_USART
+    io_putstr("jump to ram ->\r\n");
+#endif
     jumpToUser(USER_CODE_RAM);
   } else if (checkUserCode(USER_CODE_FLASH)) {
+#ifdef BOOTLOADER_USE_USART
+    io_putstr("jump to flash ->\r\n");
+#endif
     jumpToUser(USER_CODE_FLASH);
   } else {
-    // some sort of fault occurred, hard reset
-    strobePin(LED_BANK,LED,5,BLINK_FAST);
+    /* some sort of fault occurred, hard reset */
+#ifdef BOOTLOADER_USE_USART
+    io_putstr("!! fault occurred, system reset !!\r\n");
+#endif
+    strobePin(LED_BANK, LED, 5, BLINK_FAST);
     systemHardReset();
   }
   

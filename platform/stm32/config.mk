@@ -1,12 +1,13 @@
 MCU := STM32F103RB
 BOARD := leach
 #BOARD := leach_high
-MEMORY_TARGET := jtag
+MEMORY_TARGET := flash
 DENSITY := STM32_MEDIUM_DENSITY
 #DENSITY := STM32_HIGH_DENSITY
 PRODUCT_ID := LEACH003
 ERROR_LED_PORT := GPIOA
-ERROR_LED_PIN  := 0
+ERROR_LED_PIN  := 5
+USART_CONSOLE_BANK := USART1
 
 # Some target specific things
 ifeq ($(MEMORY_TARGET), ram)
@@ -29,7 +30,8 @@ GLOBAL_FLAGS := -DOUSIA \
                 -DBOARD_$(BOARD) \
                 -DMCU_$(MCU) \
                 -DERROR_LED_PORT=$(ERROR_LED_PORT) \
-                -DERROR_LED_PIN=$(ERROR_LED_PIN)
+                -DERROR_LED_PIN=$(ERROR_LED_PIN) \
+                -DUSART_CONSOLE_BANK=$(USART_CONSOLE_BANK)
 
 GLOBAL_CFLAGS := -O2 -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
                  -nostdlib -ffunction-sections -fdata-sections \

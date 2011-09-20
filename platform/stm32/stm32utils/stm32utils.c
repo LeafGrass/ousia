@@ -29,10 +29,6 @@
 
 #include <stm32/stm32utils/stm32utils.h>
 
-#define SYSTICK_RELOAD_VAL  71999 /* takes a cycle to reload */
-#define USARTx  USART1
-#define SERIAL_BAUDRATE 9600
-
 static void setupFlash(void);
 static void setupClocks(void);
 static void setupNVIC(void);
@@ -57,27 +53,10 @@ void stm32utils_board_init(void)
     afio_init();
     setupADC();
     setupTimers();
-    setupUSART(USARTx, SERIAL_BAUDRATE);
+    setupUSART(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
 
-    gpio_set_mode(GPIOA, 0, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOA, 0, 0);
-    gpio_set_mode(GPIOA, 1, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOA, 1, 0);
-    gpio_set_mode(GPIOA, 5, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOA, 5, 0);
-    gpio_set_mode(GPIOA, 12, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOA, 12, 0);
-
-    /*
-    gpio_set_mode(GPIOC, 0, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOC, 0, 1);
-    gpio_set_mode(GPIOC, 1, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOC, 1, 1);
-    gpio_set_mode(GPIOC, 2, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOC, 2, 1);
-    gpio_set_mode(GPIOC, 3, GPIO_OUTPUT_PP);
-    gpio_write_bit(GPIOC, 3, 1);
-    */
+    gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
+    gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
 }
 
 /**
@@ -89,7 +68,7 @@ void stm32utils_board_init(void)
  */
 void stm32utils_io_putc(void *p, char ch)
 {
-    usart_putc(USARTx, ch);
+    usart_putc(USART_CONSOLE_BANK, ch);
 }
 
 static void setupFlash(void)
@@ -175,15 +154,15 @@ static void setupTimers(void)
 static void setupUSART(usart_dev *dev, uint32 baud)
 {
     uint32 i = USART_RX_BUF_SIZE;
-    /* FIXME: need some preprocess here, according to specific board */
-    if (dev == USART1) {
-        gpio_set_mode(GPIOA, 9, GPIO_AF_OUTPUT_PP);
-        gpio_set_mode(GPIOA, 10, GPIO_INPUT_FLOATING);
-    }
+
+    gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_TX, GPIO_AF_OUTPUT_PP);
+    gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_RX, GPIO_INPUT_FLOATING);
+
     usart_init(dev);
     usart_set_baud_rate(dev, 72000000UL, baud);
     usart_disable(dev);
     usart_enable(dev);
+
     /* flush buffer */
     while (i--) {
         usart_putc(dev, '\r');

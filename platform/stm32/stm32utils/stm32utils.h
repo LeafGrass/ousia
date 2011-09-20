@@ -18,6 +18,25 @@
 #ifndef __STM32UTILS_H__
 #define __STM32UTILS_H__
 
+#define SYSTICK_RELOAD_VAL  71999 /* takes a cycle to reload */
+#define SERIAL_BAUDRATE     9600
+
+#if (USART_CONSOLE_BANK == USART1)
+#define USART_CONSOLE_PORT  GPIOA
+#define USART_CONSOLE_TX    9
+#define USART_CONSOLE_RX    10
+#elif (USART_CONSOLE_BANK == USART2)
+#define USART_CONSOLE_PORT  GPIOA
+#define USART_CONSOLE_TX    2
+#define USART_CONSOLE_RX    3
+#elif (USART_CONSOLE_BANK == USART3)
+#define USART_CONSOLE_PORT  GPIOB
+#define USART_CONSOLE_TX    10
+#define USART_CONSOLE_RX    11
+#else
+#error "You must specify a USART_CONSOLE_BANK."
+#endif
+
 void stm32utils_board_init(void);
 void stm32utils_io_putc(void *p, char ch);
 

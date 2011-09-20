@@ -53,16 +53,9 @@ int main(void)
     stm32utils_board_init();
 
     /* led flashes -> sign of system reset ok */
-    for(i = 0; i < 128; i++) {
-        gpio_toggle_bit(GPIOA, 0);
-        gpio_toggle_bit(GPIOA, 5);
-        /*
-        gpio_toggle_bit(GPIOC, 0);
-        gpio_toggle_bit(GPIOC, 1);
-        gpio_toggle_bit(GPIOC, 2);
-        gpio_toggle_bit(GPIOC, 3);
-        */
-        delay(25);
+    for(i = 0; i < 6; i++) {
+        gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+        delay(50);
     }
 
     /* Boot Animation */
@@ -90,7 +83,7 @@ int main(void)
                     switch( ch ) {
                     case '\r':
                         os_printf( "\r\n" );
-                        /*gpio_toggle_bit(GPIOC, 0);*/
+                        gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
                         break;
                     case '\b':
                         os_printf( "\b \b" );
