@@ -15,6 +15,8 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <unistd.h>
+
 #include <x86/x86utils/x86utils.h>
 #include <ousia/ousia.h>
 #include <ousia/tprintf.h>
@@ -49,7 +51,7 @@ int main(void)
 
     while(1)
     {
-        __asm("nop");
+        usleep(10000);
     }
 
     return 0;

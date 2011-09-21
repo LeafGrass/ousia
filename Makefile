@@ -86,7 +86,7 @@ build-check:
 ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
 else
-	@echo "Code is ready."
+	@echo "$(TARGET_PLATFORM) code is ready."
 	@echo ""
 endif
 
