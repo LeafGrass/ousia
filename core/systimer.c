@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    core/timer.c
+ * @file    core/systimer.c
  *
  * @brief   timer related routines
  *

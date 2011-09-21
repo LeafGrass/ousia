@@ -22,7 +22,7 @@
 #include <signal.h>
 #include <x86/x86utils/x86utils.h>
 
-#define OS_THROB_RATE   100
+#define OS_THROB_RATE   1000
 #define X86_MILLISEC_PER_SEC    1000000
 #define TIME_TO_START   2
 
