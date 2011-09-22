@@ -1,4 +1,5 @@
 Real-Time Ousia
+===============
 COPYRIGHT (C) LEAFGRASS
 
 
@@ -94,5 +95,5 @@ Acknowledgments
 ---------------
 Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
 Thanks to their excellent works!
-- http://leaflabs.com
+- <http://leaflabs.com>
 
