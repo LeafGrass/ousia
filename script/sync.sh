@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -n "$1" ]; then
-	git config remote.origin.url "git@github.com:librae8226/ousia.git"
+	git config remote.origin.url "git@github.com:LeafGrass/ousia.git"
 	echo ''
 	echo "Start synchronizing..."
 	echo ''
