@@ -15,9 +15,11 @@ Real-Time Ousia (would) contain these components:
     (-) Communication
 	    (-) IP Stack
     (-) Security
-	(-) Automation Test Suite
 
+	(-) Automation Test Suite
     (*) Build System
+	(+) Documentation System
+
 
 Ps: (*) Has been implemented.
     (-) Hasn't been implemented yet.
