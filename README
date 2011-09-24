@@ -79,7 +79,8 @@ Create User Project Steps
 -   Add user source code.
 -   Create a file rules.mk to specify source code related rules for makefile.
 -   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
--   Ps: Refer to existing projects for further detailed information.
+
+Ps: Refer to existing projects for further detailed information.
 
 
 Build A Different Platform
