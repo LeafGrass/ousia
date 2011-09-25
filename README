@@ -12,53 +12,61 @@ Developed following K-I-S-S principle.
 
 Source Tree Architecture
 ------------------------
-core:
-	Ousia core routines. Ousia porting code are also placed here.
-docs:
-	Complete documentation of Ousia.
-driver:
-	Different kinds of device drivers based on Ousia.
-	They are all configurable.
-framework:
-	Framework based on Ousia. Such as shell, vfs, etc.
-	They are scalable and configurable, either.
-include:
-	Header files of main routines of Ousia.
-platform:
-	Chip and board specific code, e.g. low-level library.
-project:
-	Project source code. Include several sample project instances.
-script:
-	Useful scripts used while Ousia developing.
-support:
-	Basic supporting stuffs for Ousia developing and building.
-	Useful template files are placed here, such as porting code template.
+* core
+    Ousia core routines. Ousia porting code are also placed here.
+
+* docs
+    Complete documentation of Ousia.
+
+* driver
+    Different kinds of device drivers based on Ousia.
+    They are all configurable.
+
+* framework
+    Framework based on Ousia. Such as shell, vfs, etc.
+    They are scalable and configurable, either.
+
+* include
+    Header files of main routines of Ousia.
+
+* platform
+    Chip and board specific code, e.g. low-level library.
+
+* project
+    Project source code. Include several sample project instances.
+
+* script
+    Useful scripts used while Ousia developing.
+
+* support
+    Basic supporting stuffs for Ousia developing and building.
+    Useful template files are placed here, such as porting code template.
 
 
 Core Developing Steps
 ---------------------
--	Choose or create a branch to work on.
--	Update source code, include those version related strings.
--	Modify related makefile and config file.
--	Update Ousia Syscall Reference Document if necessary.
--	Update Ousia Release Notes if necessary.
--	Commit it.
--	Tag a new one if a new version commited.
+-   Choose or create a branch to work on.
+-   Update source code, include those version related strings.
+-   Modify related makefile and config file.
+-   Update Ousia Syscall Reference Document if necessary.
+-   Update Ousia Release Notes if necessary.
+-   Commit it.
+-   Tag a new one if a new version commited.
 
 
 Porting Steps
 -------------
--	Create a directory named PLATFORM_NAME in folder "platform", then enter it.
--	Create three files: rules.mk config.mk target.mk.
-	@rules.mk: makefile source code related rules
-	@config.mk: parameters or flags for toolchains and environment
-	@target.mk: rules for building target
--	Create a directory named "port" there then create three files in it.
-	@ousia_cfg.h: os scalability related configuration.
-	@ousia_port.h: header of porting code.
-	@ousia_port.c: implentation of porting.
--	Create other porting related stuffs, such as linker scripts, if necessary.
--	Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
+-   Create a directory named PLATFORM_NAME in folder "platform", then enter it.
+-   Create three files: rules.mk config.mk target.mk.
+        @rules.mk: makefile source code related rules
+        @config.mk: parameters or flags for toolchains and environment
+        @target.mk: rules for building target
+-   Create a directory named "port" there then create three files in it.
+        @ousia_cfg.h: os scalability related configuration.
+        @ousia_port.h: header of porting code.
+        @ousia_port.c: implentation of porting.
+-   Create other porting related stuffs, such as linker scripts, if necessary.
+-   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
 
 Ps: If modify porting related code, should not edit directly in "core/port",
 do that in specific platform directory instead, e.g. "platform/stm32/port".
@@ -67,24 +75,25 @@ Because makefile will copy them into "core/port" automatically.
 
 Create User Project Steps
 -------------------------
--	Create a directory named PROJECT_NAME in folder "project".
--	Add user source code.
--	Create a file rules.mk to specify source code related rules for makefile.
--	Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
--	Ps: Refer to existing projects for further detailed information.
+-   Create a directory named PROJECT_NAME in folder "project".
+-   Add user source code.
+-   Create a file rules.mk to specify source code related rules for makefile.
+-   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
+
+Ps: Refer to existing projects for further detailed information.
 
 
 Build A Different Platform
 --------------------------
 Only modify the header TODO in root Makefile
--	Assign specific TARGET_PLATFORM and PROJECT_NAME
+-   Assign specific TARGET_PLATFORM and PROJECT_NAME
 
 
 Download Code to Target Chip
 ----------------------------
--	Modify related User Customization Items in Makefile in source tree root.
--	Do proper Operation on hardware (i.e. change boot mode or reset or something).
--	Then type 'make install' is ok.
+-   Modify related User Customization Items in Makefile in source tree root.
+-   Do proper Operation on hardware (i.e. change boot mode or reset or something).
+-   Then type 'make install' is ok.
 
 Ps: For stm32, there maybe a bootloader, 'make bootloader' will Download
 bootloader code to chip via serial. And for x86, no code downloading procedure
