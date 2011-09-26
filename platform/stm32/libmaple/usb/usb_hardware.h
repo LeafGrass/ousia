@@ -37,7 +37,9 @@
 #define USB_PACKET_BUFFER ((u32)0x40006000)
 
 #define SCS_BASE   ((u32)0xE000E000)
+#ifndef NVIC_BASE /* avoid redefinition in nvic.h */
 #define NVIC_BASE  (SCS_BASE + 0x0100)
+#endif
 #define SCB_BASE   (SCS_BASE + 0x0D00)
 
 #define SCS      0xE000E000

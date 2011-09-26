@@ -6,7 +6,7 @@
  * @log     2011-08-14 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -20,19 +20,6 @@
 
 #include <port/ousia_cfg.h>
 #include <stm32/libmaple/util.h>
-
-#ifdef OUSIA_USE_LIBMAPLE
-#include <stm32/libmaple/libmaple_types.h>
-#else
-typedef signed char int8;
-typedef unsigned char uint8;
-typedef signed short int16;
-typedef unsigned short uint16;
-typedef signed int int32;
-typedef unsigned int uint32;
-typedef signed long long int64;
-typedef unsigned long long uint64;
-#endif /* OUSIA_USE_LIBMAPLE */
 
 #define OS_THROB_RATE   1000
 

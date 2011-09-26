@@ -25,9 +25,8 @@
  *
  * Modification:
  *     @date 2011.06
- *     @author Librae
- *     @brief
- *         Add status variables into struct usart_dev.
+ *     @reviser Librae
+ *     @brief Add status variables into struct usart_dev.
  *****************************************************************************/
 
 /**

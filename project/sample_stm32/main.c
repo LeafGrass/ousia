@@ -6,7 +6,7 @@
  * @log     2011-08-10 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -15,20 +15,18 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <ousia/ousia.h>
-#include <ousia/scheduler.h>
-#include <ousia/sysutils.h>
-#include <ousia/tprintf.h>
-#include <ousia/debug.h>
-
 #include <stm32/libmaple/libmaple.h>
 #include <stm32/libmaple/libmaple_types.h>
 #include <stm32/libmaple/gpio.h>
 #include <stm32/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#define VERSION     "v0.0.3"
-#define VER_NAME    "Sweet Hibiscus"
+#include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
+#include <ousia/scheduler.h>
+#include <ousia/sysutils.h>
+#include <ousia/tprintf.h>
+#include <ousia/debug.h>
 
 void delayMicroseconds(uint32 us)
 {
@@ -52,54 +50,34 @@ int main(void)
     os_assert(stat == OS_OK);
     stm32utils_board_init();
 
-    /* led flashes -> sign of system reset ok */
-    for(i = 0; i < 6; i++) {
+    /*
+     * led flashes, sign of system starts to run
+     * FIXME at least 1000+ms to wait for usb device, or the foregoing
+     * characters may be lost, that is too long to wait ...
+     */
+    for(i = 0; i < 24; i++) {
         gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
         delay(50);
     }
 
-    /* Boot Animation */
-    os_putchar(0x0C);   /* clear screen */
-
-    os_printf("Booting...\r\n\r\n");
-    os_printf("                       _\r\n");
-    os_printf("     _                / /\r\n");
-    os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n");
-    os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n");
-    os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n");
-    os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n");
-    os_printf("                      /_/ \\_ _/\r\n" );
-    os_printf("\r\n");
-    os_printf("Ousia "); os_printf(VERSION); os_printf(" "); os_printf(VER_NAME);
-    os_printf("\r\n\tby Librae - g.leafgrass@gmail.com");
-    os_printf("\r\n\r\n");
-    os_printf("Hello, Ousia ~\r\n");
-    stm32utils_usb_putc('a');
-    stm32utils_usb_putc('b');
-    stm32utils_usb_putc('c');
+    BOOT_LOGO();
 
     for (;;) {
-        if (USART1->flag_trigger) {
-            for (i = 0; i < USART1->cnt_trigger; i++) {
-                ch = usart_getc(USART1);
-                if (ch) {
-                    switch( ch ) {
-                    case '\r':
-                        os_printf( "\r\n" );
-                        gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
-                        break;
-                    case '\b':
-                        os_printf( "\b \b" );
-                        break;
-                    default:
-                        os_printf( "%c", ch );
-                        break;
-                    }
-                }
+        if (stm32utils_usb_getc(NULL, &ch) == 0) {
+            switch(ch) {
+            case '\r':
+                os_printf( "\r\n" );
+                gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+                break;
+            case '\b':
+                os_printf( "\b \b" );
+                break;
+            default:
+                os_printf( "%c", ch );
+                break;
             }
-            USART1->cnt_trigger = 0;
         }
-        delay(10);
+        delay(20);
     }
 
     return 0;

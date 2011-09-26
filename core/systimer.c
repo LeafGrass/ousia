@@ -6,7 +6,7 @@
  * @log     2011-08-23 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -17,6 +17,7 @@
 
 #include <port/ousia_port.h>
 #include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
 #include <ousia/tprintf.h>
 #include <ousia/systimer.h>
 

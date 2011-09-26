@@ -32,6 +32,7 @@
 
 #include "usb.h"
 #include "libmaple.h"
+//#include "usart.h" /* debug */
 #include "usb_lib.h"
 #include "gpio.h"
 #include "usb_hardware.h"

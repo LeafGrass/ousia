@@ -2,19 +2,35 @@ Ousia Release Notes
 ===================
 
 
+2011-09-27 v0.0.4
+------------------
+Brief:
+    Add usb feature as maple does.
+    Update documents and some other miscellaneous stuffs.
+Bug fixes:
+    None.
+New features:
+    Now is able to download code and output as serial via usb on stm32.
+Known issues:
+    Each time to 'make' need to copy porting files to core from
+    specific platform directory, that's trivial.
+    Should not use stm32utils_usb_putstr() to support() stm32utils_usb_putc.
+    Coding style and developing details documentation needs to be published.
+
+
 2011-08-22 v0.0.3
 ------------------
 Brief:
-    Update system architecture.
-    Simplify porting steps by using several mk files.
+	Update system architecture.
+	Simplify porting steps by using several mk files.
 Bug fixes:
-    None.
+	None.
 New features:
     support mutiple platforms porting framework.
     Add x86 pseudo port.
 	Support build of different user projects.
 Known issues:
-	None.
+    None.
 
 
 2011-08-14 v0.0.3a

@@ -25,9 +25,8 @@
  *
  * Modification:
  *     @date 2011.06
- *     @author Librae
- *     @brief
- *         Add empty judgement in rb_remove.
+ *     @reviser Librae
+ *     @brief Add empty judgement in rb_remove.
  *****************************************************************************/
 
 /**

@@ -6,7 +6,7 @@
  * @log     2011-08-14 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - Librae (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -87,8 +87,8 @@ void _os_port_assert_fail(const char* file, int line, const char *exp)
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
     *stdout_putp = NULL;
-    *stdout_putf = stm32utils_io_putc;
-    //*stdout_putf = stm32utils_usb_putc;
+    //*stdout_putf = stm32utils_io_putc;
+    *stdout_putf = stm32utils_usb_putc;
 }
 
 /*

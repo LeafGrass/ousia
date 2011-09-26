@@ -22,6 +22,11 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * Modification:
+ *     @date 2011.08
+ *     @reviser Librae
+ *     @brief Modify for specific board.
  *****************************************************************************/
 
 /**

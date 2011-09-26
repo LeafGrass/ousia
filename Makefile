@@ -100,13 +100,13 @@ $(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO update $(BUILDDIRS) $(TGT_BIN)
 	$(shell rm -f $@)
 	$(SILENT_AR) $(AR) cr $(BUILD_PATH)/lib$(OUSIA_TARGET).a $(TGT_BIN)
 
-# FIXME Better not run these line each time
+# FIXME Better not run these lines each time
 update:
 ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
+endif
 	$(shell rm -rf $(CORE_PATH)/port)
 	$(shell cp -rf $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port $(CORE_PATH)/port)
-endif
 
 clean:
 	rm -rf build
