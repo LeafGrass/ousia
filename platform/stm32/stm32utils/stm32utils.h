@@ -39,6 +39,7 @@
 
 void stm32utils_board_init(void);
 void stm32utils_io_putc(void *p, char ch);
+void stm32utils_usb_putc(char ch);
 
 
 #endif /* __STM32UTILS_H__ */

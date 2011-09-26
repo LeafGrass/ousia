@@ -26,8 +26,13 @@
 #include <timer.h>
 #include <usb.h>
 #include <usart.h>
+#include <util.h>
 
 #include <stm32/stm32utils/stm32utils.h>
+
+
+#define USB_TIMEOUT 50
+
 
 static void setupFlash(void);
 static void setupClocks(void);
@@ -35,6 +40,7 @@ static void setupNVIC(void);
 static void setupADC(void);
 static void setupTimers(void);
 static void setupUSART(usart_dev *dev, uint32 baud);
+static void stm32utils_usb_putstr(const void *buf, uint32 len);
 
 
 /*
@@ -54,6 +60,7 @@ void stm32utils_board_init(void)
     setupADC();
     setupTimers();
     setupUSART(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
+    setupUSB();
 
     gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
     gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
@@ -69,6 +76,28 @@ void stm32utils_board_init(void)
 void stm32utils_io_putc(void *p, char ch)
 {
     usart_putc(USART_CONSOLE_BANK, ch);
+}
+
+void stm32utils_usb_putc(char ch)
+{
+    stm32utils_usb_putstr(&ch, 1);
+}
+
+static void stm32utils_usb_putstr(const void *buf, uint32 len)
+{
+    if (!(usbIsConnected() && usbIsConfigured()) || !buf)
+        return;
+
+    uint32 txed = 0;
+    uint32 old_txed = 0;
+    uint32 start = systick_uptime();
+
+    while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
+        txed += usbSendBytes((const uint8 *)buf + txed, len - txed);
+        if (old_txed != txed)
+            start = systick_uptime();
+        old_txed = txed;
+    }
 }
 
 static void setupFlash(void)

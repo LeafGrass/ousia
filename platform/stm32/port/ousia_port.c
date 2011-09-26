@@ -88,6 +88,7 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
 {
     *stdout_putp = NULL;
     *stdout_putf = stm32utils_io_putc;
+    //*stdout_putf = stm32utils_usb_putc;
 }
 
 /*

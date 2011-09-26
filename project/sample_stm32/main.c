@@ -74,6 +74,9 @@ int main(void)
     os_printf("\r\n\tby Librae - g.leafgrass@gmail.com");
     os_printf("\r\n\r\n");
     os_printf("Hello, Ousia ~\r\n");
+    stm32utils_usb_putc('a');
+    stm32utils_usb_putc('b');
+    stm32utils_usb_putc('c');
 
     for (;;) {
         if (USART1->flag_trigger) {
