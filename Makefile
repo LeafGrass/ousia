@@ -113,6 +113,7 @@ clean:
 
 distclean:
 	rm -rf $(BUILD_PATH)
+	rm -rf $(CORE_PATH)/port
 	rm -rf tarball
 	rm -f tags tags.ut tags.fn cscope.out
 
