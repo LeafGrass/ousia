@@ -45,13 +45,14 @@ Source Tree Architecture
 
 Core Developing Steps
 ---------------------
--   Choose or create a branch to work on.
+-   Choose or create a branch of yourself to work on.
 -   Update source code, include those version related strings.
--   Modify related makefile and config file.
--   Update Ousia Syscall Reference Document if necessary.
--   Update Ousia Release Notes if necessary.
+-   Modify related Makefiles and configuration files.
+-   Build then do some testing on this branch.
 -   Commit it.
--   Tag a new one if a new version commited.
+-   Tag a new one if a new version is commited.
+-   Push this branch to remote repo.
+-   If this is a release version, update Ousia Release Notes.
 
 
 Porting Steps
@@ -62,15 +63,16 @@ Porting Steps
         @config.mk: parameters or flags for toolchains and environment
         @target.mk: rules for building target
 -   Create a directory named "port" there then create three files in it.
-        @ousia_cfg.h: os scalability related configuration.
-        @ousia_port.h: header of porting code.
-        @ousia_port.c: implentation of porting.
+        @ousia_cfg.h: os scalability related configurations
+        @ousia_port.h: header of porting code
+        @ousia_port.c: implentation of porting
 -   Create other porting related stuffs, such as linker scripts, if necessary.
 -   Update TARGET_PLATFORM and PROJECT_NAME in main Makefile, then make.
 
-Ps: If modify porting related code, should not edit directly in "core/port",
+Ps: If modified porting related code, should not edit directly in "core/port",
 do that in specific platform directory instead, e.g. "platform/stm32/port".
-Because makefile will copy them into "core/port" automatically.
+Makefile will copy them into "core/port" automatically depend on specific cpu
+types.
 
 
 Create User Project Steps
@@ -96,8 +98,8 @@ Download Code to Target Chip
 -   Then type 'make install' is ok.
 
 Ps: For stm32, there maybe a bootloader, 'make bootloader' will Download
-bootloader code to chip via serial. And for x86, no code downloading procedure
-is needed.
+bootloader code to chip via serial. And for simulation on x86, no code
+downloading procedure is needed.
 
 
 Acknowledgments
