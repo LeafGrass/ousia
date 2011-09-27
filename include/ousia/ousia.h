@@ -6,7 +6,7 @@
  * @log     2011-08-14 Initial revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
@@ -33,7 +33,7 @@
     os_printf("                      /_/ \\_ _/\r\n" ); \
     os_printf("\r\n"); \
     os_printf("Ousia "); os_printf(VERSION); os_printf(" "); os_printf(VER_NAME); \
-    os_printf("\r\n\tby LeafGrass - g.leafgrass@gmail.com"); \
+    os_printf("\r\n\tby LeafGrass - leafgrass.g@gmail.com"); \
     os_printf("\r\n\r\n"); \
     os_printf("Hello, Ousia ~\r\n"); \
 }

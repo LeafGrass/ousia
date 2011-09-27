@@ -1,5 +1,5 @@
 # Ousia Makefile
-# Contact - g.leafgrass@gmail.com
+# Contact - leafgrass.g@gmail.com
 
 VERSION = 0
 SUBLEVEL = 0

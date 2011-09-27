@@ -7,7 +7,7 @@
  *          2011-07-29 Second revision
  *
  * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - LeafGrass (g.leafgrass@gmail.com)
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
