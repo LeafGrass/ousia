@@ -14,7 +14,7 @@ New features:
 Known issues:
     Each time to 'make' need to copy porting files to core from
     specific platform directory, that's trivial.
-    Should not use stm32utils_usb_putstr() to support() stm32utils_usb_putc.
+    Should not use stm32utils_usb_putstr() to support stm32utils_usb_putc().
     Coding style and developing details documentation needs to be published.
 
 
