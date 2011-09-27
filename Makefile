@@ -142,7 +142,7 @@ help:
 	@echo "  clean:     Remove all build files"
 	@echo "  distclean: Remove all builds tarballs, and ohter misc"
 	@echo "  help:      Show this message"
-	@echo "  tarball:	Package current revision into a tarball"
+	@echo "  tarball:   Package current revision into a tarball"
 	@echo "==========================================================="
 	@echo ""
 
