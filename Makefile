@@ -1,5 +1,5 @@
 # Ousia Makefile
-# Contact - g.leafgrass@gmail.com
+# Contact - leafgrass.g@gmail.com
 
 VERSION = 0
 SUBLEVEL = 0
@@ -72,7 +72,9 @@ ifeq ($(DOWNLOAD_MODE), serial)
 	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
 endif
 ifeq ($(DOWNLOAD_MODE), dfu)
-	dfu-util -a1 -d 1EAF:0003 -D $(BUILD_PATH)/$(OUSIA_TARGET).bin
+	$(SCRIPT_PATH)/reset.py && sleep 1 && \
+		dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
+#	dfu-util -a1 -d 1EAF:0003 -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
 endif
 
 BOOTLOADER_BIN = $(PLATFORM_PATH)/$(TARGET_PLATFORM)/bootloader/build/maple_boot.bin

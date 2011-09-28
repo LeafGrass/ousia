@@ -93,13 +93,13 @@ Only modify the header TODO in root Makefile
 
 Download Code to Target Chip
 ----------------------------
--   Modify related User Customization Items in Makefile in source tree root.
--   Do proper Operation on hardware (i.e. change boot mode or reset or something).
--   Then type 'make install' is ok.
+-   Modify related User Customization Items in Makefile in source tree.
+-   Do proper operation on hardware. (i.e. change boot jumper or reset or sth.)
+-   Then type 'make install' is fo everything for you.
 
 Ps: For stm32, there maybe a bootloader, 'make bootloader' will Download
 bootloader code to chip via serial. And for simulation on x86, no code
-downloading procedure is needed.
+downloading procedure is needed. See Makefile for detailed information.
 
 
 Acknowledgments
