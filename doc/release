@@ -2,6 +2,19 @@ Ousia Release Notes
 ===================
 
 
+2011-09-29 v0.0.4rc3
+--------------------
+Brief:
+	Resolve some make system issues and update docs.
+	Add a script to check freshness of porting related code.
+Bug fixes:
+	Work arround the bug that need make twice for a successful build.
+New features:
+	None.
+Known issues:
+	Please see FIXME and TODO in source files.
+
+
 2011-09-27 v0.0.4rc1
 --------------------
 Brief:
