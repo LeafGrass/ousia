@@ -66,56 +66,47 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 # Download code to target device
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
 ifeq ($(DOWNLOAD_MODE), jtag)
-	$(SHELL) ./script/download.sh
+	$(SHELL) $(SCRIPT_PATH)/download.sh
 endif
 ifeq ($(DOWNLOAD_MODE), serial)
-	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
+	$(PYTHON) $(SCRIPT_PATH)/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
 endif
 ifeq ($(DOWNLOAD_MODE), dfu)
 	$(SCRIPT_PATH)/reset.py && sleep 1 && \
 		dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
-#	dfu-util -a1 -d 1EAF:0003 -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
 endif
 
 BOOTLOADER_BIN = $(PLATFORM_PATH)/$(TARGET_PLATFORM)/bootloader/build/maple_boot.bin
 
 bootloader: $(BOOTLOADER_BIN)
-	$(PYTHON) ./script/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $^
+	$(PYTHON) $(SCRIPT_PATH)/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $^
 
 # Force a rebuild if the maple target changed
 PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
 build-check:
 ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
+	$(shell cp $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port/ousia_*.* $(CORE_PATH)/port/)
 else
-	@echo "$(TARGET_PLATFORM) code is ready."
+	@echo "$(TARGET_PLATFORM) target is ready."
 	@echo ""
 endif
 
-sketch: MSG_INFO build-check update $(BUILD_PATH)/$(OUSIA_TARGET)
+sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 
 lib: $(BUILD_PATH)/lib$(OUSIA_TARGET).a
 	@find $(BUILD_PATH) -iname *.o | xargs $(SIZE) -t > $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 #	@cat $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 
-$(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO update $(BUILDDIRS) $(TGT_BIN)
+$(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO build-check $(BUILDDIRS) $(TGT_BIN)
 	$(shell rm -f $@)
 	$(SILENT_AR) $(AR) cr $(BUILD_PATH)/lib$(OUSIA_TARGET).a $(TGT_BIN)
-
-# FIXME Better not run these lines each time
-update:
-ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
-	$(shell rm -rf $(BUILD_PATH))
-endif
-	$(shell rm -rf $(CORE_PATH)/port)
-	$(shell cp -rf $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port $(CORE_PATH)/port)
 
 clean:
 	rm -rf build
 
 distclean:
 	rm -rf $(BUILD_PATH)
-	rm -rf $(CORE_PATH)/port
 	rm -rf tarball
 	rm -f tags tags.ut tags.fn cscope.out
 
@@ -142,7 +133,7 @@ help:
 	@echo ""
 	@echo "Other targets:"
 	@echo "  clean:     Remove all build files"
-	@echo "  distclean: Remove all builds tarballs, and ohter misc"
+	@echo "  distclean: Remove all builds tarballs, and other misc"
 	@echo "  help:      Show this message"
 	@echo "  tarball:   Package current revision into a tarball"
 	@echo "==========================================================="

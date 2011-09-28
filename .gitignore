@@ -1,5 +1,4 @@
 build/
-core/port/
 .dep
 *.swp
 tag*
