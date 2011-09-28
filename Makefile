@@ -61,7 +61,7 @@ $(foreach m,$(MODULES),$(eval $(call MODULE_template,$(m))))
 # Main target
 include $(SUPPORT_PATH)/make/build-targets.mk
 
-.PHONY: install bootloader sketch lib clean help debug cscope tags ctags ram flash jtag update
+.PHONY: MSG_INFO build-check install bootloader sketch lib clean distclean tarball help
 
 # Download code to target device
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
@@ -88,15 +88,13 @@ ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
 	$(shell cp $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port/ousia_*.* $(CORE_PATH)/port/)
 else
-	@echo "$(TARGET_PLATFORM) target is ready."
-	@echo ""
+	$(shell $(SCRIPT_PATH)/check_port.sh)
 endif
 
 sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)
 
 lib: $(BUILD_PATH)/lib$(OUSIA_TARGET).a
 	@find $(BUILD_PATH) -iname *.o | xargs $(SIZE) -t > $(BUILD_PATH)/$(OUSIA_TARGET).sizes
-#	@cat $(BUILD_PATH)/$(OUSIA_TARGET).sizes
 
 $(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO build-check $(BUILDDIRS) $(TGT_BIN)
 	$(shell rm -f $@)
@@ -106,9 +104,11 @@ clean:
 	rm -rf build
 
 distclean:
-	rm -rf $(BUILD_PATH)
-	rm -rf tarball
-	rm -f tags tags.ut tags.fn cscope.out
+	$(shell rm -rf $(BUILD_PATH))
+	$(shell rm -rf tarball)
+	$(shell rm -f tags tags.ut tags.fn cscope.out)
+	$(shell find . -name "*.swp" -exec rm -rf {} \;) 
+	@echo "clean up completely"
 
 tarball:
 	mkdir -p tarball
@@ -119,23 +119,22 @@ help:
 	@echo "==========================================================="
 	@echo "[Ousia Make Help]"
 	@echo ""
-	@echo "Build targets (default MEMORY_TARGET=flash):"
-	@echo "  ram:       Compile sketch code to ram"
-	@echo "  flash:     Compile sketch code to flash"
-	@echo "  jtag:      Compile sketch code to jtag"
-	@echo "  sketch:    Compile sketch code to target MEMORY_TARGET"
+	@echo "Build targets:"
+	@echo "  sketch:     default build"
+	@echo "  lib:        build ousia into a static library"
 	@echo ""
 	@echo "Downloading targets:"
-	@echo "  install:   Download binary image to target device"
+	@echo "  install:    download binary image to target device"
+	@echo "  bootloader: download bootloader via serial (stm32 peculiar)"
 	@echo ""
 	@echo "Debug targets:"
-	@echo "  debug:     Start an openocd server"
+	@echo "  debug:      start an openocd server"
 	@echo ""
 	@echo "Other targets:"
-	@echo "  clean:     Remove all build files"
-	@echo "  distclean: Remove all builds tarballs, and other misc"
-	@echo "  help:      Show this message"
-	@echo "  tarball:   Package current revision into a tarball"
+	@echo "  clean:      remove all build files"
+	@echo "  distclean:  remove all builds tarballs, and other misc"
+	@echo "  tarball:    package current revision into a tarball"
+	@echo "  help:       show this message"
 	@echo "==========================================================="
 	@echo ""
 
@@ -153,17 +152,4 @@ MSG_INFO:
 	@echo "  See 'make help' for more information"
 	@echo "========================================"
 	@echo ""
-
-OPENOCD_WRAPPER := openocd -f ./support/openocd/stm32.cfg
-debug:
-	$(OPENOCD_WRAPPER)
-
-ram:
-	@$(MAKE) MEMORY_TARGET=ram --no-print-directory sketch
-
-flash:
-	@$(MAKE) MEMORY_TARGET=flash --no-print-directory sketch
-
-jtag:
-	@$(MAKE) MEMORY_TARGET=jtag --no-print-directory sketch
 

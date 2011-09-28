@@ -34,5 +34,6 @@ if [ $flag_different == 1 ]; then
     rm -rf ./core/port/*
     cp ./platform/$build_type/port/ousia_*.* ./core/port/
 else
+	echo
 fi
 
