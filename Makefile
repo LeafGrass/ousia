@@ -112,7 +112,7 @@ distclean:
 
 tarball:
 	mkdir -p tarball
-	$(SHELL) ./script/tarball.sh
+	$(SHELL) $(SCRIPT_PATH)/tarball.sh
 
 help:
 	@echo ""
