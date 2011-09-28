@@ -95,7 +95,7 @@ Download Code to Target Chip
 ----------------------------
 -   Modify related User Customization Items in Makefile in source tree.
     For stm32, you need to decide which MEMORY_TARGET to use:
-	jtag, flash, or	ram.
+    jtag, flash, or ram.
 -   Do proper operation on hardware. (i.e. change boot jumper or reset or sth.)
 -   Then type 'make install' is fo everything for you.
 
