@@ -22,13 +22,13 @@
  * @brief   sample function
  * @param   a -i- an integer
  *          b -i- another integer
- *          pResult -o- result
+ *          result -io- result
  * @return  an integer
  * @note    just use it and take it easy
  */
-int sample_function(int a, int b, int *pResult)
+int sample_function(int a, int b, int *result)
 {
-    *pResult = a + b;
+    *result = a + b;
     return 0;
 }
 

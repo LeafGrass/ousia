@@ -23,7 +23,7 @@
  * @brief   sample function
  * @param   a -i- an integer
  *          b -i- another integer
- *          pResult -o- result
+ *          result -io- result
  * @return  an integer
  * @note    just use it and take it easy
  */
