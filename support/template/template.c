@@ -21,8 +21,8 @@
 /*
  * @file    support/template/template.c
  * @brief   File template.
- * @log     2011.7 Initial revision
- *          2011.7 Second revision
+ * @log     2011.7 initial revision
+ *          2011.10 second revision
  */
 
 #include <template.h>
@@ -31,7 +31,7 @@
  * @brief   sample function
  * @param   a -i- an integer
  *          b -i- another integer
- *          result -io- result
+ *          result -io- result holder
  * @return  an integer
  * @note    just use it and take it easy
  */

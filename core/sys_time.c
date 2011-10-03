@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/scheduler.c
+ * @file    core/sys_time.c
  *
- * @brief   implementation of ousia scheduler
+ * @brief   timer related routines
  *
- * @log     2011-07-28 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,19 +15,40 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
+#include <port/ousia_port.h>
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <ousia/tprintf.h>
-#include <ousia/scheduler.h>
+#include <sys/sys_print.h>
+#include <sys/sys_time.h>
+
+static unsigned long long _systime;
+
+static void __systick_interrupt(void);
 
 /*
- * @brief   start ousia scheduler to work
+ * @brief   os timer init
  * @param   none
- * @return  os_status
+ * @return  none
  * @note    none
  */
-os_status _scheduler_init(void)
+void _os_timer_init(void)
 {
-    os_status stat = OS_OK;
-    return stat;
+    _systime = 0UL;
+    _systick_register_callback(&__systick_interrupt);
+}
+
+/*
+ * @brief   os systick interrupt handler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+static void __systick_interrupt(void)
+{
+    os_enter_critical();
+    _systime++;
+    os_exit_critical();
+
+    return;
 }
 

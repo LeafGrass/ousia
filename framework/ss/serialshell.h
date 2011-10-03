@@ -3,7 +3,7 @@
  *
  * @brief   header of serialshell.c
  *
- * @log     2011-07-28 Initial revision
+ * @log     2011.7 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)

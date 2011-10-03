@@ -19,26 +19,19 @@ to check the examples before assuming that style is silent on an issue.
 /* Most single-line comments look like this. */
 
 /*
- * Multi-line comments look like this.  Make them real sentences.	Fill
+ * Multi-line comments look like this.  Make them real sentences. Fill
  * them so they look like real paragraphs.
  */
 
 The copyright header should be a multi-line comment, with the first line
 of the comment having a dash after the star like so:
 
-/*-
-* Copyright (c) 1984-2025 John Q. Public
-* All rights reserved.
-*
-* Long, boring license goes here, but trimmed for brevity
-*/
-
-An automatic script collects license information from the tree for all
-comments that start in the first column with ``/*-''.  If you desire to
-flag indent(1) to not reformat a comment that starts in the first column
-which is not a license or copyright notice, change the dash to a star for
-those comments.  Comments starting in columns other than the first are
-never considered license statements.
+/*
+ * Copyright (c) 1984-2025 John Q. Public
+ * All rights reserved.
+ *
+ * Long, boring license goes here, but trimmed for brevity
+ */
 
 After any copyright header, there is a blank line, and the $FreeBSD$ for
 non C/C++ language source files.  Version control system ID tags should
@@ -76,8 +69,6 @@ For a network program, put the network include files next.
 #include <net/route.h>
 #include <netinet/in.h>
 #include <protocols/rwhod.h>
-
-Do not use files in /usr/include for files in the kernel.
 
 Leave a blank line before the next group, the /usr/include files, which
 should be sorted alphabetically by name.

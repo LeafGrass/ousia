@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    include/ousia/scheduler.h
+ * @file    core/sys_sched.c
  *
- * @brief   header of ousia scheduler.
+ * @brief   implementation of ousia scheduler
  *
- * @log     2011-07-28 Initial revision
+ * @log     2011.7 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,12 +15,19 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __SCHEDULER_H__
-#define __SCHEDULER_H__
+#include <ousia/ousia_type.h>
+#include <sys/sys_print.h>
+#include <sys/sys_sched.h>
 
-#include <ousia/ousia.h>
-
-os_status _scheduler_init(void);
-
-#endif /* __SCHEDULER_H__ */
+/*
+ * @brief   start ousia scheduler to work
+ * @param   none
+ * @return  os_status
+ * @note    none
+ */
+os_status _scheduler_init(void)
+{
+    os_status stat = OS_OK;
+    return stat;
+}
 

@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    include/ousia/interrupt.h
+ * @file    core/sys_utils.c
  *
- * @brief   header of ousia IRQ controller
+ * @brief   ousia system utilities
  *
- * @log     2011-08-14 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,17 +15,30 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __INTERRUPT_H__
-#define __INTERRUPT_H__
+#include <port/ousia_port.h>
+#include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
+#include <sys/sys_time.h>
+#include <sys/sys_sched.h>
+#include <sys/sys_print.h>
+#include <sys/sys_utils.h>
 
 /*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
+ * @brief   the very first init of ousia
+ * @param   none
+ * @return  none
+ * @note    this function should be called before all other syscalls
  */
+os_status os_init(void)
+{
+    os_status stat = OS_OK;
 
-#endif /* __INTERRUPT_H__ */
+    _os_port_init();
+    _init_printf();
+    _os_timer_init();
+    stat = _scheduler_init();
+
+    return stat;
+}
+
 

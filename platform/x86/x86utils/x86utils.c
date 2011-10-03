@@ -3,7 +3,7 @@
  *
  * @brief   x86 utilities
  *
- * @log     2011-08-19 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)

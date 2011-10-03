@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/interrupt.c
+ * @file    include/sys/sys_sched.h
  *
- * @brief   core IRQ controller
+ * @brief   header of ousia scheduler.
  *
- * @log     2011-08-14 Initial revision
+ * @log     2011.7 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,16 +15,12 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
-#include <ousia/interrupt.h>
+#ifndef __SYS_SCHED_H__
+#define __SYS_SCHED_H__
 
-/*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
- */
+#include <ousia/ousia.h>
+
+os_status _scheduler_init(void);
+
+#endif /* __SYS_SCHED_H__ */
 

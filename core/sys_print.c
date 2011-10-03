@@ -1,5 +1,23 @@
+/* *****************************************************************************
+ * @file    core/sys_sched.c
+ *
+ * @brief   implementation of ousia scheduler
+ *
+ * @log     2011.7 initial revision
+ *          2011.10 modified by Librae
+ *
+ * *****************************************************************************
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+ * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+ * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * ****************************************************************************/
+
 /*
-File: printf.c
+File: tprintf.c
 
 Copyright (C) 2004  Kustaa Nyholm
 
@@ -27,7 +45,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <stddef.h>
 #endif
-#include <ousia/tprintf.h>
+#include <sys/sys_print.h>
 
 typedef void (*putcf) (void *dev, char ch);
 static putcf stdout_putf;

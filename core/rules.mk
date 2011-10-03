@@ -14,12 +14,12 @@ CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall
 
 # Local rules and targets (add source files here)
 cSRCS_$(d) := port/ousia_port.c \
-              tprintf.c \
-              scheduler.c \
-              systimer.c \
-              sysutils.c \
-              interrupt.c \
-              debug.c
+              sys_print.c \
+              sys_sched.c \
+              sys_time.c \
+              sys_utils.c \
+              sys_ictl.c \
+              sys_debug.c
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

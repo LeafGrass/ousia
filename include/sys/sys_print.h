@@ -1,3 +1,21 @@
+/* *****************************************************************************
+ * @file    include/sys/sys_print.h
+ *
+ * @brief   header of sys_print.c
+ *
+ * @log     2011.8 initial revision
+ *          2011.10 modified by Librae
+ *
+ * *****************************************************************************
+ * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
+ *
+ * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
+ * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
+ * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ * ****************************************************************************/
+
 /*
 File: tprintf.h
 
@@ -88,8 +106,8 @@ regs Kusti, 23.10.2004
 */
 
 
-#ifndef __TFP_PRINTF__
-#define __TFP_PRINTF__
+#ifndef __SYS_PRINT_H__
+#define __SYS_PRINT_H__
 
 void _init_printf(void);
 void tfp_putchar(char ch);
@@ -101,5 +119,5 @@ void tfp_sprintf(char *s, const char *fmt, ...);
 #define os_printf   tfp_printf
 #define os_sprintf  tfp_sprintf
 
-#endif /* __TFP_PRINTF__ */
+#endif /* __SYS_PRINT_H__ */
 

@@ -3,7 +3,7 @@
  *
  * @brief   sample code
  *
- * @log     2011-08-10 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -23,10 +23,10 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <ousia/scheduler.h>
-#include <ousia/sysutils.h>
-#include <ousia/tprintf.h>
-#include <ousia/debug.h>
+#include <sys/sys_sched.h>
+#include <sys/sys_utils.h>
+#include <sys/sys_print.h>
+#include <sys/sys_debug.h>
 
 void delayMicroseconds(uint32 us)
 {

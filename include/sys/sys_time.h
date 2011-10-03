@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    include/ousia/debug.h
+ * @file    include/sys/sys_time.h
  *
- * @brief   debuging services
+ * @brief   header of ousia timer
  *
- * @log     2011-08-25 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,28 +15,10 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __DEBUG_H__
-#define __DEBUG_H__
+#ifndef __SYS_TIME_H__
+#define __SYS_TIME_H__
 
-void _os_assert_fail(const char *p_file, int line, const char *p_exp);
+void _os_timer_init(void);
 
-#define DEBUG_NONE      0
-#define DEBUG_FAULT     1
-#define DEBUG_ALL       2
-
-#define DEBUG_LEVEL DEBUG_ALL
-
-#if (DEBUG_LEVEL >= DEBUG_ALL)
-#define _OS_ASSERT(exp) \
-    if (exp) { \
-    } else { \
-        _os_assert_fail(__FILE__, __LINE__, #exp); \
-    }
-#else
-#define ASSERT(exp) (void)((0))
-#endif
-
-#define os_assert(exp)   _OS_ASSERT(exp)
-
-#endif /* __DEBUG_H__ */
+#endif /* __SYS_TIME_H__ */
 

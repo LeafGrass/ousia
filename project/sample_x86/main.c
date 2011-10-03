@@ -3,7 +3,7 @@
  *
  * @brief   sample code
  *
- * @log     2011-08-19 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -20,8 +20,8 @@
 #include <x86/x86utils/x86utils.h>
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <ousia/tprintf.h>
-#include <ousia/sysutils.h>
+#include <sys/sys_print.h>
+#include <sys/sys_utils.h>
 
 int main(void)
 {

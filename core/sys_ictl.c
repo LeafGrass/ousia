@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/sysutils.c
+ * @file    core/sys_ictl.c
  *
- * @brief   ousia system utilities
+ * @brief   core IRQ controller
  *
- * @log     2011-08-12 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,30 +15,16 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <port/ousia_port.h>
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <ousia/systimer.h>
-#include <ousia/scheduler.h>
-#include <ousia/tprintf.h>
-#include <ousia/sysutils.h>
+#include <sys/sys_ictl.h>
 
 /*
- * @brief   the very first init of ousia
- * @param   none
- * @return  none
- * @note    this function should be called before all other syscalls
+ * @brief   sample function
+ * @param   a -i- an integer
+ *          b -i- another integer
+ *          pResult -o- result
+ * @return  an integer
+ * @note    just use it and take it easy
  */
-os_status os_init(void)
-{
-    os_status stat = OS_OK;
-
-    _os_port_init();
-    _init_printf();
-    _os_timer_init();
-    stat = _scheduler_init();
-
-    return stat;
-}
-
 

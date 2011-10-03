@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/sysutils.h
+ * @file    include/sys/sys_utils.h
  *
- * @brief   header of sysutils.c
+ * @brief   header of sys_utils.c
  *
- * @log     2011-08-12 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,10 +15,10 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#ifndef __SYSUTILS_H__
-#define __SYSUTILS_H__
+#ifndef __SYS_UTILS_H__
+#define __SYS_UTILS_H__
 
 os_status os_init(void);
 
-#endif /* __SYSUTILS_H__ */
+#endif /* __SYS_UTILS_H__ */
 

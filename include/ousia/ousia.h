@@ -3,7 +3,7 @@
  *
  * @brief   micro implementation of stdarg.h of libc
  *
- * @log     2011-08-14 Initial revision
+ * @log     2011.8 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
