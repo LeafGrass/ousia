@@ -14,7 +14,7 @@ NAME = Delavay Fir
 #      @PROJECT_NAME specific directory name in folder $(PROJECT_PATH)
 #      @DOWNLOAD_MODE jtag, serial or dfu
 OUSIA_TARGET = ousia
-TARGET_PLATFORM = stm32
+TARGET_PLATFORM = x86
 PROJECT_NAME = sample_$(TARGET_PLATFORM)
 DOWNLOAD_MODE = dfu
 

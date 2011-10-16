@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    platform/stm32/port/ousia_port.c
+ * @file    platform/x86/port/ousia_port.c
  *
  * @brief   ousia system utilities
  *
@@ -15,12 +15,12 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <stm32/libmaple/systick.h>
-#include <stm32/libmaple/util.h>
-#include <stm32/stm32utils/stm32utils.h>
+#include <stdlib.h>
+
+#include <x86/x86utils/x86utils.h>
 #include <port/ousia_port.h>
 
-static uint32 critical_nest;
+static unsigned int critical_nest;
 
 #if 0
 static void __port_systick_handler(void);
@@ -74,7 +74,7 @@ void _os_exit_critical(void)
  */
 void _os_port_assert_fail(const char* file, int line, const char *exp)
 {
-    _fail(file, line, exp);
+    return;
 }
 
 /*
@@ -87,8 +87,7 @@ void _os_port_assert_fail(const char* file, int line, const char *exp)
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
     *stdout_putp = NULL;
-    /* *stdout_putf = stm32utils_io_putc; */
-    *stdout_putf = stm32utils_usb_putc;
+    *stdout_putf = x86utils_io_putc;
 }
 
 /*
@@ -99,7 +98,8 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  */
 void _systick_register_callback(void (*callback)(void))
 {
-    systick_attach_callback(callback);
+    x86utils_attach_systick_callback(callback);
+    return;
 }
 
 #if 0
