@@ -26,7 +26,7 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <sys/sys_ictl.h>
+#include <sys/ictl.h>
 
 /*
  * @brief   sample function

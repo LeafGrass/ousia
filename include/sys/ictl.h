@@ -1,7 +1,7 @@
 /* *****************************************************************************
- * @file    core/sys_debug.c
+ * @file    include/sys/ictl.h
  *
- * @brief   debuging services
+ * @brief   header of ousia IRQ controller
  *
  * @log     2011.8 initial revision
  *
@@ -15,24 +15,17 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <port/ousia_port.h>
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
-#include <sys/sched.h>
-#include <sys/print.h>
-#include <sys/utils.h>
-#include <sys/debug.h>
+#ifndef __SYS_ICTL_H__
+#define __SYS_ICTL_H__
 
 /*
- * @brief   os assert failing routine
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
- * @return  none
- * @note    may call porting assert service or implemented solely
+ * @brief   sample function
+ * @param   a -i- an integer
+ *          b -i- another integer
+ *          pResult -o- result
+ * @return  an integer
+ * @note    just use it and take it easy
  */
-void _os_assert_fail(const char *p_file, int line, const char *p_exp)
-{
-    _os_port_assert_fail(p_file, line, p_exp);
-}
+
+#endif /* __SYS_ICTL_H__ */
 

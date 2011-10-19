@@ -42,11 +42,11 @@ the comment having a dash after the star like so:
 
 Headers
 -------
-#include <sys/sys_ictl.h>
+#include <sys/ictl.h>
 - Leave another blank line before the header files.
 - Ousia include files come first (i.e. ousia/*.h), then system include files
 (i.e. sys/*.h) follow.
-#include <sys/sys_time.h>  /* Non-local includes in angle brackets. */
+#include <sys/time.h>  /* Non-local includes in angle brackets. */
 
 
 Macros

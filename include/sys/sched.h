@@ -1,9 +1,9 @@
 /* *****************************************************************************
- * @file    core/sys_debug.c
+ * @file    include/sys/sched.h
  *
- * @brief   debuging services
+ * @brief   header of ousia scheduler.
  *
- * @log     2011.8 initial revision
+ * @log     2011.7 initial revision
  *
  * *****************************************************************************
  * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
@@ -15,24 +15,12 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <port/ousia_port.h>
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
-#include <sys/sched.h>
-#include <sys/print.h>
-#include <sys/utils.h>
-#include <sys/debug.h>
+#ifndef __SYS_SCHED_H__
+#define __SYS_SCHED_H__
 
-/*
- * @brief   os assert failing routine
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
- * @return  none
- * @note    may call porting assert service or implemented solely
- */
-void _os_assert_fail(const char *p_file, int line, const char *p_exp)
-{
-    _os_port_assert_fail(p_file, line, p_exp);
-}
+#include <ousia/ousia.h>
+
+os_status _scheduler_init(void);
+
+#endif /* __SYS_SCHED_H__ */
 

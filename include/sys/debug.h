@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * @file    core/sys_debug.c
+ * @file    include/sys/debug.h
  *
  * @brief   debuging services
  *
@@ -15,24 +15,28 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  * ****************************************************************************/
 
-#include <port/ousia_port.h>
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
-#include <sys/sched.h>
-#include <sys/print.h>
-#include <sys/utils.h>
-#include <sys/debug.h>
+#ifndef __SYS_DEBUG_H__
+#define __SYS_DEBUG_H__
 
-/*
- * @brief   os assert failing routine
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
- * @return  none
- * @note    may call porting assert service or implemented solely
- */
-void _os_assert_fail(const char *p_file, int line, const char *p_exp)
-{
-    _os_port_assert_fail(p_file, line, p_exp);
-}
+void _os_assert_fail(const char *p_file, int line, const char *p_exp);
+
+#define DEBUG_NONE      0
+#define DEBUG_FAULT     1
+#define DEBUG_ALL       2
+
+#define DEBUG_LEVEL DEBUG_ALL
+
+#if (DEBUG_LEVEL >= DEBUG_ALL)
+#define _OS_ASSERT(exp) \
+    if (exp) { \
+    } else { \
+        _os_assert_fail(__FILE__, __LINE__, #exp); \
+    }
+#else
+#define ASSERT(exp) (void)((0))
+#endif
+
+#define os_assert(exp)   _OS_ASSERT(exp)
+
+#endif /* __SYS_DEBUG_H__ */
 

@@ -20,8 +20,8 @@
 #include <x86/x86utils/x86utils.h>
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <sys/sys_print.h>
-#include <sys/sys_utils.h>
+#include <sys/print.h>
+#include <sys/utils.h>
 
 int main(void)
 {

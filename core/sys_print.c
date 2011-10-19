@@ -45,7 +45,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <stdarg.h>
 #include <stddef.h>
 #endif
-#include <sys/sys_print.h>
+#include <sys/print.h>
 
 typedef void (*putcf) (void *dev, char ch);
 static putcf stdout_putf;

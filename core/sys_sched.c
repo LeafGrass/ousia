@@ -16,8 +16,8 @@
  * ****************************************************************************/
 
 #include <ousia/ousia_type.h>
-#include <sys/sys_print.h>
-#include <sys/sys_sched.h>
+#include <sys/print.h>
+#include <sys/sched.h>
 
 /*
  * @brief   start ousia scheduler to work

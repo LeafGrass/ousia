@@ -18,8 +18,8 @@
 #include <port/ousia_port.h>
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <sys/sys_print.h>
-#include <sys/sys_time.h>
+#include <sys/print.h>
+#include <sys/time.h>
 
 static unsigned long long _systime;
 

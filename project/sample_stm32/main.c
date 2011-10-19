@@ -23,10 +23,10 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <sys/sys_sched.h>
-#include <sys/sys_utils.h>
-#include <sys/sys_print.h>
-#include <sys/sys_debug.h>
+#include <sys/sched.h>
+#include <sys/utils.h>
+#include <sys/print.h>
+#include <sys/debug.h>
 
 void delayMicroseconds(uint32 us)
 {

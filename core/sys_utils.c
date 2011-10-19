@@ -18,10 +18,10 @@
 #include <port/ousia_port.h>
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <sys/sys_time.h>
-#include <sys/sys_sched.h>
-#include <sys/sys_print.h>
-#include <sys/sys_utils.h>
+#include <sys/time.h>
+#include <sys/sched.h>
+#include <sys/print.h>
+#include <sys/utils.h>
 
 /*
  * @brief   the very first init of ousia
