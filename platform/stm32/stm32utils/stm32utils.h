@@ -53,8 +53,6 @@ void stm32utils_io_putc(void *p, char ch);
 void stm32utils_io_getc(void *p, char *ch);
 void stm32utils_usb_putc(void *p, char ch);
 int32 stm32utils_usb_getc(void *p, char *buf);
-//void enableUSB(gpio_dev *disc_dev, uint8 disc_bit);
-//void disableUSB(gpio_dev *disc_dev, uint8 disc_bit);
 
 
 #endif /* __STM32UTILS_H__ */
