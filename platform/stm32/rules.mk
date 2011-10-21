@@ -38,13 +38,11 @@ cSRCS_$(d) := \
 	stm32/libmaple/timer.c \
 	stm32/libmaple/usart.c \
 	stm32/libmaple/util.c \
-	stm32/libmaple/usb/descriptors.c \
 	stm32/libmaple/usb/usb.c \
-	stm32/libmaple/usb/usb_callbacks.c \
-	stm32/libmaple/usb/usb_hardware.c \
+	stm32/libmaple/usb/usb_reg_map.c \
+	stm32/libmaple/usb/usb_cdcacm.c \
 	stm32/libmaple/usb/usb_lib/usb_core.c \
 	stm32/libmaple/usb/usb_lib/usb_init.c \
-	stm32/libmaple/usb/usb_lib/usb_int.c \
 	stm32/libmaple/usb/usb_lib/usb_mem.c \
 	stm32/libmaple/usb/usb_lib/usb_regs.c
 sSRCS_$(d) := stm32/libmaple/exc.S

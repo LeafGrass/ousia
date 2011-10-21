@@ -25,6 +25,7 @@
 #include <adc.h>
 #include <timer.h>
 #include <usb.h>
+#include <usb_cdcacm.h>
 #include <usart.h>
 #include <util.h>
 
@@ -40,6 +41,8 @@ static void setupNVIC(void);
 static void setupADC(void);
 static void setupTimers(void);
 static void setupUSART(usart_dev *dev, uint32 baud);
+static void enableUSB(gpio_dev *disc_dev, uint8 disc_bit);
+static void disableUSB(gpio_dev *disc_dev, uint8 disc_bit);
 static void stm32utils_usb_putstr(const void *buf, uint32 len);
 
 
@@ -60,7 +63,8 @@ void stm32utils_board_init(void)
         setupADC();
         setupTimers();
         setupUSART(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
-        setupUSB();
+        disableUSB(USB_DISC_DEV, USB_DISC_BIT);
+        enableUSB(USB_DISC_DEV, USB_DISC_BIT);
         stm32utils_usb_putstr("", 0);
 
         gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
@@ -117,10 +121,34 @@ int32 stm32utils_usb_getc(void *p, char *buf)
         uint32 len = 0;
         if (!buf)
                 return -1;
-        len = usbReceiveBytes((uint8 *)buf, 1);
+        len = usb_cdcacm_rx((uint8 *)buf, 1);
         if (len == 0)
                 return -1;
         return 0;
+}
+
+/*
+ * @brief   enable USB (present us to USB)
+ * @param   disc_dev io port for usb disc
+ *          disc_bit bit of this io port for usb disc
+ * @return  none
+ * @note    none
+ */
+void enableUSB(gpio_dev *disc_dev, uint8 disc_bit)
+{
+    usb_cdcacm_enable(disc_dev, disc_bit);
+}
+
+/*
+ * @brief   enable USB (present us to USB)
+ * @param   disc_dev io port for usb disc
+ *          disc_bit bit of this io port for usb disc
+ * @return  none
+ * @note    none
+ */
+void disableUSB(gpio_dev *disc_dev, uint8 disc_bit)
+{
+    usb_cdcacm_disable(disc_dev, disc_bit);
 }
 
 /*
@@ -140,7 +168,7 @@ static void stm32utils_usb_putstr(const void *buf, uint32 len)
         uint32 start = systick_uptime();
 
         while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
-                txed += usbSendBytes((const uint8 *)buf + txed, len - txed);
+                txed += usb_cdcacm_tx((const uint8 *)buf + txed, len - txed);
                 if (old_txed != txed)
                         start = systick_uptime();
                 old_txed = txed;
