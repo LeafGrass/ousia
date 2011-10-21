@@ -40,9 +40,9 @@ static void __pseudo_systick(int sig);
  */
 void x86utils_system_init(void)
 {
-    printf("%s\n", __FUNCTION__);
-    signal(SIGALRM, __pseudo_systick);
-    __timer_init();
+        printf("%s\n", __FUNCTION__);
+        signal(SIGALRM, __pseudo_systick);
+        __timer_init();
 }
 
 /**
@@ -54,7 +54,7 @@ void x86utils_system_init(void)
  */
 void x86utils_io_putc(void *p, char ch)
 {
-    putchar(ch);
+        putchar(ch);
 }
 
 /**
@@ -65,7 +65,7 @@ void x86utils_io_putc(void *p, char ch)
  */
 void x86utils_attach_systick_callback(void (*callback_fn)(void))
 {
-    systick_user_callback = callback_fn;
+        systick_user_callback = callback_fn;
 }
 
 /**
@@ -76,16 +76,16 @@ void x86utils_attach_systick_callback(void (*callback_fn)(void))
  */
 static void __timer_init(void)
 {
-    struct itimerval itv, oldtv;
+        struct itimerval itv, oldtv;
 
-    _uptime = 0;
+        _uptime = 0;
 
-    itv.it_interval.tv_sec = 0;
-    itv.it_interval.tv_usec = X86_MILLISEC_PER_SEC/OS_THROB_RATE;
-    itv.it_value.tv_sec = TIME_TO_START;
-    itv.it_value.tv_usec = 0;
+        itv.it_interval.tv_sec = 0;
+        itv.it_interval.tv_usec = X86_MILLISEC_PER_SEC/OS_THROB_RATE;
+        itv.it_value.tv_sec = TIME_TO_START;
+        itv.it_value.tv_usec = 0;
 
-    setitimer(ITIMER_REAL, &itv, &oldtv);
+        setitimer(ITIMER_REAL, &itv, &oldtv);
 }
 
 /**
@@ -96,7 +96,7 @@ static void __timer_init(void)
  */
 static void __pseudo_systick(int sig)
 {
-    _uptime++;
-    systick_user_callback();
+        _uptime++;
+        systick_user_callback();
 }
 

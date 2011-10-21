@@ -33,6 +33,6 @@
  */
 void _os_assert_fail(const char *p_file, int line, const char *p_exp)
 {
-    _os_port_assert_fail(p_file, line, p_exp);
+        _os_port_assert_fail(p_file, line, p_exp);
 }
 

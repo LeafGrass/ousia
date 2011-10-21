@@ -25,19 +25,19 @@
 
 int main(void)
 {
-    os_status stat = OS_OK;
+        os_status stat = OS_OK;
 
-    stat = os_init();
-    stat = stat;
-    x86utils_system_init(); 
+        stat = os_init();
+        stat = stat;
+        x86utils_system_init(); 
 
-    BOOT_LOGO();
+        BOOT_LOGO();
 
-    while(1)
-    {
-        usleep(10000);
-    }
+        while(1)
+        {
+                usleep(10000);
+        }
 
-    return 0;
+        return 0;
 }
 

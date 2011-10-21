@@ -51,20 +51,20 @@ static void stm32utils_usb_putstr(const void *buf, uint32 len);
  */
 void stm32utils_board_init(void)
 {
-    setupFlash();
-    setupClocks();
-    setupNVIC();
-    systick_init(SYSTICK_RELOAD_VAL);
-    gpio_init_all();
-    afio_init();
-    setupADC();
-    setupTimers();
-    setupUSART(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
-    setupUSB();
-    stm32utils_usb_putstr("", 0);
+        setupFlash();
+        setupClocks();
+        setupNVIC();
+        systick_init(SYSTICK_RELOAD_VAL);
+        gpio_init_all();
+        afio_init();
+        setupADC();
+        setupTimers();
+        setupUSART(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
+        setupUSB();
+        stm32utils_usb_putstr("", 0);
 
-    gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
-    gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
+        gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
+        gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
 }
 
 /*
@@ -76,7 +76,7 @@ void stm32utils_board_init(void)
  */
 void stm32utils_io_putc(void *p, char ch)
 {
-    usart_putc(USART_CONSOLE_BANK, ch);
+        usart_putc(USART_CONSOLE_BANK, ch);
 }
 
 /*
@@ -88,7 +88,7 @@ void stm32utils_io_putc(void *p, char ch)
  */
 void stm32utils_io_getc(void *p, char *ch)
 {
-    return;
+        return;
 }
 
 /*
@@ -100,8 +100,8 @@ void stm32utils_io_getc(void *p, char *ch)
  */
 void stm32utils_usb_putc(void *p, char ch)
 {
-    const uint8 buf[] = {ch};
-    stm32utils_usb_putstr(buf, 1);
+        const uint8 buf[] = {ch};
+        stm32utils_usb_putstr(buf, 1);
 }
 
 /*
@@ -114,13 +114,13 @@ void stm32utils_usb_putc(void *p, char ch)
  */
 int32 stm32utils_usb_getc(void *p, char *buf)
 {
-    uint32 len = 0;
-    if (!buf)
-        return -1;
-    len = usbReceiveBytes((uint8 *)buf, 1);
-    if (len == 0)
-        return -1;
-    return 0;
+        uint32 len = 0;
+        if (!buf)
+                return -1;
+        len = usbReceiveBytes((uint8 *)buf, 1);
+        if (len == 0)
+                return -1;
+        return 0;
 }
 
 /*
@@ -132,19 +132,19 @@ int32 stm32utils_usb_getc(void *p, char *buf)
  */
 static void stm32utils_usb_putstr(const void *buf, uint32 len)
 {
-    if (!(usbIsConnected() && usbIsConfigured()) || !buf)
-        return;
+        if (!(usbIsConnected() && usbIsConfigured()) || !buf)
+                return;
 
-    uint32 txed = 0;
-    uint32 old_txed = 0;
-    uint32 start = systick_uptime();
+        uint32 txed = 0;
+        uint32 old_txed = 0;
+        uint32 start = systick_uptime();
 
-    while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
-        txed += usbSendBytes((const uint8 *)buf + txed, len - txed);
-        if (old_txed != txed)
-            start = systick_uptime();
-        old_txed = txed;
-    }
+        while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
+                txed += usbSendBytes((const uint8 *)buf + txed, len - txed);
+                if (old_txed != txed)
+                        start = systick_uptime();
+                old_txed = txed;
+        }
 }
 
 /*
@@ -155,8 +155,8 @@ static void stm32utils_usb_putstr(const void *buf, uint32 len)
  */
 static void setupFlash(void)
 {
-    flash_enable_prefetch();
-    flash_set_latency(FLASH_WAIT_STATE_2);
+        flash_enable_prefetch();
+        flash_set_latency(FLASH_WAIT_STATE_2);
 }
 
 /*
@@ -167,10 +167,10 @@ static void setupFlash(void)
  */
 static void setupClocks(void)
 {
-    rcc_clk_init(RCC_CLKSRC_PLL, RCC_PLLSRC_HSE, RCC_PLLMUL_9);
-    rcc_set_prescaler(RCC_PRESCALER_AHB, RCC_AHB_SYSCLK_DIV_1);
-    rcc_set_prescaler(RCC_PRESCALER_APB1, RCC_APB1_HCLK_DIV_2);
-    rcc_set_prescaler(RCC_PRESCALER_APB2, RCC_APB2_HCLK_DIV_1);
+        rcc_clk_init(RCC_CLKSRC_PLL, RCC_PLLSRC_HSE, RCC_PLLMUL_9);
+        rcc_set_prescaler(RCC_PRESCALER_AHB, RCC_AHB_SYSCLK_DIV_1);
+        rcc_set_prescaler(RCC_PRESCALER_APB1, RCC_APB1_HCLK_DIV_2);
+        rcc_set_prescaler(RCC_PRESCALER_APB2, RCC_APB2_HCLK_DIV_1);
 }
 
 /*
@@ -182,11 +182,11 @@ static void setupClocks(void)
 static void setupNVIC(void)
 {
 #ifdef VECT_TAB_FLASH
-    nvic_init(USER_ADDR_ROM, 0);
+        nvic_init(USER_ADDR_ROM, 0);
 #elif defined VECT_TAB_RAM
-    nvic_init(USER_ADDR_RAM, 0);
+        nvic_init(USER_ADDR_RAM, 0);
 #elif defined VECT_TAB_BASE
-    nvic_init((uint32)0x08000000, 0);
+        nvic_init((uint32)0x08000000, 0);
 #else
 #error "You must select a base address for the vector table."
 #endif
@@ -201,12 +201,12 @@ static void setupNVIC(void)
  */
 static void adcDefaultConfig(const adc_dev* dev)
 {
-    adc_init(dev);
-    adc_set_extsel(dev, ADC_SWSTART);
-    adc_set_exttrig(dev, 1);
-    adc_enable(dev);
-    adc_calibrate(dev);
-    adc_set_sample_rate(dev, ADC_SMPR_55_5);
+        adc_init(dev);
+        adc_set_extsel(dev, ADC_SWSTART);
+        adc_set_exttrig(dev, 1);
+        adc_enable(dev);
+        adc_calibrate(dev);
+        adc_set_sample_rate(dev, ADC_SMPR_55_5);
 }
 
 /*
@@ -217,8 +217,8 @@ static void adcDefaultConfig(const adc_dev* dev)
  */
 static void setupADC(void)
 {
-    rcc_set_prescaler(RCC_PRESCALER_ADC, RCC_ADCPRE_PCLK_DIV_6);
-    adc_foreach(adcDefaultConfig);
+        rcc_set_prescaler(RCC_PRESCALER_ADC, RCC_ADCPRE_PCLK_DIV_6);
+        adc_foreach(adcDefaultConfig);
 }
 
 /*
@@ -228,37 +228,37 @@ static void setupADC(void)
  * @note    none
  */
 static void timerDefaultConfig(timer_dev *dev) {
-    timer_adv_reg_map *regs = (dev->regs).adv;
-    const uint16 full_overflow = 0xFFFF;
-    const uint16 half_duty = 0x8FFF;
-    int channel;
+        timer_adv_reg_map *regs = (dev->regs).adv;
+        const uint16 full_overflow = 0xFFFF;
+        const uint16 half_duty = 0x8FFF;
+        int channel;
 
-    timer_init(dev);
-    timer_pause(dev);
+        timer_init(dev);
+        timer_pause(dev);
 
-    regs->CR1 = TIMER_CR1_ARPE;
-    regs->PSC = 1;
-    regs->SR = 0;
-    regs->DIER = 0;
-    regs->EGR = TIMER_EGR_UG;
+        regs->CR1 = TIMER_CR1_ARPE;
+        regs->PSC = 1;
+        regs->SR = 0;
+        regs->DIER = 0;
+        regs->EGR = TIMER_EGR_UG;
 
-    switch (dev->type) {
-    case TIMER_ADVANCED:
-        regs->BDTR = TIMER_BDTR_MOE | TIMER_BDTR_LOCK_OFF;
-        /* fall-through */
-    case TIMER_GENERAL:
-        timer_set_reload(dev, full_overflow);
+        switch (dev->type) {
+        case TIMER_ADVANCED:
+                regs->BDTR = TIMER_BDTR_MOE | TIMER_BDTR_LOCK_OFF;
+                /* fall-through */
+        case TIMER_GENERAL:
+                timer_set_reload(dev, full_overflow);
 
-        for (channel = 1; channel <= 4; channel++) {
-            timer_set_compare(dev, channel, half_duty);
-            timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1, TIMER_OC_PE);
+                for (channel = 1; channel <= 4; channel++) {
+                        timer_set_compare(dev, channel, half_duty);
+                        timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1, TIMER_OC_PE);
+                }
+                /* fall-through */
+        case TIMER_BASIC:
+                break;
         }
-        /* fall-through */
-    case TIMER_BASIC:
-        break;
-    }
 
-    timer_resume(dev);
+        timer_resume(dev);
 }
 
 /*
@@ -269,7 +269,7 @@ static void timerDefaultConfig(timer_dev *dev) {
  */
 static void setupTimers(void)
 {
-    timer_foreach(timerDefaultConfig);
+        timer_foreach(timerDefaultConfig);
 }
 
 /*
@@ -281,19 +281,19 @@ static void setupTimers(void)
  */
 static void setupUSART(usart_dev *dev, uint32 baud)
 {
-    uint32 i = USART_RX_BUF_SIZE;
+        uint32 i = USART_RX_BUF_SIZE;
 
-    gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_TX, GPIO_AF_OUTPUT_PP);
-    gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_RX, GPIO_INPUT_FLOATING);
+        gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_TX, GPIO_AF_OUTPUT_PP);
+        gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_RX, GPIO_INPUT_FLOATING);
 
-    usart_init(dev);
-    usart_set_baud_rate(dev, 72000000UL, baud);
-    usart_disable(dev);
-    usart_enable(dev);
+        usart_init(dev);
+        usart_set_baud_rate(dev, 72000000UL, baud);
+        usart_disable(dev);
+        usart_enable(dev);
 
-    /* flush buffer */
-    while (i--) {
-        usart_putc(dev, '\r');
-    }
+        /* flush buffer */
+        while (i--) {
+                usart_putc(dev, '\r');
+        }
 }
 

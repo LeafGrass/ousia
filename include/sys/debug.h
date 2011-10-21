@@ -28,10 +28,10 @@ void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
 #if (DEBUG_LEVEL >= DEBUG_ALL)
 #define _OS_ASSERT(exp) \
-    if (exp) { \
-    } else { \
-        _os_assert_fail(__FILE__, __LINE__, #exp); \
-    }
+        if (exp) { \
+        } else { \
+                _os_assert_fail(__FILE__, __LINE__, #exp); \
+        }
 #else
 #define ASSERT(exp) (void)((0))
 #endif

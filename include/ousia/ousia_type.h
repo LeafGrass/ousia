@@ -33,7 +33,7 @@ typedef signed long long int64;
 typedef unsigned long long uint64;
 #endif /* OUSIA_USE_LIBMAPLE */
 typedef enum {
-    FALSE = 0, TRUE  = !FALSE
+        FALSE = 0, TRUE  = !FALSE
 } bool;
 
 #endif /* __OUSIA_TYPE_H__ */

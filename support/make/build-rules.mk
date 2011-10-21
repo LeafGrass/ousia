@@ -11,14 +11,14 @@ SIZE    := $(CROSS)size
 
 # Suppress annoying output unless V is set
 ifndef V
-    SILENT_CC       = @echo '  [CC]       ' $(@:$(BUILD_PATH)/%.o=%.c);
-    SILENT_AS       = @echo '  [AS]       ' $(@:$(BUILD_PATH)/%.o=%.S);
-    SILENT_CXX      = @echo '  [CXX]      ' $(@:$(BUILD_PATH)/%.o=%.cpp);
-    SILENT_LD       = @echo '  [LD]       ' $(@F);
-    SILENT_AR       = @echo '  [AR]       ' $(@F);
-    SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
-    SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).disas;
-    SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
+	SILENT_CC       = @echo '  [CC]       ' $(@:$(BUILD_PATH)/%.o=%.c);
+	SILENT_AS       = @echo '  [AS]       ' $(@:$(BUILD_PATH)/%.o=%.S);
+	SILENT_CXX      = @echo '  [CXX]      ' $(@:$(BUILD_PATH)/%.o=%.cpp);
+	SILENT_LD       = @echo '  [LD]       ' $(@F);
+	SILENT_AR       = @echo '  [AR]       ' $(@F);
+	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
+	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).disas;
+	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
 endif
 
 BUILDDIRS     :=

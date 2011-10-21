@@ -15,25 +15,25 @@ fileC1=./core/port/ousia_cfg.h
 fileC2=./platform/$build_type/port/ousia_cfg.h
 
 if diff $fileA1 $fileA2 > /dev/null; then
-	flag_different=0
+        flag_different=0
 else
-	flag_different=1
+        flag_different=1
 fi
 if diff $fileA1 $fileA2 > /dev/null; then
-	flag_different=0
+        flag_different=0
 else
-	flag_different=1
+        flag_different=1
 fi
 if diff $fileA1 $fileA2 > /dev/null; then
-	flag_different=0
+        flag_different=0
 else
-	flag_different=1
+        flag_different=1
 fi
 
 if [ $flag_different == 1 ]; then
-    rm -rf ./core/port/*
-    cp ./platform/$build_type/port/ousia_*.* ./core/port/
+        rm -rf ./core/port/*
+        cp ./platform/$build_type/port/ousia_*.* ./core/port/
 else
-	echo
+        echo
 fi
 
