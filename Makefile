@@ -65,7 +65,7 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 
 # Download code to target device
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
-	ifeq ($(DOWNLOAD_MODE), jtag)
+ifeq ($(DOWNLOAD_MODE), jtag)
 	$(SHELL) $(SCRIPT_PATH)/download.sh
 endif
 ifeq ($(DOWNLOAD_MODE), serial)
@@ -73,8 +73,8 @@ ifeq ($(DOWNLOAD_MODE), serial)
 endif
 ifeq ($(DOWNLOAD_MODE), dfu)
 	$(SCRIPT_PATH)/reset.py && sleep 1 && \
-		dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
-	endif
+	dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
+endif
 
 BOOTLOADER_BIN = $(PLATFORM_PATH)/$(TARGET_PLATFORM)/bootloader/build/maple_boot.bin
 
@@ -84,7 +84,7 @@ bootloader: $(BOOTLOADER_BIN)
 # Force a rebuild if the maple target changed
 PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
 build-check:
-	ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
+ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
 	$(shell cp $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port/ousia_*.* $(CORE_PATH)/port/)
 else
