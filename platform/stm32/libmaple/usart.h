@@ -318,7 +318,7 @@ static inline void usart_putstr(usart_dev *dev, const char* str) {
  * @see usart_data_available()
  */
 static inline int8 usart_getc(usart_dev *dev) {
-	dev->flag_trigger = 0;
+    dev->flag_trigger = 0;
     return rb_remove(dev->rb);
 }
 

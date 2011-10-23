@@ -87,8 +87,11 @@ void _os_port_assert_fail(const char* file, int line, const char *exp)
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
         *stdout_putp = NULL;
-        /* *stdout_putf = stm32utils_io_putc; */
+#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
         *stdout_putf = stm32utils_usb_putc;
+#else
+        *stdout_putf = stm32utils_io_putc;
+#endif
 }
 
 /*

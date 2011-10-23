@@ -63,6 +63,26 @@ int main(void)
         BOOT_LOGO();
 
         for (;;) {
+                if (USART_CONSOLE_BANK->flag_trigger) {
+                        for (i = 0; i < USART_CONSOLE_BANK->cnt_trigger; i++) {
+                                stm32utils_io_getc(USART_CONSOLE_BANK, &ch);
+                                switch (ch) {
+                                case 0:
+                                        break;
+                                case '\r':
+                                        os_printf( "\r\n" );
+                                        gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+                                        break;
+                                case '\b':
+                                        os_printf( "\b \b" );
+                                        break;
+                                default:
+                                        os_printf( "%c", ch );
+                                        break;
+                                }
+                        }
+                }
+#if 0
                 if (stm32utils_usb_getc(NULL, &ch) == 0) {
                         switch(ch) {
                         case '\r':
@@ -77,6 +97,7 @@ int main(void)
                                 break;
                         }
                 }
+#endif
                 delay(20);
         }
 

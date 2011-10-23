@@ -87,12 +87,13 @@ void stm32utils_io_putc(void *p, char ch)
  * @brief   stm32 io getchar routine
  * @param   p -i- device pointer (could be NULL in tfp_printf)
  *          ch -i/o- pointer to variable to store received data
- * @return  none
- * @note    TODO need to be completed
+ * @return  return status
+ * @note    TODO needs to be completed
  */
-void stm32utils_io_getc(void *p, char *ch)
+int32 stm32utils_io_getc(void *p, char *ch)
 {
-        return;
+        *ch = usart_getc(p);
+        return 0;
 }
 
 /*
