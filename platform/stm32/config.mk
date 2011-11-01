@@ -1,16 +1,53 @@
-MCU = STM32F103RB
-BOARD = leach
-#BOARD = leach_h
+########################################
+# User Customization Items
+########################################
+BOARD = mini
 MEMORY_TARGET = flash
+
+########################################
+# System Configurations
+########################################
+# NOTE!
+# In USB configuration, BOARD_USB_DISC_DEV is the GPIO port containing
+# the USB_DISC pin, and BOARD_USB_DISC_BIT is that pin's bit.
+# These are specialized for stm32.
+
+ifeq ($(BOARD), mini)
+MCU = STM32F103CB
 DENSITY = STM32_MEDIUM_DENSITY
-#DENSITY = STM32_HIGH_DENSITY
+VENDOR_ID = 1EAF
+PRODUCT_ID = 0003
+ERROR_LED_PORT = GPIOB
+ERROR_LED_PIN  = 1
+USART_CONSOLE_BANK = USART1
+VCOM_ID_PRODUCT	= 0004
+USB_DISC_DEV = GPIOB
+USB_DISC_BIT = 9
+endif
+ifeq ($(BOARD), leach)
+MCU = STM32F103RB
+DENSITY = STM32_MEDIUM_DENSITY
 VENDOR_ID = 1EAF
 PRODUCT_ID = 0003
 ERROR_LED_PORT = GPIOA
 ERROR_LED_PIN  = 5
-#ERROR_LED_PORT = GPIOB
-#ERROR_LED_PIN  = 1
 USART_CONSOLE_BANK = USART1
+VCOM_ID_PRODUCT	= 0004
+USB_DISC_DEV = GPIOC
+USB_DISC_BIT = 12
+endif
+ifeq ($(BOARD), leach_h)
+MCU = STM32F103VC
+DENSITY = STM32_HIGH_DENSITY
+VENDOR_ID = 1EAF
+PRODUCT_ID = 0003
+ERROR_LED_PORT = GPIOA
+ERROR_LED_PIN  = 5
+USART_CONSOLE_BANK = USART1
+VCOM_ID_PRODUCT	= 0004
+USB_DISC_DEV = GPIOC
+USB_DISC_BIT = 12
+endif
 
 # Some target specific things
 ifeq ($(MEMORY_TARGET), ram)
@@ -35,7 +72,10 @@ GLOBAL_FLAGS := \
 	-DMCU_$(MCU) \
 	-DERROR_LED_PORT=$(ERROR_LED_PORT) \
 	-DERROR_LED_PIN=$(ERROR_LED_PIN) \
-	-DUSART_CONSOLE_BANK=$(USART_CONSOLE_BANK)
+	-DUSART_CONSOLE_BANK=$(USART_CONSOLE_BANK) \
+	-DVCOM_ID_PRODUCT=$(VCOM_ID_PRODUCT) \
+	-DUSB_DISC_DEV=$(USB_DISC_DEV) \
+	-DUSB_DISC_BIT=$(USB_DISC_BIT)
 
 GLOBAL_CFLAGS := \
 	-O2 -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \

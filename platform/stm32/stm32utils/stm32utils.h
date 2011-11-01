@@ -18,35 +18,28 @@
 #ifndef __STM32UTILS_H__
 #define __STM32UTILS_H__
 
-#define SYSTICK_RELOAD_VAL      71999 /* takes a cycle to reload */
-#define SERIAL_BAUDRATE         9600
+#define SYSTICK_RELOAD_VAL	71999 /* takes a cycle to reload */
+#define SERIAL_BAUDRATE		9600
 
 #if (USART_CONSOLE_BANK == USART1)
-#define USART_CONSOLE_PORT      GPIOA
-#define USART_CONSOLE_TX        9
-#define USART_CONSOLE_RX        10
+#define USART_CONSOLE_PORT	GPIOA
+#define USART_CONSOLE_TX	9
+#define USART_CONSOLE_RX	10
 #elif (USART_CONSOLE_BANK == USART2)
-#define USART_CONSOLE_PORT      GPIOA
-#define USART_CONSOLE_TX        2
-#define USART_CONSOLE_RX        3
+#define USART_CONSOLE_PORT	GPIOA
+#define USART_CONSOLE_TX	2
+#define USART_CONSOLE_RX	3
 #elif (USART_CONSOLE_BANK == USART3)
-#define USART_CONSOLE_PORT      GPIOB
-#define USART_CONSOLE_TX        10
-#define USART_CONSOLE_RX        11
+#define USART_CONSOLE_PORT	GPIOB
+#define USART_CONSOLE_TX	10
+#define USART_CONSOLE_RX	11
 #else
 #error "You must specify a USART_CONSOLE_BANK."
 #endif
 
-#define VCOM_ID_VENDOR          0x1EAF
-#define RESET_DELAY             (100000)
-#define USB_CONFIG_MAX_POWER    (100 >> 1)
-/* 
- * USB configuration. BOARD_USB_DISC_DEV is the GPIO port containing
- * the USB_DISC pin, and BOARD_USB_DISC_BIT is that pin's bit.
- */
-#define VCOM_ID_PRODUCT 0x0004
-#define USB_DISC_DEV    GPIOC
-#define USB_DISC_BIT    12                                   
+#define VCOM_ID_VENDOR		0x1EAF
+#define RESET_DELAY		(100000)
+#define USB_CONFIG_MAX_POWER	(100 >> 1)
 
 void stm32utils_board_init(void);
 void stm32utils_io_putc(void *p, char ch);
