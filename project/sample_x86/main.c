@@ -29,7 +29,7 @@ int main(void)
 
 	stat = os_init();
 	stat = stat;
-	x86utils_system_init(); 
+	x86utils_system_init();
 
 	BOOT_LOGO();
 
