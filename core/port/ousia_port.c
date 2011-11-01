@@ -90,6 +90,7 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
         *stdout_putf = stm32utils_usb_putc;
 #else
+	dsa;
         *stdout_putf = stm32utils_io_putc;
 #endif
 }

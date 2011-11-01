@@ -24,20 +24,20 @@
 #define OS_THROB_RATE   1000
 
 #define OS_SET_INTERRUPT_MASK() \
-        __asm volatile \
-        ( \
-          "   mov r0, %0         \n" \
-          "   msr basepri, r0    \n" \
-          ::"i"(191):"r0" \
-        )
+	__asm volatile \
+	( \
+	  "   mov r0, %0         \n" \
+	  "   msr basepri, r0    \n" \
+	  ::"i"(191):"r0" \
+	)
 
 #define OS_CLEAR_INTERRUPT_MASK() \
         __asm volatile \
-        ( \
-          "   mov r0, #0         \n" \
-          "   msr basepri, r0    \n" \
-          :::"r0" \
-        )
+	( \
+	  "   mov r0, #0         \n" \
+	  "   msr basepri, r0    \n" \
+	  :::"r0" \
+	)
 
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
