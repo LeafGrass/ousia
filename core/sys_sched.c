@@ -27,7 +27,7 @@
  */
 os_status _scheduler_init(void)
 {
-        os_status stat = OS_OK;
-        return stat;
+	os_status stat = OS_OK;
+	return stat;
 }
 

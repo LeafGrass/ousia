@@ -33,8 +33,8 @@ static void __systick_interrupt(void);
  */
 void _os_timer_init(void)
 {
-        _systime = 0UL;
-        _systick_register_callback(&__systick_interrupt);
+	_systime = 0UL;
+	_systick_register_callback(&__systick_interrupt);
 }
 
 /*
@@ -45,10 +45,10 @@ void _os_timer_init(void)
  */
 static void __systick_interrupt(void)
 {
-        os_enter_critical();
-        _systime++;
-        os_exit_critical();
+	os_enter_critical();
+	_systime++;
+	os_exit_critical();
 
-        return;
+	return;
 }
 
