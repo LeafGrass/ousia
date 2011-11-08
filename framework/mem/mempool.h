@@ -19,10 +19,9 @@
  */
 
 /*
- * @file    framework/mem/mempool.h
+ * @file    mempool.h
  * @brief   memory pool simple implementation
- * @log     2011.11 initial revision
- * @note    TODO not completed yet, and only test on x86
+ * @log     2011.11 first revision
  */
 
 #ifndef __MEMPOOL_H__
@@ -31,7 +30,7 @@
 /* 
  * customization area
  */
-#define DEBUG_PRINT_ON	1
+//#define DEBUG_PRINT_ON	1
 #define mp_malloc(x)	malloc(x)
 #define mp_free(x)	free(x)
 
@@ -40,12 +39,15 @@ typedef char		mp_i8;
 typedef unsigned int	mp_u32;
 typedef unsigned char	mp_u8;
 
+struct test_t {
+	int z;
+};
+
 struct item_t {
 	int a;
 	int b;
 	int c;
-	int d;
-	int e;
+	struct test_t t;
 };
 
 typedef struct item_t	elem_t;
@@ -56,6 +58,12 @@ typedef int		status_t;
  * note: on 64-bit machine, a pointer is 8 bytes (64 bit)
  *       memory will be aligned by 8-byte
  */
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+
+#define container_of(ptr, type, member) ({ \
+		const typeof( ((type *)0)->member ) *__mptr = (ptr); \
+		(type *)( (char *)__mptr - offsetof(type,member) );})
+
 struct mp_mem_head_t {
 	struct mp_node_t *p_node_first;
 	struct mp_node_t *p_node_tail;
@@ -67,15 +75,17 @@ struct mp_mem_head_t {
 struct mp_node_t {
 	struct mp_node_t *p_prev;
 	mp_u32 used;
+	mp_u32 node_id;
 	elem_t data;
 	struct mp_node_t *p_next;
 };
 
-
 struct mp_mem_head_t *mp_alloc(mp_i32 **pp_mem_base, mp_u32 max_node_num);
-status_t mp_clean(mp_i32 *p_mem_base);
+status_t mp_clean(mp_i32 **pp_mem_base);
 struct mp_node_t *mp_new_node(mp_i32 *p_mem_base);
-status_t mp_del_node(struct mp_node_t *p_node);
+status_t mp_del_node(mp_i32 *p_mem_base, struct mp_node_t *p_node);
+void mp_dump_pool(mp_i32 *p_mem_base);
+struct mp_node_t *mp_get_node(mp_i32 *p_mem_base, mp_u32 node_id);
 
 
 #endif /* __MEMPOOL_H__ */
