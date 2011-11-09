@@ -1,12 +1,12 @@
 ==================================================
 Real-Time Ousia (would) contain these components:
 
-    (-) User interface
-        (-) Shell
-    (-) Kernel
+    (+) User interface
+        (+) Shell
+    (+) Kernel
         (+) Scheduler
         (+) Interrupt Handler
-        (-) Memory Management/Protection
+        (+) Memory Management/Protection
         (+) Multitasking
         (-) File System
 		(-) Virtual File System
