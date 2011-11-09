@@ -58,11 +58,13 @@ typedef int		status_t;
  * note: on 64-bit machine, a pointer is 8 bytes (64 bit)
  *       memory will be aligned by 8-byte
  */
+#if 0
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 
 #define container_of(ptr, type, member) ({ \
 		const typeof( ((type *)0)->member ) *__mptr = (ptr); \
 		(type *)( (char *)__mptr - offsetof(type,member) );})
+#endif
 
 struct mp_mem_head_t {
 	struct mp_node_t *p_node_first;
