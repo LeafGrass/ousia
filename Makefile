@@ -101,7 +101,7 @@ $(BUILD_PATH)/lib$(OUSIA_TARGET).a: MSG_INFO build-check $(BUILDDIRS) $(TGT_BIN)
 	$(SILENT_AR) $(AR) cr $(BUILD_PATH)/lib$(OUSIA_TARGET).a $(TGT_BIN)
 
 clean:
-	rm -rf build
+	$(shell rm -rf $(BUILD_PATH))
 
 distclean:
 	$(shell rm -rf $(BUILD_PATH))
