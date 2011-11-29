@@ -26,6 +26,7 @@
 #include <sys/sched.h>
 #include <sys/utils.h>
 #include <sys/print.h>
+#include <sys/time.h>
 #include <sys/debug.h>
 
 void delayMicroseconds(uint32 us)
@@ -87,14 +88,14 @@ int main(void)
 		if (stm32utils_usb_getc(NULL, &ch) == 0) {
 			switch(ch) {
 			case '\r':
-				os_printf( "\r\n" );
+				os_printf("\r\n");
 				gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 				break;
 			case '\b':
-				os_printf( "\b \b" );
+				os_printf("\b \b");
 				break;
 			default:
-				os_printf( "%c", ch );
+				os_printf("%c", ch);
 				break;
 			}
 		}

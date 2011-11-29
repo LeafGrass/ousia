@@ -35,14 +35,7 @@
         os_printf("Ousia "); os_printf(VERSION); os_printf(" "); os_printf(VER_NAME); \
         os_printf("\r\n\tby LeafGrass - leafgrass.g@gmail.com"); \
         os_printf("\r\n\r\n"); \
-        os_printf("Hello, Ousia ~\r\n"); \
+	os_log(LOG_CRITICAL, "hello ousia :P\r\n"); \
 }
 
-typedef enum _os_status
-{
-        OS_ERR = -1,
-        OS_OK = 0
-} os_status;
-
 #endif /* __OUSIA_H__ */
-

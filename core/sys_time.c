@@ -21,9 +21,30 @@
 #include <sys/print.h>
 #include <sys/time.h>
 
-static unsigned long long _systime;
+static uint32 _systime;
 
 static void __systick_interrupt(void);
+
+/*
+ * @brief   get system time
+ * @param   none
+ * @return  32 bit integer value for time
+ * @note    none
+ */
+uint32 os_systime_get(void)
+{
+	return _systime;
+}
+
+/*
+ * @brief   set system time
+ * @param   time -i- 32 bit integer value for time
+ * @return  none
+ * @note    none
+ */
+void os_systime_set(uint32 time)
+{
+}
 
 /*
  * @brief   os timer init
@@ -48,7 +69,6 @@ static void __systick_interrupt(void)
 	os_enter_critical();
 	_systime++;
 	os_exit_critical();
-
 	return;
 }
 

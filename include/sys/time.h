@@ -19,6 +19,8 @@
 #define __SYS_TIME_H__
 
 void _os_timer_init(void);
+uint32 os_systime_get(void);
+void os_systime_set(uint32 time);
 
 #endif /* __SYS_TIME_H__ */
 
