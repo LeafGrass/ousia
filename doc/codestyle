@@ -234,7 +234,7 @@ Functions
   two underscores) with the types. E.g., use:
 
 	/* in kernel, for functions that are visible to other parts */
-	void _function(int _fd); 
+	void _function(int _fd);
 
 	/* in kernel, for functions that are only visible of its own, static */
 	static void __function(int _fd);
