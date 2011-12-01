@@ -27,10 +27,11 @@
 #ifndef __MEMPOOL_H__
 #define __MEMPOOL_H__
 
+
 /* 
  * customization area
  */
-//#define DEBUG_PRINT_ON	1
+#define DEBUG_PRINT_ON	1
 #define mp_malloc(x)	malloc(x)
 #define mp_free(x)	free(x)
 
