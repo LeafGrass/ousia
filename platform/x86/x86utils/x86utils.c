@@ -1,19 +1,28 @@
-/* *****************************************************************************
- * @file    platform/x86/x86utils/x86utils.c
+/*
+ * Copyright (c) 2011-2012 LeafGrass <leafgrass.g@gmail.com>
+ * All rights reserved.
  *
- * @brief   x86 utilities
- *
- * @log     2011.8 initial revision
- *
- * *****************************************************************************
- * COPYRIGHT (C) LEAFGRASS - LeafGrass (leafgrass.g@gmail.com)
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  *
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
  * ARM SHALL NOT, IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL, OR
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
- * ****************************************************************************/
+ */
+
+/*
+ * @file    platform/x86/x86utils/x86utils.c
+ * @brief   x86 utilities
+ * @log     2011.8 initial revision
+ */
 
 #include <stdio.h>
 #include <time.h>
@@ -24,7 +33,7 @@
 
 #define OS_THROB_RATE   1000
 #define X86_MILLISEC_PER_SEC    1000000
-#define TIME_TO_START   2
+#define TIME_TO_START   1
 
 static void (*systick_user_callback)(void);
 static unsigned long long _uptime;
@@ -40,7 +49,6 @@ static void __pseudo_systick(int sig);
  */
 void x86utils_system_init(void)
 {
-        printf("%s\n", __FUNCTION__);
         signal(SIGALRM, __pseudo_systick);
         __timer_init();
 }
@@ -99,4 +107,3 @@ static void __pseudo_systick(int sig)
         _uptime++;
         systick_user_callback();
 }
-

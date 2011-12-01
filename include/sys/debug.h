@@ -27,6 +27,7 @@
 #ifndef __SYS_DEBUG_H__
 #define __SYS_DEBUG_H__
 
+
 #define LOG_ALL		0
 #define LOG_DEBUG	1
 #define LOG_INFO	2
@@ -44,9 +45,7 @@
 		} \
 	} while (0)
 #else
-#define _OS_PRINTF(level, msg, args...) \
-	do { \
-	} while (0)
+#define _OS_PRINTF(level, msg, args...)
 #endif
 
 #define ASSERT_NONE	0

@@ -10,4 +10,3 @@
 #define OUSIA_PRINT_TYPE	OUSIA_PRINT_TYPE_USB
 
 #endif /* __OUSIA_CFG_H__ */
-
