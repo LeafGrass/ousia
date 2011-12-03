@@ -160,9 +160,9 @@ static void putchw(void* putp, putcf putf, int n, char z, char* bf)
 	while (*p++ && n > 0)
 		n--;
 	while (n-- > 0)
-		putf(putp,fc);
+		putf(putp, fc);
 	while ((ch = *bf++))
-		putf(putp,ch);
+		putf(putp, ch);
 }
 
 static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
