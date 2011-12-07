@@ -506,4 +506,3 @@ if __name__ == "__main__":
 #    cmd.cmdGo(addr + 0x04)
     finally:
         cmd.releaseChip()
-

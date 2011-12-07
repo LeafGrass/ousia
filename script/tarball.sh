@@ -5,4 +5,3 @@ if [ -n "$1" ]; then
 else
         git archive HEAD | bzip2 > ./tarball/ousia_`git describe --tags`_`date +%Y%m%d%k%M%S`.tar.bz2
 fi
-

@@ -25,4 +25,3 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-

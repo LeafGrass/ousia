@@ -39,4 +39,3 @@
 int sample_function(int a, int b, int *result);
 
 #endif /* __TEMPLATE_H__ */
-

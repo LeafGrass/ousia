@@ -28,4 +28,3 @@
  */
 
 #endif /* __FILEOPT_H__ */
-

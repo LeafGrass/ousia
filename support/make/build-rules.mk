@@ -39,4 +39,3 @@ $(BUILD_PATH)/%.o: %.cpp
 
 $(BUILD_PATH)/%.o: %.S
 	$(SILENT_AS) $(AS) $(ASFLAGS) -MMD -MP -MF $(@:%.o=%.d) -MT $@ -o $@ -c $<
-

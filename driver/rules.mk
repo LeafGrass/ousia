@@ -15,4 +15,3 @@ dirstack_$(sp)  := $(d)
 d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/block
 include $(DRIVER_PATH)/block/rules.mk
-

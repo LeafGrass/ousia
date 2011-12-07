@@ -24,4 +24,3 @@ os_exit_critical
 ----------------
 @brief      exit critical, general interrupts will be enabled
 @note       macro - os_exit_critical()
-

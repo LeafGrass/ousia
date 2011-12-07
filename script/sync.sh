@@ -27,4 +27,3 @@ fi
 echo ''
 echo 'Synchronize ok.'
 echo ''
-
