@@ -5,7 +5,7 @@ d               := $(dir)
 USR_BUILDDIRS   += $(BUILD_PATH)/$(d)
 
 # Local flags
-CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(FRAMEWORK_INCLUDES) -Wall
+CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(DRIVER_INCLUDES) $(FRAMEWORK_INCLUDES) -Wall
 
 # Local rules and targets
 # libmaple

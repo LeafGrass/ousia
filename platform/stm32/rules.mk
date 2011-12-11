@@ -2,7 +2,6 @@
 sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
-#BUILDDIRS       += $(BUILD_PATH)/$(d)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/usb_lib
@@ -65,4 +64,3 @@ TGT_BIN += $(OBJS_$(d))
 -include $(DEPS_$(d))
 d := $(dirstack_$(sp))
 sp := $(basename $(sp))
-

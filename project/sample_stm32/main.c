@@ -11,6 +11,7 @@
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/debug.h>
+#include <char/i2c/i2c_soft.h>
 
 void delayMicroseconds(uint32 us)
 {
@@ -29,6 +30,7 @@ int main(void)
 	int i = 0;
 	char ch = 0;
 	os_status stat = OS_OK;
+	ch = ch;
 
 	stat = os_init();
 	os_assert(stat == OS_OK);
@@ -46,8 +48,10 @@ int main(void)
 
 	BOOT_LOGO();
 
+#if 0
 	for (;;) {
 #if 0
+		/* uart */
 		if (USART_CONSOLE_BANK->flag_trigger) {
 			for (i = 0; i < USART_CONSOLE_BANK->cnt_trigger; i++) {
 				stm32utils_io_getc(USART_CONSOLE_BANK, &ch);
@@ -68,6 +72,7 @@ int main(void)
 			}
 		}
 #endif
+		/* usb */
 		if (stm32utils_usb_getc(NULL, &ch) == 0) {
 			switch(ch) {
 			case '\r':
@@ -83,6 +88,11 @@ int main(void)
 			}
 		}
 		delay(20);
+	}
+#endif
+	for (;;) {
+		i2c_soft_init();
+		delay(500);
 	}
 
 	return 0;

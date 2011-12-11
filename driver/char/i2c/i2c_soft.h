@@ -19,33 +19,14 @@
  */
 
 /*
- * @file    core/sys_utils.c
- * @brief   ousia system utilities
- * @log     2011.8 initial revision
+ * @file    driver/char/i2c/i2c_soft.h
+ * @brief   gpio operations as software implemented i2c bus
+ * @log     2011.12 initial revision
  */
 
-#include <port/ousia_port.h>
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
-#include <sys/time.h>
-#include <sys/sched.h>
-#include <sys/print.h>
-#include <sys/utils.h>
+#ifndef __I2C_SOFT_H__
+#define __I2C_SOFT_H__
 
-/*
- * @brief   the very first init of ousia
- * @param   none
- * @return  os status code
- * @note    this function should be called before all other syscalls
- */
-os_status os_init(void)
-{
-	os_status stat = OS_OK;
+void i2c_soft_init(void);
 
-	_os_port_init();
-	_init_printf();
-	_os_timer_init();
-	stat = _scheduler_init();
-
-	return stat;
-}
+#endif /* __I2C_SOFT_H__ */

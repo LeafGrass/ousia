@@ -51,6 +51,7 @@ include $(SUPPORT_PATH)/make/build-templates.mk
 # Ousia source modules
 MODULES	:= $(CORE_PATH)
 MODULES += $(PLATFORM_PATH)
+MODULES += $(DRIVER_PATH)
 MODULES += $(FRAMEWORK_PATH)
 # User application code
 MODULES += $(PROJECT_PATH)/$(PROJECT_NAME)
