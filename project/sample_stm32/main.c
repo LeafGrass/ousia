@@ -28,9 +28,12 @@ void delay(uint32 ms)
 int main(void)
 {
 	int i = 0;
-	char ch = 0;
+	int8 ch = 0;
 	os_status stat = OS_OK;
 	ch = ch;
+	uint8 wdata = 0xF0;
+	uint8 rdata = 0x00;
+	int32 ret = 0;
 
 	stat = os_init();
 	os_assert(stat == OS_OK);
@@ -92,6 +95,14 @@ int main(void)
 #endif
 	for (;;) {
 		i2c_soft_init();
+		ret = i2c_soft_eeprom_write(0x00, &wdata, 1);
+		os_log(LOG_CRITICAL, "ret write: 0x%X\r\n", ret);
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		delay(500);
+		ret = i2c_soft_eeprom_read(0x00, &rdata, 1);
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		os_log(LOG_CRITICAL, "ret read: 0x%X\r\n", ret);
+		os_log(LOG_CRITICAL, "data read: 0x%02X\r\n", rdata);
 		delay(500);
 	}
 

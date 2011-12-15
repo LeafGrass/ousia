@@ -27,6 +27,13 @@
 #ifndef __I2C_SOFT_H__
 #define __I2C_SOFT_H__
 
+
+#define I2C_SOFT_RET_OK		0	
+#define I2C_SOFT_RET_ERR	-1
+#define I2C_SOFT_RET_ENACK	-2
+
 void i2c_soft_init(void);
+int8 i2c_soft_eeprom_write(uint8 addr, uint8 *pbuf, uint32 nb);
+int8 i2c_soft_eeprom_read(uint8 addr, uint8 *pbuf, uint32 nb);
 
 #endif /* __I2C_SOFT_H__ */
