@@ -5,13 +5,13 @@ d := $(dir)
 BUILDDIRS += $(BUILD_PATH)/$(d)
 #BUILDDIRS += $(BUILD_PATH)/$(d)/xxx
 
-XXX_INCLUDES := 
+XXX_INCLUDES :=
 
 # Local flags
 CFLAGS_$(d) := -I$(d) $(XXX_INCLUDES) -Wall -Werror
 
 # Local rules and targets /* add source files here */
-cSRCS_$(d) := 
+cSRCS_$(d) :=
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
