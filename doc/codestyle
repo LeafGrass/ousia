@@ -79,7 +79,7 @@ Macros
   discern where conditionally compiled code regions end. This comment should be
   used only for (subjectively) long regions, regions greater than 20 lines, or
   where a series of nested #ifdef 's may be confusing to the reader. Exceptions
-  may be made for cases where code is conditionally not compiled for the 
+  may be made for cases where code is conditionally not compiled for the
   purposes of lint(1), even though the uncompiled region may be small. The
   comment should be separated from the #endif or #else by a single space. For
   short conditionally compiled regions, a closing comment should not be used.
