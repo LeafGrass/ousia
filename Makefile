@@ -108,7 +108,7 @@ distclean:
 	$(shell rm -rf $(BUILD_PATH))
 	$(shell rm -rf tarball)
 	$(shell rm -f tags tags.ut tags.fn cscope.out)
-	$(shell find . -name "*.swp" -exec rm -rf {} \;) 
+	$(shell find . -name "*.swp" -exec rm -rf {} \;)
 	@echo "clean up completely"
 
 tarball:

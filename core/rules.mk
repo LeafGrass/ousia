@@ -38,4 +38,3 @@ TGT_BIN += $(OBJS_$(d))
 -include $(DEPS_$(d))
 d := $(dirstack_$(sp))
 sp := $(basename $(sp))
-
