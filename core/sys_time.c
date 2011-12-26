@@ -25,7 +25,6 @@
  */
 
 #include <port/ousia_port.h>
-#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <sys/print.h>
 #include <sys/time.h>

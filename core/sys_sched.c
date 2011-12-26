@@ -26,6 +26,7 @@
 
 #include <ousia/ousia_type.h>
 #include <sys/print.h>
+#include <sys/time.h>
 #include <sys/sched.h>
 
 /*

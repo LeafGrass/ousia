@@ -27,8 +27,29 @@
 #ifndef __SYS_SCHED_H__
 #define __SYS_SCHED_H__
 
+/*
+ * process state
+ * FIXME need an exact requirement for each state
+ */
+enum _pstate {
+	/*PSTAT_BLOCK  = -1,*/
+	PSTAT_SLEEP = 0,
+	PSTAT_RUN   = 1,
+	PSTAT_READY = 2
+};
 
-#include <ousia/ousia.h>
+/*
+ * process control block
+ */
+struct _pcb_t {
+	void *stack_ptr;
+	void (*pentry)(void *args);
+	uint32 stack_size;
+	enum _pstate stat;
+	struct _ptcb_t *timer;
+	struct _pcb_t *p_prev;
+	struct _pcb_t *p_next;
+};
 
 os_status _scheduler_init(void);
 
