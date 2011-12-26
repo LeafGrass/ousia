@@ -45,7 +45,7 @@ os_status os_init(void)
 	_os_port_init();
 	_init_printf();
 	_os_timer_init();
-	stat = _scheduler_init();
+	stat = _sched_init(OUSIA_SCHED_STRATEGY);
 
 	return stat;
 }

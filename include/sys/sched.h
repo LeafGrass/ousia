@@ -45,13 +45,24 @@ struct _pcb_t {
 	void *stack_ptr;
 	void (*pentry)(void *args);
 	uint32 stack_size;
+	uint32 pid;
+	int32 prio;
 	enum _pstate stat;
 	struct _ptcb_t *timer;
 	struct _pcb_t *p_prev;
 	struct _pcb_t *p_next;
 };
 
-os_status _scheduler_init(void);
+/*
+ * process queue control block
+ */
+struct _pqcb_t {
+	uint32 pnum;
+	struct _pcb_t *p_head;
+	struct _pcb_t *p_tail;
+};
+
+os_status _sched_init(uint32 strategy);
 
 
 #endif /* __SYS_SCHED_H__ */
