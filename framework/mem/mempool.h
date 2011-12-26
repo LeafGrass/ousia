@@ -28,7 +28,7 @@
 #define __MEMPOOL_H__
 
 
-/* 
+/*
  * customization area
  */
 #define DEBUG_PRINT_ON	1
@@ -54,7 +54,7 @@ struct item_t {
 typedef struct item_t	elem_t;
 typedef int		status_t;
 
-/* 
+/*
  * memory pool definition
  * note: on 64-bit machine, a pointer is 8 bytes (64 bit)
  *       memory will be aligned by 8-byte
