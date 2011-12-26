@@ -10,7 +10,7 @@ CFLAGS_$(d) = -I$(d) $(DRIVER_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(
 # Local rules and targets
 # libmaple
 cSRCS_$(d) := \
-	char/i2c/i2c_soft.c
+#	char/i2c/i2c_soft.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)

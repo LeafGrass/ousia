@@ -37,9 +37,9 @@ struct _ptcb_t {
 	uint32 spend;
 	uint32 elapsed;
 	uint32 insuspend;
+	uint32 deadline;
 	/*uint32 allocated;*/
 	/*uint32 left;*/
-	/*uint32 deadline;*/
 };
 
 void _os_timer_init(void);

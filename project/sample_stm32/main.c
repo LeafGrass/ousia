@@ -51,7 +51,6 @@ int main(void)
 
 	BOOT_LOGO();
 
-#if 0
 	for (;;) {
 #if 0
 		/* uart */
@@ -92,7 +91,7 @@ int main(void)
 		}
 		delay(20);
 	}
-#endif
+#if 0
 	for (;;) {
 		i2c_soft_init();
 		ret = i2c_soft_eeprom_write(0x00, &wdata, 1);
@@ -105,6 +104,7 @@ int main(void)
 		os_log(LOG_CRITICAL, "data read: 0x%02X\r\n", rdata);
 		delay(500);
 	}
+#endif
 
 	return 0;
 }
