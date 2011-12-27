@@ -9,16 +9,16 @@ Real-Time Ousia (would) contain these components:
         (+) Memory Management/Protection
         (+) Multitasking
         (-) File System
-		(-) Virtual File System
+            (-) Virtual File System
         (+) Device Driver
         (-) Multi Platform Porting
     (-) Communication
-	    (-) IP Stack
+        (-) IP Stack
     (-) Security
 
-	(-) Automation Test Suite
+    (-) Automation Test Suite
     (*) Build System
-	(+) Documentation System
+    (+) Documentation System
 
 
 Ps: (*) Has been implemented.
@@ -33,14 +33,14 @@ Layer 3
     +-----------------------------------
 
 Layer 2
-     __syscall__    ____direct_call_____
-    +-----------+  +--------------------+
-    |           |  |     framework      |
-    |    core   |  +--------------------+
-    |           |   _____direct_call____
-    +   ~ ~ ~   +  +--------------------+
-    |    port   |  |       driver       |
-    +-----------+  +--------------------+
+     __syscall__    ____direct_call____
+    +-----------+  +-------------------+
+    |           |  |     framework     |
+    |    core   |  +-------------------+
+    |           |   ____direct_call____
+    +   ~ ~ ~   +  +-------------------+
+    |    port   |  |       driver      |
+    +-----------+  +-------------------+
 
 Layer 1
     +-----------------+----------------+
