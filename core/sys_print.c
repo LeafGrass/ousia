@@ -257,12 +257,12 @@ void tfp_printf(const char *fmt, ...)
 	va_end(va);
 }
 
-static void putcp(void* p,char c)
+static void putcp(void *p,char c)
 {
 	*(*((char**)p))++ = c;
 }
 
-void tfp_sprintf(char* s, const char *fmt, ...)
+void tfp_sprintf(char *s, const char *fmt, ...)
 {
 	va_list va;
 	va_start(va, fmt);
