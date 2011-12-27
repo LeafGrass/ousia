@@ -28,15 +28,14 @@ void delay(uint32 ms)
 int main(void)
 {
 	int i = 0;
-	int8 ch = 0;
-	os_status stat = OS_OK;
+	char ch = 0;
+	os_status ret = OS_OK;
 	ch = ch;
-	uint8 wdata = 0xF0;
-	uint8 rdata = 0x00;
-	int32 ret = 0;
+//	uint8 wdata = 0xF0;
+//	uint8 rdata = 0x00;
 
-	stat = os_init();
-	os_assert(stat == OS_OK);
+	ret = os_init();
+	os_assert(ret == OS_OK);
 	stm32utils_board_init();
 
 	/*

@@ -40,12 +40,12 @@
  */
 os_status os_init(void)
 {
-	os_status stat = OS_OK;
+	os_status ret = OS_OK;
 
 	_os_port_init();
 	_init_printf();
-	_os_timer_init();
-	stat = _sched_init(OUSIA_SCHED_STRATEGY);
+	_sys_timetick_init();
+	ret = _sys_sched_init(OUSIA_SCHED_STRATEGY);
 
-	return stat;
+	return ret;
 }

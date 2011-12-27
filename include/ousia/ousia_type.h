@@ -42,6 +42,11 @@ typedef unsigned int uint32;
 typedef signed long long int64;
 typedef unsigned long long uint64;
 #endif /* OUSIA_USE_LIBMAPLE */
+
+#ifndef NULL
+#define NULL	((void *)(0))
+#endif
+
 typedef enum {
         FALSE = 0, TRUE  = !FALSE
 } bool;

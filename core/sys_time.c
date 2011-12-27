@@ -26,12 +26,34 @@
 
 #include <port/ousia_port.h>
 #include <ousia/ousia_type.h>
+#include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/time.h>
 
-static uint32 _systime;
+static uint32 _systime = 0;
 
 static void __systick_interrupt(void);
+
+/*
+ * @brief   os process sleep routine
+ * @param   tms -i- sleep time in ms
+ * @return  os_status
+ */
+os_status os_sleep(uint32 tms)
+{
+	os_status ret = OS_OK;
+
+	/* TODO here to calculate time */
+
+	/*
+	 * call scheduler
+	 * FIXME need to make sure everything is ready for process
+	 * scheduling and context switch before start a schedule
+	 */
+	_sys_sched_schedule();
+
+	return ret;
+}
 
 /*
  * @brief   get system time
@@ -48,19 +70,19 @@ uint32 os_systime_get(void)
  * @brief   set system time
  * @param   time -i- 32 bit integer value for time
  * @return  none
- * @note    none
+ * @note    FIXME is this necessary?
  */
 void os_systime_set(uint32 time)
 {
 }
 
 /*
- * @brief   os timer init
+ * @brief   system timetick init
  * @param   none
  * @return  none
  * @note    none
  */
-void _os_timer_init(void)
+void _sys_timetick_init(void)
 {
 	_systime = 0UL;
 	_systick_register_callback(&__systick_interrupt);

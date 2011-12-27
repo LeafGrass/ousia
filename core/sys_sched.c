@@ -40,15 +40,20 @@ static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq);
 static os_status __do_strategy_cfs(struct _pqcb_t *pq);
 static os_status __do_strategy_hpfs(struct _pqcb_t *pq);
 
-do_sched_func_t do_schedule;
+static do_sched_func_t __do_schedule = NULL;
+static struct _pqcb_t pqcb = {
+	.pnum = 0,
+	.p_head = NULL,
+	.p_tail = NULL
+};
 
-/*
- * @brief   start ousia scheduler to work
- * @param   none
- * @return  os_status
- * @note    none
- */
-os_status _sched_init(uint32 strategy)
+ /*
+  * @brief   start ousia scheduler to work
+  * @param   strategy -i- scheduling strategy
+  * @return  os_status
+  * @note    none
+  */
+os_status _sys_sched_init(uint32 strategy)
 {
 	os_status stat = OS_OK;
 	switch (strategy) {
@@ -72,72 +77,77 @@ os_status _sched_init(uint32 strategy)
 }
 
 /*
- * @brief   start ousia scheduler to work
- * @param   pq -i/o- input pqcb, output rearranged pqcb
+ * @brief   start a schedule
+ * @param   none
  * @return  os_status
  * @note    none
  */
-os_status _sched_do_strategy(struct _pqcb_t *pq)
+os_status _sys_sched_schedule(void)
 {
-	os_status stat = OS_OK;
-	return stat;
+	os_status ret = OS_OK;
+
+	ret = __do_schedule(&pqcb);
+
+	/* TODO here to trigger condition for os context switch */
+
+	return ret;
 }
 
 /*
- * @brief   assign a real schedule strategy to _sched_do_schedule
+ * @brief   assign a real schedule strategy to _sched_schedule
  * @param   none
- * @return  none 
+ * @return  none
  * @note    FIXME is this function a waste of ram?
  */
 static void __schedule_assign(do_sched_func_t func)
 {
-	do_schedule = func;
+	__do_schedule = func;
 }
 
 /*
- * @brief   earliest deadline first
+ * @brief   earliest deadline first scheduling
  * @param   pq -i/o- process queue control block
  * @return  os_status
  * @note
  */
 static os_status __do_strategy_edfs(struct _pqcb_t *pq)
 {
-	os_status stat = OS_OK;
-	return stat;
+	os_status ret = OS_OK;
+	return ret;
 }
 
 /*
- * @brief   earliest deadline first, optimized for overall situation
+ * @brief   earliest deadline first scheduling, optimized for overall
  * @param   pq -i/o- process queue control block
  * @return  os_status
  * @note
  */
 static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq)
 {
-	os_status stat = OS_OK;
-	return stat;
+	os_status ret = OS_OK;
+	return ret;
 }
 
 /*
- * @brief   completely fair 
+ * @brief   completely fair scheduling
  * @param   pq -i/o- process queue control block
  * @return  os_status
  * @note
  */
 static os_status __do_strategy_cfs(struct _pqcb_t *pq)
 {
-	os_status stat = OS_OK;
-	return stat;
+	os_status ret = OS_OK;
+	return ret;
 }
 
 /*
- * @brief   highest priority first
+ * @brief   highest priority first scheduling
  * @param   pq -i/o- process queue control block
  * @return  os_status
  * @note
  */
 static os_status __do_strategy_hpfs(struct _pqcb_t *pq)
 {
-	os_status stat = OS_OK;
-	return stat;
+	os_status ret = OS_OK;
+	return ret;
 }

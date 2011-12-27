@@ -9,10 +9,10 @@
 
 int main(void)
 {
-	os_status stat = OS_OK;
+	os_status ret = OS_OK;
 
-	stat = os_init();
-	stat = stat;
+	ret = os_init();
+	ret = ret;
 	x86utils_system_init();
 
 	BOOT_LOGO();

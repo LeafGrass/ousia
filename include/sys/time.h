@@ -42,7 +42,8 @@ struct _ptcb_t {
 	/*uint32 left;*/
 };
 
-void _os_timer_init(void);
+void _sys_timetick_init(void);
+os_status os_sleep(uint32 tms);
 uint32 os_systime_get(void);
 void os_systime_set(uint32 time);
 

@@ -62,7 +62,8 @@ struct _pqcb_t {
 	struct _pcb_t *p_tail;
 };
 
-os_status _sched_init(uint32 strategy);
+os_status _sys_sched_init(uint32 strategy);
+os_status _sys_sched_schedule(void);
 
 
 #endif /* __SYS_SCHED_H__ */
