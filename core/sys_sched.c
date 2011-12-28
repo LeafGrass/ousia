@@ -34,7 +34,7 @@
 
 typedef os_status (*do_sched_func_t)(struct _pqcb_t *pq);
 
-static void __schedule_assign(do_sched_func_t func);
+static void __schedule_assign(do_sched_func_t func_strategy);
 static os_status __do_strategy_edfs(struct _pqcb_t *pq);
 static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq);
 static os_status __do_strategy_cfs(struct _pqcb_t *pq);
@@ -99,9 +99,9 @@ os_status _sys_sched_schedule(void)
  * @return  none
  * @note    FIXME is this function a waste of ram?
  */
-static void __schedule_assign(do_sched_func_t func)
+static void __schedule_assign(do_sched_func_t func_strategy)
 {
-	__do_schedule = func;
+	__do_schedule = func_strategy;
 }
 
 /*
