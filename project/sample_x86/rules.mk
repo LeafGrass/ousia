@@ -10,7 +10,7 @@ CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $
 # Local rules and targets
 # libmaple
 cSRCS_$(d) := main.c
-sSRCS_$(d) := 
+sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
