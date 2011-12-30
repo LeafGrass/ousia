@@ -35,27 +35,6 @@ static uint32 _systime = 0;
 static void __systick_interrupt(void);
 
 /*
- * @brief   os process sleep routine
- * @param   tms -i- sleep time in ms
- * @return  os_status
- */
-os_status os_sleep(uint32 tms)
-{
-	os_status ret = OS_OK;
-
-	/* TODO here to calculate time */
-
-	/*
-	 * call scheduler
-	 * FIXME need to make sure everything is ready for process
-	 * scheduling and context switch before start a schedule
-	 */
-	_sys_sched_schedule();
-
-	return ret;
-}
-
-/*
  * @brief   get system time
  * @param   none
  * @return  32 bit integer value for time

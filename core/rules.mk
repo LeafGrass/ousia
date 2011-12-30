@@ -10,7 +10,7 @@ BUILDDIRS += $(BUILD_PATH)/$(d)/ulib
 CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
 
 # Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall
+CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall -Werror
 
 # Local rules and targets (add source files here)
 cSRCS_$(d) := \

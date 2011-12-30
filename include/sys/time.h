@@ -34,18 +34,13 @@
  * redundant, needs a cleansheet
  */
 struct _ptcb_t {
-	uint32 spend;
-	uint32 elapsed;
-	uint32 insuspend;
+	uint32 ticks;
 	uint32 deadline;
-	/*uint32 allocated;*/
-	/*uint32 left;*/
 };
 
-void _sys_timetick_init(void);
-os_status os_sleep(uint32 tms);
 uint32 os_systime_get(void);
 void os_systime_set(uint32 time);
+void _sys_timetick_init(void);
 
 
 #endif /* __SYS_TIME_H__ */
