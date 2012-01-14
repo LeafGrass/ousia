@@ -71,6 +71,9 @@ static struct _pqcb_t pqcb = {
 int32 os_process_create(void *pentry)
 {
 	struct _pcb_t *pcb = NULL;
+
+	/* TODO here to allocate resources to a process */
+
 	if (pcb == NULL)
 		return -1;
 	return pcb->pid;

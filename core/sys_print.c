@@ -58,48 +58,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 typedef void (*putcf) (void *dev, char ch);
 static putcf stdout_putf;
-static void* stdout_putp;
+static void *stdout_putp;
 
 static void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
 
-/*
- * FIXME some bug with long support
- * maybe we need more functional printf
- */
-/*#define PRINTF_LONG_SUPPORT*/
-
-#ifdef PRINTF_LONG_SUPPORT
-
-static void uli2a(unsigned long int num, unsigned int base, int uc, char *bf)
-{
-	int n = 0;
-	unsigned int d = 1;
-	while (num/d >= base)
-		d *= base;
-	while (d != 0) {
-		int dgt = num / d;
-		num %= d;
-		d /= base;
-		if (n || dgt > 0|| d == 0) {
-			*bf++ = dgt + (dgt < 10 ? '0' : (uc ? 'A' : 'a') - 10);
-			++n;
-		}
-	}
-	*bf = 0;
-}
-
-static void li2a(long num, char *bf)
-{
-	if (num < 0) {
-		num =- num;
-		*bf++ = '-';
-	}
-	uli2a(num, 10, 0, bf);
-}
-
-#endif
-
-static void ui2a(unsigned int num, unsigned int base, int uc, char * bf)
+static void ui2a(unsigned int num, unsigned int base, int uc, char *bf)
 {
 	int n = 0;
 	unsigned int d = 1;
@@ -137,9 +100,9 @@ static int a2d(char ch)
 	else return -1;
 }
 
-static char a2i(char ch, const char** src, int base, int* nump)
+static char a2i(char ch, const char **src, int base, int *nump)
 {
-	const char* p = *src;
+	const char *p = *src;
 	int num = 0;
 	int digit;
 	while ((digit = a2d(ch)) >= 0) {
@@ -152,11 +115,11 @@ static char a2i(char ch, const char** src, int base, int* nump)
 	return ch;
 }
 
-static void putchw(void* putp, putcf putf, int n, char z, char* bf)
+static void putchw(void *putp, putcf putf, int n, char z, char *bf)
 {
 	char fc = z ? '0' : ' ';
 	char ch;
-	char* p = bf;
+	char *p = bf;
 	while (*p++ && n > 0)
 		n--;
 	while (n-- > 0)
@@ -175,9 +138,6 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 			putf(putp, ch);
 		else {
 			char lz = 0;
-#ifdef PRINTF_LONG_SUPPORT
-			char lng = 0;
-#endif
 			int w = 0;
 			ch = *(fmt++);
 			if (ch == '0') {
@@ -187,47 +147,27 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 			if (ch >= '0' && ch <= '9') {
 				ch = a2i(ch, &fmt, 10, &w);
 			}
-#ifdef PRINTF_LONG_SUPPORT
-			if (ch == 'l') {
-				ch = *(fmt++);
-				lng = 1;
-			}
-#endif
+
 			switch (ch) {
 			case 0:
 				goto abort;
 			case 'u':
-#ifdef PRINTF_LONG_SUPPORT
-				if (lng)
-					uli2a(va_arg(va, unsigned long int), 10, 0, bf);
-				else
-#endif
-					ui2a(va_arg(va, unsigned int), 10, 0, bf);
+				ui2a(va_arg(va, unsigned int), 10, 0, bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
 			case 'd':
-#ifdef PRINTF_LONG_SUPPORT
-				if (lng)
-					li2a(va_arg(va, unsigned long int), bf);
-				else
-#endif
-					i2a(va_arg(va, int), bf);
+				i2a(va_arg(va, int), bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
 			case 'x': case 'X' :
-#ifdef PRINTF_LONG_SUPPORT
-				if (lng)
-					uli2a(va_arg(va, unsigned long int), 16, (ch == 'X'), bf);
-				else
-#endif
-					ui2a(va_arg(va, unsigned int), 16, (ch == 'X'), bf);
+				ui2a(va_arg(va, unsigned int), 16, (ch == 'X'), bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
 			case 'c':
 				putf(putp, (char)(va_arg(va, int)));
 				break;
 			case 's':
-				putchw(putp, putf, w, 0, va_arg(va, char*));
+				putchw(putp, putf, w, 0, va_arg(va, char *));
 				break;
 			case '%':
 				putf(putp, ch);
@@ -253,11 +193,11 @@ void tfp_printf(const char *fmt, ...)
 {
 	va_list va;
 	va_start(va, fmt);
-	tfp_format(stdout_putp, stdout_putf, fmt,va);
+	tfp_format(stdout_putp, stdout_putf, fmt, va);
 	va_end(va);
 }
 
-static void putcp(void *p,char c)
+static void putcp(void *p, char c)
 {
 	*(*((char**)p))++ = c;
 }
