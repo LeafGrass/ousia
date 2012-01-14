@@ -126,3 +126,23 @@ static void __port_systick_handler(void)
 	return;
 }
 #endif
+
+/*
+ * @brief   pendsv exception handler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void __exc_pendsv(void)
+{
+}
+
+/*
+ * @brief   svc exception handler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void __exc_svc(void)
+{
+}
