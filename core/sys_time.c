@@ -30,7 +30,7 @@
 #include <sys/print.h>
 #include <sys/time.h>
 
-static uint32 _systime = 0;
+static uint32 __systime = 0;
 
 static void __systick_interrupt(void);
 
@@ -42,7 +42,7 @@ static void __systick_interrupt(void);
  */
 uint32 os_systime_get(void)
 {
-	return _systime;
+	return __systime;
 }
 
 /*
@@ -63,7 +63,7 @@ void os_systime_set(uint32 time)
  */
 void _sys_timetick_init(void)
 {
-	_systime = 0UL;
+	__systime = 0UL;
 	_systick_register_callback(&__systick_interrupt);
 }
 
@@ -76,7 +76,7 @@ void _sys_timetick_init(void)
 static void __systick_interrupt(void)
 {
 	os_enter_critical();
-	_systime++;
+	__systime++;
 	os_exit_critical();
 	return;
 }
