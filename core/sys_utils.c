@@ -32,11 +32,13 @@
 #include <sys/print.h>
 #include <sys/utils.h>
 
+
 /*
  * @brief   the very first init of ousia
  * @param   none
  * @return  os status code
  * @note    this function should be called before all other syscalls
+ *          interrupts should better no be enabled before os init finished
  */
 os_status os_init(void)
 {

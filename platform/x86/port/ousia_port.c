@@ -81,7 +81,7 @@ void _os_exit_critical(void)
  * @return  none
  * @note    may not needed
  */
-void _os_port_assert_fail(const char* file, int line, const char *exp)
+void _port_assert_fail(const char* file, int line, const char *exp)
 {
         return;
 }
@@ -105,7 +105,7 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _systick_register_callback(void (*callback)(void))
+void _port_systick_register(void (*callback)(void))
 {
         x86utils_attach_systick_callback(callback);
         return;
@@ -123,3 +123,14 @@ static void __port_systick_handler(void)
         return;
 }
 #endif
+
+/*
+ * @brief   context switch routine
+ * @param   curr_pcb (r0) -i- old process control block
+ *          target_pcb (r1) -i- new process control block
+ * @return  none
+ * @note    FIXME needs verification and complete
+ */
+void _port_context_switch(void *curr_pcb, void *target_pcb)
+{
+}

@@ -64,7 +64,7 @@ void os_systime_set(uint32 time)
 void _sys_timetick_init(void)
 {
 	__systime = 0UL;
-	_systick_register_callback(&__systick_interrupt);
+	_port_systick_register(&__systick_interrupt);
 }
 
 /*

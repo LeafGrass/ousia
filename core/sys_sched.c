@@ -32,6 +32,9 @@
 #include <sys/sched.h>
 
 
+#define PS_INIT_STACK_SIZE	128
+#define PS_IDLE_STACK_SIZE	128
+
 typedef os_status (*do_sched_func_t)(struct _pqcb_t *pq);
 
 static void __schedule_assign(do_sched_func_t func_strategy);
@@ -54,7 +57,6 @@ static struct _pcb_t curr_pcb = {
 	.timer = NULL,
 	.p_prev = NULL,
 	.p_next = NULL
-
 };
 static struct _pqcb_t pqcb = {
 	.pnum = 0,
@@ -62,21 +64,43 @@ static struct _pqcb_t pqcb = {
 	.p_tail = NULL
 };
 
+static uint8 __ps_init_stack[PS_INIT_STACK_SIZE] = {0};
+static uint8 __ps_idle_stack[PS_IDLE_STACK_SIZE] = {0};
+static struct _pcb_t ps_init_pcb;
+static struct _pcb_t ps_idle_pcb;
+
 /*
  * @brief   create a process
- * @param   pentry -i- process entry
+ * @param   pcb -i- pointer of process control block
+ *          pentry -i- process main function entry
+ *          args -i- process main function args
+ *          stack_base -i- start address of stack
+ *          stack_size -i- process private stack size
  * @return  pid if create success
- * @note    none
+ * @note    TODO we'd better use dynamic memory in the future
+ *          to allocate a pcb and a stack if for a new process
+ *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
-int32 os_process_create(void *pentry)
+int32 os_process_create(void *pcb, void *pentry, void *args,
+			void *stack_base, uint32 stack_size)
 {
-	struct _pcb_t *pcb = NULL;
+	struct _pcb_t *new_pcb;
 
 	/* TODO here to allocate resources to a process */
 
-	if (pcb == NULL)
+	if (pcb == NULL || pentry == NULL || stack_base == NULL)
 		return -1;
-	return pcb->pid;
+
+	new_pcb = (struct _pcb_t *)pcb;
+#if 0
+	new_pcb->stack_ptr = _port_process_stack_init(pentry, args, stack_base);
+#endif
+	new_pcb->pentry = pentry;
+	new_pcb->stack_size = stack_size;
+
+	/* TODO enqueue pcb */
+
+	return new_pcb->pid;
 }
 
 /*
@@ -163,9 +187,15 @@ os_status _sys_sched_process_init(void)
 {
 	os_status ret = OS_OK;
 
-	/* TODO create two processes at init, then initialize curr_pcb & pqcb */
-	os_process_create(__ps_init);
-	os_process_create(__ps_idle);
+	/* TODO create two processes at init */
+	os_process_create(&ps_init_pcb, __ps_init, NULL,
+			  __ps_init_stack, PS_INIT_STACK_SIZE);
+	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
+			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
+#if 0
+	/* start the first schedule */
+	_sys_sched_schedule();
+#endif
 
 	return ret;
 }
@@ -183,6 +213,7 @@ os_status _sys_sched_schedule(void)
 	ret = __do_schedule(&pqcb);
 
 	/* TODO here to trigger os context switch */
+	_port_context_switch(&curr_pcb, &pqcb.p_head);
 
 	return ret;
 }

@@ -42,9 +42,10 @@
 void _os_enter_critical(void);
 void _os_exit_critical(void);
 void _os_port_init(void);
-void _os_port_assert_fail(const char* file, int line, const char *exp);
+void _port_assert_fail(const char* file, int line, const char *exp);
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
-void _systick_register_callback(void (*callback)(void));
+void _port_systick_register(void (*callback)(void));
+void _port_context_switch(void *curr_pcb, void *target_pcb);
 
 
 #endif /* OUSIA_PORT_H */

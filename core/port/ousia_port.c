@@ -29,7 +29,12 @@
 #include <stm32/stm32utils/stm32utils.h>
 #include <port/ousia_port.h>
 
+
+#define PSR_INIT_VALUE	0x01000000
+
 static uint32 critical_nest;
+static volatile void *old_pcb;
+static volatile void *new_pcb;
 
 #if 0
 static void __port_systick_handler(void);
@@ -43,6 +48,8 @@ static void __port_systick_handler(void);
  */
 void _os_port_init(void)
 {
+	old_pcb = NULL;
+	new_pcb = NULL;
 	return;
 }
 
@@ -81,7 +88,7 @@ void _os_exit_critical(void)
  * @return  none
  * @note    may not needed
  */
-void _os_port_assert_fail(const char* file, int line, const char *exp)
+void _port_assert_fail(const char* file, int line, const char *exp)
 {
 	_fail(file, line, exp);
 }
@@ -105,11 +112,11 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
 
 /*
  * @brief   register callback function of system tick handler
- * @param   pointer to callback function
+ * @param   callback -i- pointer to callback function
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _systick_register_callback(void (*callback)(void))
+void _port_systick_register(void (*callback)(void))
 {
 	systick_attach_callback(callback);
 }
@@ -126,6 +133,73 @@ static void __port_systick_handler(void)
 	return;
 }
 #endif
+
+/*
+ * @brief   context switch routine
+ * @param   curr_pcb (r0) -i- old process control block
+ *          target_pcb (r1) -i- new process control block
+ * @return  none
+ * @note    FIXME needs verification and complete
+ */
+void _port_context_switch(void *curr_pcb, void *target_pcb)
+{
+	__asm volatile
+	(
+	 /* store necessary regs */
+	 "	push	{r4, r5}			\n"
+	 /* store pcb instances to local */
+	 "	ldr	r4, old_pcb_local		\n"
+	 "	ldr	r5, new_pcb_local		\n"
+	 "	str	r0, [r4]			\n"
+	 "	str	r1, [r5]			\n"
+	 /* trigger a pendsv exception */
+	 "	ldr	r4, =NVIC_INT_CTRL		\n"
+	 "	ldr	r5, =NVIC_PENDSVSET		\n"
+	 "	str	r5, [r4]			\n"
+	 /* restore pushed regs and go back to wait pendsv */
+	 "	pop	{r4, r5}			\n"
+	 "	bx	lr				\n"
+	 "old_pcb_local: .word old_pcb			\n"
+	 "new_pcb_local: .word new_pcb			\n"
+	 "NVIC_INT_CTRL: .word 0xE000ED04		\n"
+	 "NVIC_PENDSVSET: .word 0x10000000		\n"
+	);
+}
+
+/*
+ * @brief   process private stack initialize
+ * @param   pentry -i- process main function entry
+ *          args -i- process main function args
+ *          stack_base -i- start address of stack
+ * @return  pointer to initialized stack
+ * @note    TODO we may not need to initialize each reg
+ *               init value of lr needs to be confirmed
+ */
+uint8 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+{
+	uint32 *stack;
+
+	stack = (uint32 *)stack_base;
+
+	*stack     = PSR_INIT_VALUE;	/* xpsr */
+	*(--stack) = (uint32)pentry;	/* pc */
+	*(--stack) = (uint32)pentry;	/* lr */
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = (uint32)args;	/* r0 */
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+	*(--stack) = 0;
+
+	return (uint8 *)stack;
+}
 
 /*
  * @brief   pendsv exception handler

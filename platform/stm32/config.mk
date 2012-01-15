@@ -78,7 +78,7 @@ GLOBAL_FLAGS := \
 	-DUSB_DISC_BIT=$(USB_DISC_BIT)
 
 GLOBAL_CFLAGS := \
-	-O2 -g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
+	-g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
 	-nostdlib -ffunction-sections -fdata-sections \
 	-Wl,--gc-sections $(GLOBAL_FLAGS) \
 
