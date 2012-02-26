@@ -47,7 +47,7 @@ os_status os_init(void)
 	_os_port_init();
 	_init_printf();
 	_sys_timetick_init();
-	ret = _sys_sched_init(OUSIA_SCHED_STRATEGY);
+	ret = _sys_sched_init();
 	ret = _sys_sched_process_init();
 
 	return ret;

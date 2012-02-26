@@ -35,17 +35,21 @@
 #define PS_INIT_STACK_SIZE	128
 #define PS_IDLE_STACK_SIZE	128
 
-typedef os_status (*do_sched_func_t)(struct _pqcb_t *pq);
-
-static void __schedule_assign(do_sched_func_t func_strategy);
+#ifdef OUSIA_SCHED_STRATEGY_EDFS
 static os_status __do_strategy_edfs(struct _pqcb_t *pq);
+#endif
+#ifdef OUSIA_SCHED_STRATEGY_EDFS_OPT
 static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq);
+#endif
+#ifdef OUSIA_SCHED_STRATEGY_CFS
 static os_status __do_strategy_cfs(struct _pqcb_t *pq);
+#endif
+#ifdef OUSIA_SCHED_STRATEGY_HPFS
 static os_status __do_strategy_hpfs(struct _pqcb_t *pq);
+#endif
 static void __ps_init(void *args);
 static void __ps_idle(void *args);
 
-static do_sched_func_t __do_schedule = NULL;
 
 static struct _pcb_t curr_pcb = {
 	.stack_ptr = NULL,
@@ -58,16 +62,30 @@ static struct _pcb_t curr_pcb = {
 	.p_prev = NULL,
 	.p_next = NULL
 };
+
 static struct _pqcb_t pqcb = {
 	.pnum = 0,
 	.p_head = NULL,
 	.p_tail = NULL
 };
 
+static struct _sched_class_t sched_class = {
+#if defined(OUSIA_SCHED_STRATEGY_EDFS)
+	.do_schedule = __do_strategy_edfs
+#elif defined(OUSIA_SCHED_STRATEGY_CFS)
+	.do_schedule = __do_strategy_cfs
+#elif defined(OUSIA_SCHED_STRATEGY_HPFS)
+	.do_schedule = __do_strategy_hpfs
+#else
+	.do_schedule = __do_strategy_edfs_optimized
+#endif
+};
+
 static uint8 __ps_init_stack[PS_INIT_STACK_SIZE] = {0};
 static uint8 __ps_idle_stack[PS_IDLE_STACK_SIZE] = {0};
 static struct _pcb_t ps_init_pcb;
 static struct _pcb_t ps_idle_pcb;
+
 
 /*
  * @brief   create a process
@@ -150,30 +168,13 @@ os_status os_process_resume(uint32 pid)
 
 /*
  * @brief   start ousia scheduler to work
- * @param   strategy -i- scheduling strategy
+ * @param   none
  * @return  os_status
  * @note    none
  */
-os_status _sys_sched_init(uint32 strategy)
+os_status _sys_sched_init(void)
 {
 	os_status ret = OS_OK;
-	switch (strategy) {
-	case OUSIA_SCHED_STRATEGY_EDFS:
-		__schedule_assign(&__do_strategy_edfs);
-		break;
-	case OUSIA_SCHED_STRATEGY_EDFS_OPT:
-		__schedule_assign(&__do_strategy_edfs_optimized);
-		break;
-	case OUSIA_SCHED_STRATEGY_HPFS:
-		__schedule_assign(&__do_strategy_hpfs);
-		break;
-	case OUSIA_SCHED_STRATEGY_CFS:
-		__schedule_assign(&__do_strategy_cfs);
-		break;
-	default:
-		__schedule_assign(&__do_strategy_edfs_optimized);
-		break;
-	}
 	return ret;
 }
 
@@ -210,7 +211,7 @@ os_status _sys_sched_schedule(void)
 {
 	os_status ret = OS_OK;
 
-	ret = __do_schedule(&pqcb);
+	ret = sched_class.do_schedule(&pqcb);
 
 	/* TODO here to trigger os context switch */
 	_port_context_switch(&curr_pcb, &pqcb.p_head);
@@ -218,17 +219,7 @@ os_status _sys_sched_schedule(void)
 	return ret;
 }
 
-/*
- * @brief   assign a real schedule strategy to _sched_schedule
- * @param   none
- * @return  none
- * @note    FIXME is this function a waste of ram?
- */
-static void __schedule_assign(do_sched_func_t func_strategy)
-{
-	__do_schedule = func_strategy;
-}
-
+#ifdef OUSIA_SCHED_STRATEGY_EDFS
 /*
  * @brief   earliest deadline first scheduling
  * @param   pq -i/o- process queue control block
@@ -240,7 +231,9 @@ static os_status __do_strategy_edfs(struct _pqcb_t *pq)
 	os_status ret = OS_OK;
 	return ret;
 }
+#endif
 
+#ifdef OUSIA_SCHED_STRATEGY_EDFS_OPT
 /*
  * @brief   earliest deadline first scheduling, optimized for overall
  * @param   pq -i/o- process queue control block
@@ -252,7 +245,9 @@ static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq)
 	os_status ret = OS_OK;
 	return ret;
 }
+#endif
 
+#ifdef OUSIA_SCHED_STRATEGY_CFS
 /*
  * @brief   completely fair scheduling
  * @param   pq -i/o- process queue control block
@@ -264,7 +259,9 @@ static os_status __do_strategy_cfs(struct _pqcb_t *pq)
 	os_status ret = OS_OK;
 	return ret;
 }
+#endif
 
+#ifdef OUSIA_SCHED_STRATEGY_HPFS
 /*
  * @brief   highest priority first scheduling
  * @param   pq -i/o- process queue control block
@@ -276,6 +273,7 @@ static os_status __do_strategy_hpfs(struct _pqcb_t *pq)
 	os_status ret = OS_OK;
 	return ret;
 }
+#endif
 
 /*
  * @brief   process - init
