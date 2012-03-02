@@ -78,6 +78,7 @@ int main(void)
 			switch(ch) {
 			case '\r':
 				os_printf("\r\n");
+				os_log(LOG_INFO, "");
 				gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 				break;
 			case '\b':

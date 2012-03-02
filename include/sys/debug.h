@@ -43,7 +43,7 @@
 #define _OS_PRINTF(level, msg, args...) \
 	do { \
 		if (level > LOG_LEVEL) { \
-			os_printf("[%06d.%03d] " msg, __dec, __frac, ##args); \
+			os_printf("[%6u.%03u] " msg, __dec, __frac, ##args); \
 		} \
 	} while (0)
 #else
