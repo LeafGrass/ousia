@@ -1,0 +1,69 @@
+How to Start for Fresh New Environment
+--------------------------------------
+
+As for stm32 on linux host, we use dfu/serial/jtag to upload firmware,
+setup like below:
+
+-   Install toolchain, we choose a kind of GCC variant.
+    Download Sourcery G++ from Mentor Graphics (http://www.mentor.com/)
+    e.g. ** Sourcery G++ Lite 2011.03-42 for ARM EABI **
+    Then export its PATH as a environment variable to prepare for use.
+
+-   Install dfu-util, pyserial, openocd.
+    dfu-util: Used to download binary to flash. (recommended)
+    pyserial: Serial interface, support python script to work.
+    openocd: Used as debugger device driver, such as J-Link.
+    Ps: In fedora or ubuntu, yum/apt-get install them is ok.
+
+-   Resolve usb or serial access problems.
+    (e.g. copy ousia/support/dfu/45-maple.rules to /etc/udev/rules.d/)
+
+-   Install minicom as a console if you want to debug via uart.
+    Ps: Default port is /dev/ttyACMx
+
+Build and Download Bootloader into Your Chip
+--------------------------------------------
+
+-   Setup environment mentioned above.
+
+-   Go into /platform/stm32/bootloader, type make.
+
+-   Use J-Link or serial port to download the code.
+    J-Link: Use /script/download.sh.
+    Serial Port: Use /script/stm32loader.py.
+
+Steps to Build Excutable Binary
+-------------------------------
+
+-   Modify /Makefile.
+    Set these variables, e.g.:
+        OUSIA_TARGET = ousia
+        TARGET_PLATFORM = stm32
+        PROJECT_NAME = sample_$(TARGET_PLATFORM)
+        DOWNLOAD_MODE = dfu
+
+-   Modify /platform/stm32/config.mk, e.g.:
+        BOARD = leach
+        MEMORY_TARGET = flash
+    Ps: To choose which board you are using, refer to board definitions
+    in the following lines in this file. e.g.:
+        ifeq ($(BOARD), leach)
+	MCU = STM32F103RB
+	DENSITY = STM32_MEDIUM_DENSITY
+	VENDOR_ID = 1EAF
+	PRODUCT_ID = 0003
+	ERROR_LED_PORT = GPIOA
+	ERROR_LED_PIN  = 5
+	USART_CONSOLE_BANK = USART1
+	VCOM_ID_PRODUCT	= 0004
+	USB_DISC_DEV = GPIOC
+	USB_DISC_BIT = 12
+	endif
+    If you have a new type of board with a totally different hardware
+    definition, it might be necessary to modify some related code.
+    That is easy, in fact. :P
+
+-   Reset your hardware and make it available for downloading code.
+    Ps: If using bootloader on the board, set it into bootloader mode first.
+
+-   Do 'make' and 'make install'.

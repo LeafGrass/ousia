@@ -15,7 +15,7 @@ Source Tree Architecture
 * core/
     Ousia core routines. Ousia porting code are also placed here.
 
-* docs/
+* doc/
     Complete documentation of Ousia.
 
 * driver/
