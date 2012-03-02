@@ -4,7 +4,7 @@
 VERSION = 0
 SUBLEVEL = 0
 DEVNUM = 4
-NAME = Delavay Fir
+VERNAME = Delavay-Fir
 
 ########################################
 # User Customization Items
@@ -36,6 +36,12 @@ FRAMEWORK_PATH := $(SRCROOT)/framework
 SUPPORT_PATH := $(SRCROOT)/support
 SCRIPT_PATH := $(SRCROOT)/script
 PROJECT_PATH := $(SRCROOT)/project
+
+VERFLAGS := \
+	-DVERSION=$(VERSION) \
+	-DSUBLEVEL=$(SUBLEVEL) \
+	-DDEVNUM=$(DEVNUM) \
+	-DVERNAME=\"$(VERNAME)\"
 
 # FIXME This solution results to a problem.
 #       In target platform directory, we must use too many .mk files.

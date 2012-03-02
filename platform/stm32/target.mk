@@ -29,4 +29,3 @@ jtag:
 	@$(MAKE) MEMORY_TARGET=jtag --no-print-directory sketch
 
 .PHONY: debug ram flash jtag
-

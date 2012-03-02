@@ -64,6 +64,7 @@ ifeq ($(MEMORY_TARGET), jtag)
 endif
 
 GLOBAL_FLAGS := \
+	$(VERFLAGS) \
 	-DOUSIA \
 	-D__PLATFORM__=__STM32__ \
 	-D$(DENSITY) \
@@ -96,4 +97,3 @@ LDFLAGS := \
 SHELL	:= /bin/bash
 PYTHON	:= /usr/bin/python
 CROSS   := arm-none-eabi-
-

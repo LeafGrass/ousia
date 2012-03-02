@@ -22,29 +22,30 @@
  * @file    include/ousia/ousia.h
  * @brief   ousia header
  * @log     2011.8 initial revision
+ *          2012.3 add version code
  */
 
 #ifndef __OUSIA_H__
 #define __OUSIA_H__
 
 
-#define VERSION     "v0.0.4"
-#define VER_NAME    "Delavay Fir"
+#define VERCODE		(VERSION*100 + SUBLEVEL*10 + DEVNUM)
+#define VERSTR(str)	#str
 
 #define BOOT_LOGO() \
 { \
-        os_putchar(0x0C); \
-        os_printf("                       _\r\n"); \
-        os_printf("     _                / /\r\n"); \
-        os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n"); \
-        os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n"); \
-        os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n"); \
-        os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n"); \
-        os_printf("                      /_/ \\_ _/\r\n" ); \
-        os_printf("\r\n"); \
-        os_printf("Ousia "); os_printf(VERSION); os_printf(" "); os_printf(VER_NAME); \
-        os_printf("\r\n\tby LeafGrass - leafgrass.g@gmail.com"); \
-        os_printf("\r\n\r\n"); \
+	os_putchar(0x0C); \
+	os_printf("                       _\r\n"); \
+	os_printf("     _                / /\r\n"); \
+	os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n"); \
+	os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n"); \
+	os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n"); \
+	os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n"); \
+	os_printf("                      /_/ \\_ _/\r\n" ); \
+	os_printf("\r\n"); \
+	os_printf("Ousia v%d.%d.%d %s\r\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
+	os_printf("\tby LeafGrass - leafgrass.g@gmail.com"); \
+	os_printf("\r\n\r\n"); \
 	os_log(LOG_CRITICAL, "hello ousia :P\r\n"); \
 }
 

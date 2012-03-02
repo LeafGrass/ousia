@@ -1,6 +1,7 @@
 PRODUCT_ID := PC001
 
 GLOBAL_FLAGS := \
+	$(VERFLAGS) \
 	-DOUSIA \
 	-D__PLATFORM__=__X86__
 
@@ -14,4 +15,3 @@ GLOBAL_ASFLAGS := $(GLOBAL_FLAGS)
 SHELL	:= /bin/bash
 PYTHON	:= /usr/bin/python
 CROSS   :=
-
