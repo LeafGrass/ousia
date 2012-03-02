@@ -38,10 +38,12 @@
 
 #define OS_DEBUG_PRINT	1
 #ifdef OS_DEBUG_PRINT
+#define __dec		(os_systime_get()/1000)
+#define __frac		(os_systime_get()%1000)
 #define _OS_PRINTF(level, msg, args...) \
 	do { \
 		if (level > LOG_LEVEL) { \
-			os_printf("[%09d] " msg, os_systime_get(), ##args); \
+			os_printf("[%06d.%03d] " msg, __dec, __frac, ##args); \
 		} \
 	} while (0)
 #else
