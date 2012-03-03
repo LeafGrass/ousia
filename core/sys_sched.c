@@ -47,6 +47,9 @@ static os_status __do_strategy_cfs(struct _pqcb_t *pq);
 #ifdef OUSIA_SCHED_STRATEGY_HPFS
 static os_status __do_strategy_hpfs(struct _pqcb_t *pq);
 #endif
+#ifdef OUSIA_SCHED_STRATEGY_RGHS
+static os_status __do_strategy_rghs(struct _pqcb_t *pq);
+#endif
 static void __ps_init(void *args);
 static void __ps_idle(void *args);
 
@@ -76,6 +79,8 @@ static struct _sched_class_t sched_class = {
 	.do_schedule = __do_strategy_cfs
 #elif defined(OUSIA_SCHED_STRATEGY_HPFS)
 	.do_schedule = __do_strategy_hpfs
+#elif defined(OUSIA_SCHED_STRATEGY_RGHS)
+	.do_schedule = __do_strategy_rghs
 #else
 	.do_schedule = __do_strategy_edfs_optimized
 #endif
@@ -269,6 +274,20 @@ static os_status __do_strategy_cfs(struct _pqcb_t *pq)
  * @note
  */
 static os_status __do_strategy_hpfs(struct _pqcb_t *pq)
+{
+	os_status ret = OS_OK;
+	return ret;
+}
+#endif
+
+#ifdef OUSIA_SCHED_STRATEGY_RGHS
+/*
+ * @brief   rough scheduling
+ * @param   pq -i/o- process queue control block
+ * @return  os_status
+ * @note    :P
+ */
+static os_status __do_strategy_rghs(struct _pqcb_t *pq)
 {
 	os_status ret = OS_OK;
 	return ret;
