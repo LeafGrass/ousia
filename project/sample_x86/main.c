@@ -11,16 +11,14 @@ int main(void)
 {
 	os_status ret = OS_OK;
 
+	x86utils_system_init();
 	ret = os_init();
 	ret = ret;
-	x86utils_system_init();
-
-	BOOT_LOGO();
 
 	while (1) {
 		sleep(1);
 		/* FIXME keep print info here ?? */
-		os_log(LOG_INFO, "get time\n");
+		os_logk(LOG_INFO, "get time\n");
 	}
 
 	return 0;

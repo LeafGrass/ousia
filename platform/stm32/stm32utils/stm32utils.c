@@ -66,7 +66,13 @@ void stm32utils_board_init(void)
 	setupFlash();
 	setupClocks();
 	setupNVIC();
+#if 0
+	/*
+	 * systick should only be enabled after specific
+	 * init steps has been finished while os bootup
+	 */
 	systick_init(SYSTICK_RELOAD_VAL);
+#endif
 	gpio_init_all();
 	afio_init();
 	setupADC();

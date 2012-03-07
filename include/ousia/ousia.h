@@ -35,18 +35,18 @@
 #define BOOT_LOGO() \
 { \
 	os_putchar(0x0C); \
-	os_printf("                       _\r\n"); \
-	os_printf("     _                / /\r\n"); \
-	os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\r\n"); \
-	os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\r\n"); \
-	os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\r\n"); \
-	os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\r\n"); \
-	os_printf("                      /_/ \\_ _/\r\n" ); \
-	os_printf("\r\n"); \
-	os_printf("Ousia v%d.%d.%d %s\r\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
+	os_printf("                       _\n"); \
+	os_printf("     _                / /\n"); \
+	os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\n"); \
+	os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\n"); \
+	os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\n"); \
+	os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"); \
+	os_printf("                      /_/ \\_ _/\n" ); \
+	os_printf("\n"); \
+	os_printf("Ousia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
 	os_printf("\tby LeafGrass - leafgrass.g@gmail.com"); \
-	os_printf("\r\n\r\n"); \
-	os_log(LOG_CRITICAL, "hello ousia :P\r\n"); \
+	os_printf("\n\n"); \
+	os_log("hello ousia :P\n\n"); \
 }
 
 

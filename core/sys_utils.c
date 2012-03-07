@@ -31,6 +31,7 @@
 #include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/utils.h>
+#include <sys/debug.h>
 
 
 /*
@@ -47,6 +48,7 @@ os_status os_init(void)
 	_os_port_init();
 	_init_printf();
 	_sys_timetick_init();
+	BOOT_LOGO();
 	ret = _sys_sched_init();
 	ret = _sys_sched_process_init();
 

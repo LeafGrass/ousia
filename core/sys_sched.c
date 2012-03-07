@@ -30,6 +30,7 @@
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/sched.h>
+#include <sys/debug.h>
 
 
 #define PS_INIT_STACK_SIZE	128
@@ -107,12 +108,12 @@ static struct _pcb_t ps_idle_pcb;
 int32 os_process_create(void *pcb, void *pentry, void *args,
 			void *stack_base, uint32 stack_size)
 {
-	struct _pcb_t *new_pcb;
+	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 
 	/* TODO here to allocate resources to a process */
 
 	if (pcb == NULL || pentry == NULL || stack_base == NULL)
-		return -1;
+		return -OS_ERR;
 
 	new_pcb = (struct _pcb_t *)pcb;
 #if 0

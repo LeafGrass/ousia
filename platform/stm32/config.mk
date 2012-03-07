@@ -1,7 +1,7 @@
 ########################################
 # User Customization Items
 ########################################
-BOARD = mini
+BOARD = leach
 MEMORY_TARGET = flash
 
 ########################################
@@ -66,7 +66,7 @@ endif
 GLOBAL_FLAGS := \
 	$(VERFLAGS) \
 	-DOUSIA \
-	-D__PLATFORM__=__STM32__ \
+	-D__PLATFORM_STM32__ \
 	-D$(DENSITY) \
 	-D$(VECT_BASE_ADDR) \
 	-DBOARD_$(BOARD) \

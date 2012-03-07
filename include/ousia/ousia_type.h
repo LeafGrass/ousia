@@ -53,8 +53,8 @@ typedef enum {
 
 typedef enum _os_status
 {
-        OS_ERR = -1,
-        OS_OK = 0
+        OS_OK = 0,
+        OS_ERR = 1
 } os_status;
 
 

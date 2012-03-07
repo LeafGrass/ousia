@@ -134,8 +134,13 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 	char ch;
 
 	while ((ch = *(fmt++))) {
-		if (ch != '%')
+		if (ch != '%') {
+#ifndef __PLATFORM_X86__
+			if (ch == '\n')
+				putf(putp, '\r');
+#endif
 			putf(putp, ch);
+		}
 		else {
 			char lz = 0;
 			int w = 0;
@@ -176,7 +181,8 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 			}
 		}
 	}
-abort:;
+abort:
+	;
 }
 
 void _init_printf(void)

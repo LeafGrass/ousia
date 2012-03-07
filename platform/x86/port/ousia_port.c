@@ -100,14 +100,15 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
 }
 
 /*
- * @brief   register callback function of system tick handler
+ * @brief   register callback function of system tick handler and init
  * @param   pointer to callback function
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _port_systick_register(void (*callback)(void))
+void _port_systick_init(void (*callback)(void))
 {
         x86utils_attach_systick_callback(callback);
+	/* here call fake systick enable */
         return;
 }
 

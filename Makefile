@@ -152,7 +152,7 @@ MSG_INFO:
 	@echo ""
 	@echo "TARGET: "$(OUSIA_TARGET)
 	@echo "VERSION: "$(VERSION)"."$(SUBLEVEL)"."$(DEVNUM)
-	@echo "NAME: "$(NAME)
+	@echo "NAME: "$(VERNAME)
 	@echo "PLATFORM: "$(TARGET_PLATFORM)
 	@echo "PROJECT: "$(PROJECT_NAME)
 	@echo ""

@@ -30,7 +30,7 @@
 #include <port/ousia_port.h>
 
 
-#define PSR_INIT_VALUE	0x01000000
+#define PSR_INIT_VALUE	0x01000000L
 
 static uint32 critical_nest;
 static volatile void *old_pcb;
@@ -111,14 +111,15 @@ void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char 
 }
 
 /*
- * @brief   register callback function of system tick handler
+ * @brief   register callback function of system tick handler and init
  * @param   callback -i- pointer to callback function
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _port_systick_register(void (*callback)(void))
+void _port_systick_init(void (*callback)(void))
 {
 	systick_attach_callback(callback);
+	systick_init(SYSTICK_RELOAD_VAL);
 }
 
 #if 0
@@ -184,21 +185,22 @@ uint8 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
 	*stack     = PSR_INIT_VALUE;	/* xpsr */
 	*(--stack) = (uint32)pentry;	/* pc */
 	*(--stack) = (uint32)pentry;	/* lr */
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
+	*(--stack) = 0;			/* r12 */
+	*(--stack) = 0;			/* r3 */
+	*(--stack) = 0;			/* r2 */
+	*(--stack) = 0;			/* r1 */
 	*(--stack) = (uint32)args;	/* r0 */
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
-	*(--stack) = 0;
+	*(--stack) = 0;			/* r11 */
+	*(--stack) = 0;			/* r10 */
+	*(--stack) = 0;			/* r9 */
+	*(--stack) = 0;			/* r8 */
+	*(--stack) = 0;			/* r7 */
+	*(--stack) = 0;			/* r6 */
+	*(--stack) = 0;			/* r5 */
+	*(--stack) = 0;			/* r4 */
 
 	return (uint8 *)stack;
+	return 0;
 }
 
 /*

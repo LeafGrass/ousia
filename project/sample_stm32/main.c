@@ -34,8 +34,6 @@ int main(void)
 //	uint8 wdata = 0xF0;
 //	uint8 rdata = 0x00;
 
-	ret = os_init();
-	os_assert(ret == OS_OK);
 	stm32utils_board_init();
 
 	/*
@@ -48,7 +46,8 @@ int main(void)
 		delay(50);
 	}
 
-	BOOT_LOGO();
+	ret = os_init();
+	os_assert(ret == OS_OK);
 
 	for (;;) {
 #if 0
@@ -77,8 +76,8 @@ int main(void)
 		if (stm32utils_usb_getc(NULL, &ch) == 0) {
 			switch(ch) {
 			case '\r':
-				os_printf("\r\n");
-				os_log(LOG_INFO, "");
+				os_printf("\n");
+				os_logk(LOG_INFO, "");
 				gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 				break;
 			case '\b':
@@ -95,13 +94,13 @@ int main(void)
 	for (;;) {
 		i2c_soft_init();
 		ret = i2c_soft_eeprom_write(0x00, &wdata, 1);
-		os_log(LOG_CRITICAL, "ret write: 0x%X\r\n", ret);
+		os_log(LOG_CRITICAL, "ret write: 0x%X\n", ret);
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 		delay(500);
 		ret = i2c_soft_eeprom_read(0x00, &rdata, 1);
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
-		os_log(LOG_CRITICAL, "ret read: 0x%X\r\n", ret);
-		os_log(LOG_CRITICAL, "data read: 0x%02X\r\n", rdata);
+		os_log(LOG_CRITICAL, "ret read: 0x%X\n", ret);
+		os_log(LOG_CRITICAL, "data read: 0x%02X\n", rdata);
 		delay(500);
 	}
 #endif
