@@ -99,6 +99,20 @@ void stm32utils_io_putc(void *p, char ch)
 }
 
 /*
+ * @brief   stm32 io putstr routine
+ * @param   p -i- device pointer (could be NULL in tfp_printf)
+ *          ch -i- data to be transmited
+ * @return  none
+ * @note    device is USART_CONSOLE_BANK by default
+ */
+void stm32utils_io_putstr(void *p, const void *buf, uint32 len)
+{
+	uint32 i;
+	for (i = 0; i < len; i++)
+		stm32utils_usb_putc(p, *((char *)buf + i));
+}
+
+/*
  * @brief   stm32 io getchar routine
  * @param   p -i- device pointer (could be NULL in tfp_printf)
  *          ch -i/o- pointer to variable to store received data
@@ -122,6 +136,30 @@ void stm32utils_usb_putc(void *p, char ch)
 {
 	const uint8 buf[] = {ch};
 	stm32utils_usb_putstr(buf, 1);
+}
+
+/*
+ * @brief   stm32 usb putstr routine
+ * @param   buf -i/o- data buffer to be transmited
+ *          len -i- length of data to be transmited
+ * @return  none
+ * @note    none
+ */
+static void stm32utils_usb_putstr(const void *buf, uint32 len)
+{
+	if (!(usbIsConnected() && usbIsConfigured()) || !buf)
+		return;
+
+	uint32 txed = 0;
+	uint32 old_txed = 0;
+	uint32 start = systick_uptime();
+
+	while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
+		txed += usb_cdcacm_tx((const uint8 *)buf + txed, len - txed);
+		if (old_txed != txed)
+			start = systick_uptime();
+		old_txed = txed;
+	}
 }
 
 /*
@@ -165,30 +203,6 @@ void enableUSB(gpio_dev *disc_dev, uint8 disc_bit)
 void disableUSB(gpio_dev *disc_dev, uint8 disc_bit)
 {
 	usb_cdcacm_disable(disc_dev, disc_bit);
-}
-
-/*
- * @brief   stm32 usb putstr routine
- * @param   buf -i/o- data buffer to be transmited
- *          len -i- length of data to be transmited
- * @return  none
- * @note    none
- */
-static void stm32utils_usb_putstr(const void *buf, uint32 len)
-{
-	if (!(usbIsConnected() && usbIsConfigured()) || !buf)
-		return;
-
-	uint32 txed = 0;
-	uint32 old_txed = 0;
-	uint32 start = systick_uptime();
-
-	while (txed < len && (systick_uptime() - start < USB_TIMEOUT)) {
-		txed += usb_cdcacm_tx((const uint8 *)buf + txed, len - txed);
-		if (old_txed != txed)
-			start = systick_uptime();
-		old_txed = txed;
-	}
 }
 
 /*

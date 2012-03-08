@@ -208,10 +208,9 @@ os_status _sys_sched_process_init(void)
 			ps_init_stack_base, PS_INIT_STACK_SIZE);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
 			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
-#if 0
+
 	/* start the first schedule */
 	_sys_sched_schedule();
-#endif
 
 	return ret;
 }

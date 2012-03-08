@@ -150,8 +150,8 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
 	 /* store necessary regs */
 	 "	push	{r4, r5}			\n"
 	 /* store pcb instances to local */
-	 "	ldr	r4, old_pcb_local		\n"
-	 "	ldr	r5, new_pcb_local		\n"
+	 "	ldr	r4, =old_pcb_local		\n"
+	 "	ldr	r5, =new_pcb_local		\n"
 	 "	str	r0, [r4]			\n"
 	 "	str	r1, [r5]			\n"
 	 /* trigger a pendsv exception */
@@ -210,6 +210,38 @@ uint32 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
  */
 void __exc_pendsv(void)
 {
+	__asm volatile
+	(
+	 /* backup interrupts' mask status */
+	 "	mrs	r3, primask			\n"
+	 /* disable interrups */
+	 "	cpsid	i				\n"
+	 /* get current psp */
+	 "	mrs	r0, psp				\n"
+	 /* store r4-r11*/
+	 "	stmfd	r0!, {r4-r11}			\n"
+	 /* update sp of current pcb with psp */
+	 "	ldr	r1, =old_pcb_const		\n"
+	 "	ldr	r1, [r1]			\n"
+	 "	str	r0, [r1]			\n"
+	 /* load new pcb to into r4 */
+	 "	ldr	r0, =new_pcb_const		\n"
+	 /* load sp of new pcb into r4 */
+	 "	ldr	r0, [r0]			\n"
+	 "	ldr	r0, [r0]			\n"
+	 /* restore r4-r11 */
+	 "	ldmfd	r0!, {r4-r11}			\n"
+	 /* save sp of new pcb to psp*/
+	 "	msr	psp, r0				\n"
+	 /* restore interrupts' mask status */
+	 "	msr	primask, r3			\n"
+	 /* ensure exception returns uses psp */
+	 "	orr	lr, lr, #0x04			\n"
+	 /* let's move! */
+	 "	bx	lr				\n"
+	 "old_pcb_const: .word old_pcb			\n"
+	 "new_pcb_const: .word new_pcb			\n"
+	);
 }
 
 /*
