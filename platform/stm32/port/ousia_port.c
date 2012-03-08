@@ -24,6 +24,7 @@
  * @log     2011.8 initial revision
  */
 
+#include <ousia/ousia_type.h>
 #include <stm32/libmaple/systick.h>
 #include <stm32/libmaple/util.h>
 #include <stm32/stm32utils/stm32utils.h>

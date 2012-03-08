@@ -46,6 +46,7 @@ void _port_assert_fail(const char* file, int line, const char *exp);
 void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
 void _port_systick_init(void (*callback)(void));
 void _port_context_switch(void *curr_pcb, void *target_pcb);
+void *_port_process_stack_init(void *pentry, void *args, void *stack_base);
 
 
 #endif /* OUSIA_PORT_H */

@@ -25,7 +25,6 @@
  */
 
 #include <stdlib.h>
-
 #include <x86/x86utils/x86utils.h>
 #include <port/ousia_port.h>
 
@@ -134,4 +133,19 @@ static void __port_systick_handler(void)
  */
 void _port_context_switch(void *curr_pcb, void *target_pcb)
 {
+}
+
+/*
+ * @brief   process private stack initialize
+ * @param   pentry -i- process main function entry
+ *          args -i- process main function args
+ *          stack_base -i- start address of stack
+ * @return  pointer to initialized stack
+ * @note    This is a fake stack init function
+ */
+void *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+{
+	void *stack;
+	stack = stack_base;
+	return stack;
 }

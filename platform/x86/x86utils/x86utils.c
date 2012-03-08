@@ -24,6 +24,7 @@
  * @log     2011.8 initial revision
  */
 
+#include <ousia/ousia_type.h>
 #include <stdio.h>
 #include <time.h>
 #include <sys/time.h>
@@ -84,6 +85,7 @@ void x86utils_attach_systick_callback(void (*callback_fn)(void))
  */
 static void __timer_init(void)
 {
+#if 0
         struct itimerval itv, oldtv;
 
         _uptime = 0;
@@ -94,6 +96,7 @@ static void __timer_init(void)
         itv.it_value.tv_usec = 0;
 
         setitimer(ITIMER_REAL, &itv, &oldtv);
+#endif
 }
 
 /**

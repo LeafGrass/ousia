@@ -93,9 +93,6 @@ PREV_BUILD_TYPE = $(shell cat $(BUILD_PATH)/build-type 2>/dev/null)
 build-check:
 ifneq ($(PREV_BUILD_TYPE), $(TARGET_PLATFORM))
 	$(shell rm -rf $(BUILD_PATH))
-	$(shell cp $(PLATFORM_PATH)/$(TARGET_PLATFORM)/port/ousia_*.* $(CORE_PATH)/port/)
-else
-	$(shell $(SCRIPT_PATH)/check_port.sh)
 endif
 
 sketch: MSG_INFO build-check $(BUILD_PATH)/$(OUSIA_TARGET)

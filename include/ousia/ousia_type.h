@@ -30,6 +30,7 @@
 
 #include <port/ousia_cfg.h>
 
+/* FIXME platform specific info should not exist here */
 #ifdef OUSIA_USE_LIBMAPLE
 #include <stm32/libmaple/libmaple_types.h>
 #else

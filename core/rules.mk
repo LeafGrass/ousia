@@ -10,11 +10,10 @@ BUILDDIRS += $(BUILD_PATH)/$(d)/ulib
 CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
 
 # Local flags /* here need more INCLUDES if more sub dirs */
-CFLAGS_$(d) := -I$(d) -I$(d)/port -I$(d)/ulib $(CORE_INCLUDES) -Wall -Werror
+CFLAGS_$(d) := -I$(d) -I$(PLATFORM_PATH)/$(TARGET_PLATFORM) -I$(d)/ulib $(CORE_INCLUDES) -Wall -Werror
 
 # Local rules and targets (add source files here)
 cSRCS_$(d) := \
-	port/ousia_port.c \
 	sys_print.c \
 	sys_sched.c \
 	sys_time.c \

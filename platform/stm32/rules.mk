@@ -6,6 +6,7 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/usb_lib
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/stm32utils
+BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/port
 
 LIBMAPLE_INCLUDES := \
 	-I$(PLATFORM_PATH)/stm32/libmaple \
@@ -13,11 +14,14 @@ LIBMAPLE_INCLUDES := \
 	-I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
 
 # Local flags
-CFLAGS_$(d) = -I$(d) $(LIBMAPLE_INCLUDES) -Wall -Werror
+CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) $(LIBMAPLE_INCLUDES) -Wall -Werror
 
 # Local rules and targets
-# libmaple
+# porting
 cSRCS_$(d) := \
+	stm32/port/ousia_port.c
+# libmaple
+cSRCS_$(d) += \
 	stm32/libmaple/adc.c \
 	stm32/libmaple/bkp.c \
 	stm32/libmaple/dac.c \

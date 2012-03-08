@@ -24,9 +24,11 @@
  * @log     2011.7 initial revision
  */
 
+#include <ousia/ousia_type.h>
+
 #include <port/ousia_cfg.h>
 #include <port/ousia_port.h>
-#include <ousia/ousia_type.h>
+
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/sched.h>

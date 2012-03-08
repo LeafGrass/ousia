@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# ** NOTICE ** This is a legacy file, and it won't be used during build
+
 # ugly bash code, can only work depend on this specific directory structure :P
 # check if files in "core/port/" and "platform/$(TARGET_PLATFORM)/port/" is the same
 # if not, copy the latest code into "core/port/"

@@ -26,6 +26,7 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
+#include <port/ousia_port.h>
 #include <sys/ictl.h>
 
 /*

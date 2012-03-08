@@ -1,11 +1,12 @@
+#include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
+
 #include <stm32/libmaple/libmaple.h>
 #include <stm32/libmaple/libmaple_types.h>
 #include <stm32/libmaple/gpio.h>
 #include <stm32/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#include <ousia/ousia.h>
-#include <ousia/ousia_type.h>
 #include <sys/sched.h>
 #include <sys/utils.h>
 #include <sys/print.h>
