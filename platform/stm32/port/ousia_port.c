@@ -176,10 +176,9 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
  * @note    TODO we may not need to initialize each reg
  *               init value of lr needs to be confirmed
  */
-uint8 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+uint32 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
 {
 	uint32 *stack;
-
 	stack = (uint32 *)stack_base;
 
 	*stack     = PSR_INIT_VALUE;	/* xpsr */
@@ -199,8 +198,7 @@ uint8 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
 	*(--stack) = 0;			/* r5 */
 	*(--stack) = 0;			/* r4 */
 
-	return (uint8 *)stack;
-	return 0;
+	return stack;
 }
 
 /*

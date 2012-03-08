@@ -176,31 +176,29 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
  * @note    TODO we may not need to initialize each reg
  *               init value of lr needs to be confirmed
  */
-uint8 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+uint32 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
 {
-//	uint32 *stack;
-//
-//	stack = (uint32 *)stack_base;
-//
-//	*stack     = PSR_INIT_VALUE;	/* xpsr */
-//	*(--stack) = (uint32)pentry;	/* pc */
-//	*(--stack) = (uint32)pentry;	/* lr */
-//	*(--stack) = 0;			/* r12 */
-//	*(--stack) = 0;			/* r3 */
-//	*(--stack) = 0;			/* r2 */
-//	*(--stack) = 0;			/* r1 */
-//	*(--stack) = (uint32)args;	/* r0 */
-//	*(--stack) = 0;			/* r11 */
-//	*(--stack) = 0;			/* r10 */
-//	*(--stack) = 0;			/* r9 */
-//	*(--stack) = 0;			/* r8 */
-//	*(--stack) = 0;			/* r7 */
-//	*(--stack) = 0;			/* r6 */
-//	*(--stack) = 0;			/* r5 */
-//	*(--stack) = 0;			/* r4 */
-//
-//	return (uint8 *)stack;
-	return 0;
+	uint32 *stack;
+	stack = (uint32 *)stack_base;
+
+	*stack     = PSR_INIT_VALUE;	/* xpsr */
+	*(--stack) = (uint32)pentry;	/* pc */
+	*(--stack) = (uint32)pentry;	/* lr */
+	*(--stack) = 0;			/* r12 */
+	*(--stack) = 0;			/* r3 */
+	*(--stack) = 0;			/* r2 */
+	*(--stack) = 0;			/* r1 */
+	*(--stack) = (uint32)args;	/* r0 */
+	*(--stack) = 0;			/* r11 */
+	*(--stack) = 0;			/* r10 */
+	*(--stack) = 0;			/* r9 */
+	*(--stack) = 0;			/* r8 */
+	*(--stack) = 0;			/* r7 */
+	*(--stack) = 0;			/* r6 */
+	*(--stack) = 0;			/* r5 */
+	*(--stack) = 0;			/* r4 */
+
+	return stack;
 }
 
 /*

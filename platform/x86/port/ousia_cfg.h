@@ -2,6 +2,10 @@
 #ifndef __OUSIA_CFG_H__
 #define __OUSIA_CFG_H__
 
+#define OUSIA_PORT_STACK_INC	1
+#define OUSIA_PORT_STACK_DEC	0
+#define OUSIA_PORT_STACK_TYPE	OUSIA_PORT_STACK_INC
+
 /*
  * scheduler strategy
  * 0 - EDFS

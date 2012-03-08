@@ -115,10 +115,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	if (pcb == NULL || pentry == NULL || stack_base == NULL)
 		return -OS_ERR;
 
-	new_pcb = (struct _pcb_t *)pcb;
-#if 0
 	new_pcb->stack_ptr = _port_process_stack_init(pentry, args, stack_base);
-#endif
 	new_pcb->pentry = pentry;
 	new_pcb->stack_size = stack_size;
 
@@ -193,12 +190,22 @@ os_status _sys_sched_init(void)
 os_status _sys_sched_process_init(void)
 {
 	os_status ret = OS_OK;
+	void *ps_init_stack_base;
+	void *ps_idle_stack_base;
+
+#if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
+	ps_init_stack_base = (void *)&__ps_init_stack[PS_INIT_STACK_SIZE - 1];
+	ps_idle_stack_base = (void *)&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1];
+#else
+	ps_init_stack_base = __ps_init_stack;
+	ps_idle_stack_base = __ps_idle_stack;
+#endif
 
 	/* TODO create two processes at init */
 	os_process_create(&ps_init_pcb, __ps_init, NULL,
-			  __ps_init_stack, PS_INIT_STACK_SIZE);
+			ps_init_stack_base, PS_INIT_STACK_SIZE);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
-			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
+			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
 #if 0
 	/* start the first schedule */
 	_sys_sched_schedule();
