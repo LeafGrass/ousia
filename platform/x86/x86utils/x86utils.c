@@ -26,15 +26,15 @@
 
 #include <ousia/ousia_type.h>
 #include <stdio.h>
-#include <time.h>
-#include <sys/time.h>
+#include </usr/include/time.h>
+#include </usr/include/sys/time.h>
 #include <stdlib.h>
 #include <signal.h>
 #include <x86/x86utils/x86utils.h>
 
-#define OS_THROB_RATE   1000
-#define X86_MILLISEC_PER_SEC    1000000
-#define TIME_TO_START   1
+#define OS_THROB_RATE		1000
+#define X86_MILLISEC_PER_SEC	1000000
+#define TIME_TO_START		1
 
 static void (*systick_user_callback)(void);
 static unsigned long long _uptime;
@@ -85,7 +85,6 @@ void x86utils_attach_systick_callback(void (*callback_fn)(void))
  */
 static void __timer_init(void)
 {
-#if 0
         struct itimerval itv, oldtv;
 
         _uptime = 0;
@@ -96,7 +95,6 @@ static void __timer_init(void)
         itv.it_value.tv_usec = 0;
 
         setitimer(ITIMER_REAL, &itv, &oldtv);
-#endif
 }
 
 /**
