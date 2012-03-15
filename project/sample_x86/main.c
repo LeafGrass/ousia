@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
@@ -14,11 +15,14 @@ int main(void)
 
 	x86utils_system_init();
 	ret = os_init();
-	ret = ret;
+
+	if (ret != OS_OK) {
+		os_logk(LOG_ERROR, "init error! exit.\n");
+		return -1;
+	}
 
 	while (1) {
-		sleep(1);
-		/* FIXME keep print info here ?? */
+		system("sleep 1");
 		os_logk(LOG_INFO, "get time\n");
 	}
 
