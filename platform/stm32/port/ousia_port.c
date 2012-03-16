@@ -37,6 +37,9 @@ static uint32 critical_nest;
 static volatile void *old_pcb;
 static volatile void *new_pcb;
 
+void __exc_pendsv(void) __attribute__ ((naked));
+void __exc_svc(void) __attribute__ ((naked));
+
 #if 0
 static void __port_systick_handler(void);
 #endif
@@ -75,8 +78,7 @@ void _os_enter_critical(void)
 void _os_exit_critical(void)
 {
 	critical_nest--;
-	if (critical_nest == 0)
-	{
+	if (critical_nest == 0)	{
 		OS_ENABLE_INTERRUPTS();
 	}
 }
@@ -101,7 +103,7 @@ void _port_assert_fail(const char* file, int line, const char *exp)
  * @return  none
  * @note    none
  */
-void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
 	*stdout_putp = NULL;
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
@@ -141,7 +143,7 @@ static void __port_systick_handler(void)
  * @param   curr_pcb (r0) -i- old process control block
  *          target_pcb (r1) -i- new process control block
  * @return  none
- * @note    FIXME needs verification and complete
+ * @note    none
  */
 void _port_context_switch(void *curr_pcb, void *target_pcb)
 {
@@ -150,26 +152,61 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
 	 /* store necessary regs */
 	 "	push	{r4, r5}			\n"
 	 /* store pcb instances to local */
-	 "	ldr	r4, =old_pcb_local		\n"
-	 "	ldr	r5, =new_pcb_local		\n"
+	 "	ldr	r4, old_pcb_local		\n"
+	 "	ldr	r5, new_pcb_local		\n"
 	 "	str	r0, [r4]			\n"
 	 "	str	r1, [r5]			\n"
 	 /* trigger a pendsv exception */
-	 "	ldr	r4, =NVIC_INT_CTRL		\n"
-	 "	ldr	r5, =NVIC_PENDSVSET		\n"
+	 "	ldr	r4, =0xE000ED04			\n"
+	 "	ldr	r5, =0x10000000			\n"
 	 "	str	r5, [r4]			\n"
 	 /* restore pushed regs and go back to wait pendsv */
 	 "	pop	{r4, r5}			\n"
 	 "	bx	lr				\n"
 	 "old_pcb_local: .word old_pcb			\n"
 	 "new_pcb_local: .word new_pcb			\n"
-	 "NVIC_INT_CTRL: .word 0xE000ED04		\n"
-	 "NVIC_PENDSVSET: .word 0x10000000		\n"
 	);
 }
 
 /*
- * @brief   process private stack initialize
+ * @brief   first switch for os start
+ * @param   target_pcb (r0) -i- new process control block
+ * @return  none
+ * @note    none
+ */
+void _port_first_switch(void *target_pcb)
+{
+	__asm volatile
+	(
+	 /* store necessary regs */
+	 "	push	{r4, r5}			\n"
+	 /* store pcb instances to local */
+	 "	ldr	r4, old_pcb_first		\n"
+	 "	ldr	r5, new_pcb_first		\n"
+	 /* set old_pcb as null */
+	 "	mov	r4, #0				\n"
+	 "	str	r1, [r5]			\n"
+	 /* set pendsv interrupt priority as lowest */
+	 "	ldr	r4, =0xE000ED20			\n"
+	 "	ldr	r5, =0x00FF0000			\n"
+	 "	str	r5, [r4]			\n"
+	 /* reset psp */
+	 "	mov	r4, #0				\n"
+	 "	msr	psp, r4				\n"
+	 /* trigger a pendsv exception */
+	 "	ldr	r4, =0xE000ED04			\n"
+	 "	ldr	r5, =0x10000000			\n"
+	 "	str	r5, [r4]			\n"
+	 /* restore pushed regs and go back to wait pendsv */
+	 "	pop	{r4, r5}			\n"
+	 "	cpsie	i				\n"
+	 "old_pcb_first: .word old_pcb			\n"
+	 "new_pcb_first: .word new_pcb			\n"
+	);
+}
+
+/*
+ * @brief   process private context initialize
  * @param   pentry -i- process main function entry
  *          args -i- process main function args
  *          stack_base -i- start address of stack
@@ -177,7 +214,7 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
  * @note    TODO we may not need to initialize each reg
  *               init value of lr needs to be confirmed
  */
-uint32 *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
 {
 	uint32 *stack;
 	stack = (uint32 *)stack_base;
@@ -221,11 +258,11 @@ void __exc_pendsv(void)
 	 /* store r4-r11*/
 	 "	stmfd	r0!, {r4-r11}			\n"
 	 /* update sp of current pcb with psp */
-	 "	ldr	r1, =old_pcb_const		\n"
+	 "	ldr	r1, old_pcb_const		\n"
 	 "	ldr	r1, [r1]			\n"
 	 "	str	r0, [r1]			\n"
 	 /* load new pcb to into r4 */
-	 "	ldr	r0, =new_pcb_const		\n"
+	 "	ldr	r0, new_pcb_const		\n"
 	 /* load sp of new pcb into r4 */
 	 "	ldr	r0, [r0]			\n"
 	 "	ldr	r0, [r0]			\n"

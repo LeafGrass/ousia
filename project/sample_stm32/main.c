@@ -49,6 +49,7 @@ int main(void)
 
 	ret = os_init();
 	os_assert(ret == OS_OK);
+//	os_run();
 
 	for (;;) {
 #if 0
