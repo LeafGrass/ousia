@@ -188,7 +188,7 @@ abort:
 
 void _init_printf(void)
 {
-	_port_init_printf(&stdout_putp, &stdout_putf);
+	_port_printf_init(&stdout_putp, &stdout_putf);
 }
 
 void tfp_putchar(char ch)

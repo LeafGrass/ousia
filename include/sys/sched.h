@@ -77,6 +77,7 @@ os_status os_process_resume(uint32 pid);
 os_status _sys_sched_init(void);
 os_status _sys_sched_process_init(void);
 os_status _sys_sched_schedule(void);
+void _sys_sched_startup(void);
 
 
 #endif /* __SYS_SCHED_H__ */

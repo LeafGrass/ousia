@@ -47,10 +47,24 @@ os_status os_init(void)
 
 	_os_port_init();
 	_init_printf();
-	_sys_timetick_init();
 	BOOT_LOGO();
+//	os_logk(LOG_INFO, "%s - init 1\n", __FUNCTION__);
+//	OS_DISABLE_INTERRUPTS();
+//	os_logk(LOG_INFO, "%s - init 2\n", __FUNCTION__);
+	_sys_timetick_init();
 	ret = _sys_sched_init();
 	ret = _sys_sched_process_init();
 
 	return ret;
+}
+
+/*
+ * @brief   now it's time to run
+ * @param   none
+ * @return  none
+ * @note    will never return, everything will be handled by ousia then
+ */
+void os_run(void)
+{
+	_sys_sched_startup();
 }

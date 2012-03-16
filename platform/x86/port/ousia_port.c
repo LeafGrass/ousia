@@ -92,7 +92,7 @@ void _port_assert_fail(const char* file, int line, const char *exp)
  * @return  none
  * @note    none
  */
-void _port_init_printf(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
         *stdout_putp = NULL;
         *stdout_putf = x86utils_io_putc;
@@ -136,14 +136,14 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
 }
 
 /*
- * @brief   process private stack initialize
+ * @brief   process private context initialize
  * @param   pentry -i- process main function entry
  *          args -i- process main function args
  *          stack_base -i- start address of stack
  * @return  pointer to initialized stack
  * @note    This is a fake stack init function
  */
-void *_port_process_stack_init(void *pentry, void *args, void *stack_base)
+void *_port_context_init(void *pentry, void *args, void *stack_base)
 {
 	void *stack;
 	stack = stack_base;

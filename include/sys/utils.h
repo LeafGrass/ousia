@@ -28,5 +28,6 @@
 #define __SYS_UTILS_H__
 
 os_status os_init(void);
+void os_run(void);
 
 #endif /* __SYS_UTILS_H__ */

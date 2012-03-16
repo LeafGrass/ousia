@@ -117,11 +117,12 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	if (pcb == NULL || pentry == NULL || stack_base == NULL)
 		return -OS_ERR;
 
-	new_pcb->stack_ptr = _port_process_stack_init(pentry, args, stack_base);
+	new_pcb->stack_ptr = _port_context_init(pentry, args, stack_base);
 	new_pcb->pentry = pentry;
 	new_pcb->stack_size = stack_size;
 
 	/* TODO enqueue pcb */
+	pqcb.p_head = new_pcb;
 
 	return new_pcb->pid;
 }
@@ -208,10 +209,10 @@ os_status _sys_sched_process_init(void)
 			ps_init_stack_base, PS_INIT_STACK_SIZE);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
 			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
-
+#if 0
 	/* start the first schedule */
-	_sys_sched_schedule();
-
+	_port_first_switch(&pqcb.p_head);
+#endif
 	return ret;
 }
 
@@ -231,6 +232,19 @@ os_status _sys_sched_schedule(void)
 	_port_context_switch(&curr_pcb, &pqcb.p_head);
 
 	return ret;
+}
+
+/*
+ * @brief   start our scheduler, os begin to run
+ * @param   none
+ * @return  none
+ * @note    we should be get into the first pendsv isr after first switch
+ *          and never back again
+ */
+void _sys_sched_startup(void)
+{
+	_port_first_switch(&pqcb.p_head);
+	while(1);
 }
 
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
@@ -310,8 +324,8 @@ static os_status __do_strategy_rghs(struct _pqcb_t *pq)
  */
 static void __ps_init(void *args)
 {
+	os_logk(LOG_INFO, "process %s is here!\n", __FUNCTION__);
 	os_process_suspend(curr_pcb.pid);
-	return;
 }
 
 /*
@@ -321,6 +335,6 @@ static void __ps_init(void *args)
  */
 static void __ps_idle(void *args)
 {
+	os_logk(LOG_INFO, "process %s is here!\n", __FUNCTION__);
 	os_process_sleep(1000);
-	return;
 }
