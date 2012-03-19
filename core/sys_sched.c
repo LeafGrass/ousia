@@ -209,10 +209,7 @@ os_status _sys_sched_process_init(void)
 			ps_init_stack_base, PS_INIT_STACK_SIZE);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
 			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
-#if 0
-	/* start the first schedule */
-	_port_first_switch(&pqcb.p_head);
-#endif
+
 	return ret;
 }
 
@@ -238,13 +235,23 @@ os_status _sys_sched_schedule(void)
  * @brief   start our scheduler, os begin to run
  * @param   none
  * @return  none
- * @note    we should be get into the first pendsv isr after first switch
- *          and never back again
+ * @note    we should be getting into the first pendsv isr
+ *          after first switch and never back again
  */
 void _sys_sched_startup(void)
 {
-	_port_first_switch(&pqcb.p_head);
-	while(1);
+	uint32 i;
+	if (&pqcb.p_head == NULL) {
+		os_logk(LOG_ERROR, "first process is not ready!\n");
+	} else {
+		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n",
+				&pqcb.p_head);
+		_port_first_switch(&pqcb.p_head);
+	}
+	while (1) {
+		os_logk (LOG_ERROR, "should not get here!\n");
+		for(i = 0; i < 1000000UL; i++);
+	}
 }
 
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
@@ -326,6 +333,8 @@ static void __ps_init(void *args)
 {
 	os_logk(LOG_INFO, "process %s is here!\n", __FUNCTION__);
 	os_process_suspend(curr_pcb.pid);
+	while (1) {
+	}
 }
 
 /*
@@ -336,5 +345,7 @@ static void __ps_init(void *args)
 static void __ps_idle(void *args)
 {
 	os_logk(LOG_INFO, "process %s is here!\n", __FUNCTION__);
-	os_process_sleep(1000);
+	while (1) {
+		os_process_sleep(1000);
+	}
 }

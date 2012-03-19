@@ -199,7 +199,9 @@ void _port_first_switch(void *target_pcb)
 	 "	str	r5, [r4]			\n"
 	 /* restore pushed regs and go back to wait pendsv */
 	 "	pop	{r4, r5}			\n"
+	 /* enable interrupts at processer level */
 	 "	cpsie	i				\n"
+	 "	bx	lr				\n"
 	 "old_pcb_first: .word old_pcb			\n"
 	 "new_pcb_first: .word new_pcb			\n"
 	);
@@ -251,29 +253,30 @@ void __exc_pendsv(void)
 	(
 	 /* backup interrupts' mask status */
 	 "	mrs	r3, primask			\n"
-	 /* disable interrups */
+	 /* disable interrups in processor level */
 	 "	cpsid	i				\n"
 	 /* get current psp */
 	 "	mrs	r0, psp				\n"
+	 /* if first switch, skip regs save and old_pcb load */
+	 "	cbz	r0, __pendsv_skip		\n"
 	 /* store r4-r11*/
 	 "	stmfd	r0!, {r4-r11}			\n"
 	 /* update sp of current pcb with psp */
 	 "	ldr	r1, old_pcb_const		\n"
-	 "	ldr	r1, [r1]			\n"
 	 "	str	r0, [r1]			\n"
 	 /* load new pcb to into r4 */
+	 "	__pendsv_skip:				\n"
 	 "	ldr	r0, new_pcb_const		\n"
 	 /* load sp of new pcb into r4 */
 	 "	ldr	r0, [r0]			\n"
-	 "	ldr	r0, [r0]			\n"
-	 /* restore r4-r11 */
-	 "	ldmfd	r0!, {r4-r11}			\n"
+//	 /* restore r4-r11 */
+//	 "	ldmfd	r0!, {r4-r11}			\n"
 	 /* save sp of new pcb to psp*/
 	 "	msr	psp, r0				\n"
 	 /* restore interrupts' mask status */
 	 "	msr	primask, r3			\n"
-	 /* ensure exception returns uses psp */
-	 "	orr	lr, lr, #0x04			\n"
+//	 /* ensure exception returns uses psp */
+//	 "	orr	lr, lr, #0x04			\n"
 	 /* let's move! */
 	 "	bx	lr				\n"
 	 "old_pcb_const: .word old_pcb			\n"
