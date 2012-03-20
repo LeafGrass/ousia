@@ -21,6 +21,7 @@ setup like below:
 -   Install minicom as a console if you want to debug via uart.
     Ps: Default port is /dev/ttyACMx
 
+
 Build and Download Bootloader into Your Chip
 --------------------------------------------
 
@@ -31,6 +32,7 @@ Build and Download Bootloader into Your Chip
 -   Use J-Link or serial port to download the code.
     J-Link: Use /script/download.sh.
     Serial Port: Use /script/stm32loader.py.
+
 
 Steps to Build Excutable Binary
 -------------------------------
@@ -67,3 +69,12 @@ Steps to Build Excutable Binary
     Ps: If using bootloader on the board, set it into bootloader mode first.
 
 -   Do 'make' and 'make install'.
+
+
+NOTE!
+----
+    To build "libcs3_stm32_src/" & "bootloader/", we need to cd into them and
+make seperately.
+-   "libcs3_stm32_src" is a library of stm32 cpu low-level startup code.
+-   "bootloader" is based on maple-bootloader, in order to make board works in
+    usb dfu mode.

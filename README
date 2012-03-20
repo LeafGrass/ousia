@@ -1,6 +1,6 @@
-Real-Time Ousia
-===============
-COPYRIGHT (C) LEAFGRASS
+                      Ousia
+             =======================
+             COPYRIGHT (C) LEAFGRASS
 
 
 Introduction
@@ -125,5 +125,6 @@ downloading procedure is needed. See Makefile for detailed information.
 
 Acknowledgments
 ---------------
-Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
+Parts of make system and libmaple stm32 low-level code are borrowed from
+libmaple.
 Thanks to their excellent works! - http://leaflabs.com
