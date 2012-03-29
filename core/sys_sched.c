@@ -249,7 +249,7 @@ void _sys_sched_startup(void)
 		_port_first_switch(&pqcb.p_head);
 	}
 	while (1) {
-		os_logk (LOG_ERROR, "should not get here!\n");
+		os_logk(LOG_ERROR, "should not get here!\n");
 		for(i = 0; i < 1000000UL; i++);
 	}
 }

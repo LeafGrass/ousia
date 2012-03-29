@@ -34,14 +34,14 @@
 #ifdef OUSIA_USE_LIBMAPLE
 #include <stm32/libmaple/libmaple_types.h>
 #else
-typedef signed char int8;
-typedef unsigned char uint8;
-typedef signed short int16;
-typedef unsigned short uint16;
-typedef signed int int32;
-typedef unsigned int uint32;
-typedef signed long long int64;
-typedef unsigned long long uint64;
+typedef signed char		int8;
+typedef unsigned char		uint8;
+typedef signed short		int16;
+typedef unsigned short		uint16;
+typedef signed int		int32;
+typedef unsigned int		uint32;
+typedef signed long long	int64;
+typedef unsigned long long	uint64;
 #endif /* OUSIA_USE_LIBMAPLE */
 
 #ifndef NULL
@@ -49,7 +49,8 @@ typedef unsigned long long uint64;
 #endif
 
 typedef enum {
-        FALSE = 0, TRUE  = !FALSE
+        FALSE = 0,
+	TRUE  = !FALSE
 } bool;
 
 typedef enum _os_status
