@@ -234,6 +234,7 @@ clean_list :
 #	$(REMOVE) $(SRC:.c=.s)
 #	$(REMOVE) $(SRC:.c=.d)
 	$(REMOVE) .dep/*
+	$(REMOVEDIR) $(BUILDDIR)
 
 # Include the dependency files.
 -include $(shell mkdir .dep 2>/dev/null) $(wildcard .dep/*)
