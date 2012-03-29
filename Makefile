@@ -46,6 +46,7 @@ VERFLAGS := \
 # FIXME This solution results to a problem.
 #       In target platform directory, we must use too many .mk files.
 #       i.e. Three files for now: rules.mk, config.mk and target.mk.
+#       We need to find a way to config ousia in a single config file.
 include $(PLATFORM_PATH)/$(TARGET_PLATFORM)/config.mk
 
 .DEFAULT_GOAL := sketch
