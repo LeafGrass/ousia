@@ -33,6 +33,7 @@
 #ifndef _LIBMAPLE_TYPES_H_
 #define _LIBMAPLE_TYPES_H_
 
+#ifndef __OUSIA_TYPE_H__
 typedef unsigned char uint8;
 typedef unsigned short uint16;
 typedef unsigned int uint32;
@@ -42,6 +43,7 @@ typedef signed char int8;
 typedef short int16;
 typedef int int32;
 typedef long long int64;
+#endif
 
 typedef void (*voidFuncPtr)(void);
 
