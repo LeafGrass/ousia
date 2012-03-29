@@ -37,7 +37,7 @@
 
 #include "systick.h"
 
-#define SYSTICK_USE_CALLBACK /* Improve efficiency in __exc_systick */
+#define SYSTICK_USE_CALLBACK /* improve efficiency in __exc_systick */
 
 static volatile uint32 systick_uptime_millis;
 #ifdef SYSTICK_USE_CALLBACK

@@ -40,10 +40,6 @@ static volatile void *new_pcb;
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
 
-#if 0
-static void __port_systick_handler(void);
-#endif
-
 /*
  * @brief   porting related init
  * @param   none
@@ -121,22 +117,10 @@ void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  */
 void _port_systick_init(void (*callback)(void))
 {
+	/* api of libmaple */
 	systick_attach_callback(callback);
 	systick_init(SYSTICK_RELOAD_VAL);
 }
-
-#if 0
-/*
- * @brief   systick timer interrupt user handler
- * @param   none
- * @return  none
- * @note    see _systick_interrupt for real implementation
- */
-static void __port_systick_handler(void)
-{
-	return;
-}
-#endif
 
 /*
  * @brief   context switch routine

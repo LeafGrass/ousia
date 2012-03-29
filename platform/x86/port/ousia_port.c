@@ -30,10 +30,6 @@
 
 static unsigned int critical_nest;
 
-#if 0
-static void __port_systick_handler(void);
-#endif
-
 /*
  * @brief   porting related init
  * @param   none
@@ -110,19 +106,6 @@ void _port_systick_init(void (*callback)(void))
 	/* here call fake systick enable */
         return;
 }
-
-#if 0
-/*
- * @brief   systick timer interrupt user handler
- * @param   none
- * @return  none
- * @note    see _systick_interrupt for real implementation
- */
-static void __port_systick_handler(void)
-{
-        return;
-}
-#endif
 
 /*
  * @brief   context switch routine
