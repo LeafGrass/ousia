@@ -136,6 +136,16 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
 }
 
 /*
+ * @brief   first switch for os start
+ * @param   target_pcb (r0) -i- new process control block
+ * @return  none
+ * @note    none
+ */
+void _port_first_switch(void *target_pcb)
+{
+}
+
+/*
  * @brief   process private context initialize
  * @param   pentry -i- process main function entry
  *          args -i- process main function args
