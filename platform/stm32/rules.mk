@@ -3,6 +3,7 @@ sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple
+BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/stm32f1
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/usb_lib
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/stm32utils
@@ -49,6 +50,9 @@ cSRCS_$(d) += \
 	stm32/libmaple/usb/usb_lib/usb_mem.c \
 	stm32/libmaple/usb/usb_lib/usb_regs.c
 sSRCS_$(d) := stm32/libmaple/exc.S
+sSRCS_$(d) += \
+	stm32/libmaple/stm32f1/isrs_performance.S \
+	stm32/libmaple/stm32f1/vector_table_performance.S
 
 # stm32utils
 cSRCS_$(d) += stm32/stm32utils/stm32utils.c
