@@ -147,7 +147,7 @@ void stm32utils_usb_putc(void *p, char ch)
  */
 static void stm32utils_usb_putstr(const void *buf, uint32 len)
 {
-	if (!(usbIsConnected() && usbIsConfigured()) || !buf)
+	if (!(usb_is_connected(USBLIB) && usb_is_configured(USBLIB)) || !buf)
 		return;
 
 	uint32 txed = 0;

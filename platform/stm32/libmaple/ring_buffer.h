@@ -124,7 +124,7 @@ static inline void rb_insert(ring_buffer *rb, uint8 element) {
 /**
  * @brief Remove and return the first item from a ring buffer.
  * @param rb Buffer to remove from, must contain at least one element.
- * Add check empty before read buffer.
+ * @note Add check empty before read buffer.
  */
 static inline int8 rb_remove(ring_buffer *rb) {
     if (rb_is_empty(rb)) {
