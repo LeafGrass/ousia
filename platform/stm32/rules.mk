@@ -37,6 +37,7 @@ cSRCS_$(d) += \
 	stm32/libmaple/i2c.c \
 	stm32/libmaple/rcc.c \
 	stm32/libmaple/spi.c \
+	stm32/libmaple/start_c.c \
 	stm32/libmaple/syscalls.c \
 	stm32/libmaple/systick.c \
 	stm32/libmaple/timer.c \
@@ -51,6 +52,7 @@ cSRCS_$(d) += \
 	stm32/libmaple/usb/usb_lib/usb_regs.c
 sSRCS_$(d) := stm32/libmaple/exc.S
 sSRCS_$(d) += \
+	stm32/libmaple/start.S \
 	stm32/libmaple/stm32f1/isrs_performance.S \
 	stm32/libmaple/stm32f1/vector_table_performance.S
 
@@ -60,7 +62,7 @@ cSRCS_$(d) += stm32/stm32utils/stm32utils.c
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
 
-OBJS_$(d) := $(cFILES_$(d):%.c=$(BUILD_PATH)/%.o) $(sFILES_$(d):%.S=$(BUILD_PATH)/%.o)
+OBJS_$(d) := $(sFILES_$(d):%.S=$(BUILD_PATH)/%.o) $(cFILES_$(d):%.c=$(BUILD_PATH)/%.o)
 DEPS_$(d) := $(OBJS_$(d):%.o=%.d)
 
 $(OBJS_$(d)): TGT_CFLAGS := $(CFLAGS_$(d))

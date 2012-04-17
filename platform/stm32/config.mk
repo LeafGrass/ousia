@@ -49,6 +49,14 @@ USB_DISC_DEV = GPIOC
 USB_DISC_BIT = 12
 endif
 
+# STM32 family-specific configuration values.
+# NB: these only work for STM32F1 performance line chips, but those
+# are the only ones we support at this time.  If you add support for
+# STM32F1 connectivity line MCUs or other STM32 families, this section
+# will need to change.
+LDDIR := $(PLATFORM_PATH)/$(TARGET_PLATFORM)/ld
+LD_FAMILY_PATH := $(LDDIR)/stm32/f1/performance
+
 # Some target specific things
 ifeq ($(MEMORY_TARGET), ram)
 	LDSCRIPT := $(BOARD)/ram.ld
@@ -87,10 +95,9 @@ GLOBAL_ASFLAGS := \
 	-mcpu=cortex-m3 -march=armv7-m -mthumb \
 	-x assembler-with-cpp $(GLOBAL_FLAGS)
 
-LDDIR := $(PLATFORM_PATH)/$(TARGET_PLATFORM)/ld
 LDFLAGS := \
 	-T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
-	-mcpu=cortex-m3 -mthumb -Xlinker \
+	-mcpu=cortex-m3 -mthumb -Xlinker -L $(LD_FAMILY_PATH) \
 	--gc-sections --print-gc-sections --march=armv7-m -Wall
 
 # Build Environment

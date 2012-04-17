@@ -15,7 +15,7 @@ sSRCS_$(d) :=
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
 
-OBJS_$(d) := $(cFILES_$(d):%.c=$(BUILD_PATH)/%.o) $(sFILES_$(d):%.S=$(BUILD_PATH)/%.o)
+OBJS_$(d) := $(sFILES_$(d):%.S=$(BUILD_PATH)/%.o) $(cFILES_$(d):%.c=$(BUILD_PATH)/%.o)
 DEPS_$(d) := $(OBJS_$(d):%.o=%.d)
 
 $(OBJS_$(d)): TGT_CFLAGS := $(CFLAGS_$(d))
