@@ -38,7 +38,7 @@ static unsigned int critical_nest;
  */
 void _os_port_init(void)
 {
-        return;
+	return;
 }
 
 /*
@@ -49,8 +49,8 @@ void _os_port_init(void)
  */
 void _os_enter_critical(void)
 {
-        OS_DISABLE_INTERRUPTS();
-        critical_nest++;
+	OS_DISABLE_INTERRUPTS();
+	critical_nest++;
 }
 
 /*
@@ -61,11 +61,11 @@ void _os_enter_critical(void)
  */
 void _os_exit_critical(void)
 {
-        critical_nest--;
-        if (critical_nest == 0)
-        {
-                OS_ENABLE_INTERRUPTS();
-        }
+	critical_nest--;
+	if (critical_nest == 0)
+	{
+		OS_ENABLE_INTERRUPTS();
+	}
 }
 
 /*
@@ -78,7 +78,7 @@ void _os_exit_critical(void)
  */
 void _port_assert_fail(const char* file, int line, const char *exp)
 {
-        return;
+	return;
 }
 
 /*
@@ -90,8 +90,8 @@ void _port_assert_fail(const char* file, int line, const char *exp)
  */
 void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
-        *stdout_putp = NULL;
-        *stdout_putf = x86utils_io_putc;
+	*stdout_putp = NULL;
+	*stdout_putf = x86utils_io_putc;
 }
 
 /*
@@ -102,9 +102,9 @@ void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  */
 void _port_systick_init(void (*callback)(void))
 {
-        x86utils_attach_systick_callback(callback);
+	x86utils_attach_systick_callback(callback);
 	/* here call fake systick enable */
-        return;
+	return;
 }
 
 /*

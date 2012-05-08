@@ -44,14 +44,14 @@ typedef unsigned long long	uint64;
 #endif
 
 typedef enum {
-        FALSE = 0,
+	FALSE = 0,
 	TRUE  = !FALSE
 } bool;
 
 typedef enum _os_status
 {
-        OS_OK = 0,
-        OS_ERR = 1
+	OS_OK = 0,
+	OS_ERR = 1
 } os_status;
 
 
