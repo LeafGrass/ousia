@@ -200,7 +200,7 @@ Typedefs
 	typedef struct bar {
 		int level;
 	} BAR;
-	typedef int			foo;	/* This is foo. */
+	typedef int		foo;	/* This is foo. */
 	typedef const long	baz;	/* This is baz. */
 
 
