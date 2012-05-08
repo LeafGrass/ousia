@@ -447,12 +447,12 @@ Miscellenous
 
 Style in Ousia
 --------------
-  NOTE those underlines!
+  NOTE those underscores!
 - Variable names
 	int baz;		/* global variable, try to avoid */
 	int _bazz;		/* can be accessed in ousia core code */
 	static int __bazz;	/* can only be accessed in local single file */
 - Function names
-	int os_foo(void);	/* interfaces, that is, syscall, external for app */
-	int _os_foo(void);	/* internal interfaces, can be called in ousia core */
-	static int __foo(void); /* basic functions, can only be called in local */
+	int os_foo(void);	/* external interfaces, that is, syscall, etc. */
+	int _mod_foo(void);	/* internal interfaces, can be called in ousia core */
+	static int __foo(void); /* basic functions, can only be called locally */
