@@ -57,7 +57,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #endif
 #include <sys/print.h>
 
-typedef void (*putcf) (void *dev, char ch);
+typedef void (*putcf)(void *dev, char ch);
 static putcf stdout_putf;
 static void *stdout_putp;
 
@@ -81,7 +81,7 @@ static void ui2a(unsigned int num, unsigned int base, int uc, char *bf)
 	*bf = 0;
 }
 
-static void i2a (int num, char *bf)
+static void i2a(int num, char *bf)
 {
 	if (num < 0) {
 		num =- num;
