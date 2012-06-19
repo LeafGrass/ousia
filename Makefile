@@ -80,8 +80,7 @@ ifeq ($(DOWNLOAD_MODE), serial)
 	$(PYTHON) $(SCRIPT_PATH)/stm32loader.py -p/dev/ttyUSB0 -a0x08000000 -evw $(BUILD_PATH)/$(OUSIA_TARGET).bin
 endif
 ifeq ($(DOWNLOAD_MODE), dfu)
-	$(SCRIPT_PATH)/reset.py && sleep 1 && \
-	dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
+	$(SCRIPT_PATH)/reset.py && sleep 1 && dfu-util -a1 -d $(VENDOR_ID):$(PRODUCT_ID) -D $(BUILD_PATH)/$(OUSIA_TARGET).bin -R
 endif
 
 BOOTLOADER_BIN = $(PLATFORM_PATH)/$(TARGET_PLATFORM)/bootloader/build/maple_boot.bin
