@@ -19,13 +19,12 @@
  */
 
 /*
- * @file    fileopt.h
- * @brief   header of fileopt.c
+ * @file    fileops.c
+ * @brief   file operation, a micro virtual file system for ousia
  * @log     2011.8 first revision
  */
 
-#ifndef __FILEOPT_H__
-#define __FILEOPT_H__
+#include <vfs/fileops.h>
 
 /*
  * @brief   sample function
@@ -35,5 +34,3 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-
-#endif /* __FILEOPT_H__ */
