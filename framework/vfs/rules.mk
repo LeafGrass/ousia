@@ -8,7 +8,7 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/vfs
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
 # Local rules and targets
-cSRCS_$(d) := vfs/fileopt.c
+cSRCS_$(d) := vfs/fileops.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 
