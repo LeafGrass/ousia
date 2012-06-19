@@ -94,6 +94,7 @@ static uint8 __ps_idle_stack[PS_IDLE_STACK_SIZE] = {0};
 static struct _pcb_t ps_init_pcb;
 static struct _pcb_t ps_idle_pcb;
 
+uint32 var_dbg = 0;
 
 /*
  * @brief   create a process
@@ -123,6 +124,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 
 	/* TODO enqueue pcb */
 	pqcb.p_head = new_pcb;
+	os_logk(LOG_INFO, "new process is created, new pcb = 0x%X\n", new_pcb);
 
 	return new_pcb->pid;
 }
@@ -226,7 +228,7 @@ os_status _sys_sched_schedule(void)
 	ret = sched_class.do_schedule(&pqcb);
 
 	/* TODO here to trigger os context switch */
-	_port_context_switch(&curr_pcb, &pqcb.p_head);
+	_port_context_switch((uint32)&curr_pcb, (uint32)pqcb.p_head);
 
 	return ret;
 }
@@ -244,12 +246,12 @@ void _sys_sched_startup(void)
 	if (&pqcb.p_head == NULL) {
 		os_logk(LOG_ERROR, "first process is not ready!\n");
 	} else {
-		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n",
-				&pqcb.p_head);
-		_port_first_switch(&pqcb.p_head);
+		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
+		_port_first_switch((uint32)pqcb.p_head);
 	}
 	while (1) {
-		os_logk(LOG_ERROR, "should not get here!\n");
+		os_logk(LOG_ERROR, "ps_idle_sp: 0x%X, var_dbg: 0x%X\n",
+				&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1], var_dbg);
 		for(i = 0; i < 1000000UL; i++);
 	}
 }

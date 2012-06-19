@@ -33,9 +33,9 @@
 
 #define PSR_INIT_VALUE	0x01000000L
 
-static uint32 critical_nest;
-static volatile void *old_pcb;
-static volatile void *new_pcb;
+static uint32 critical_nest = 0;
+static volatile uint32 old_pcb = 0;
+static volatile uint32 new_pcb = 0;
 
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
@@ -48,8 +48,9 @@ void __exc_svc(void) __attribute__ ((naked));
  */
 void _os_port_init(void)
 {
-	old_pcb = NULL;
-	new_pcb = NULL;
+	old_pcb = 0;
+	new_pcb = 0;
+	critical_nest = 0;
 	return;
 }
 
@@ -74,9 +75,8 @@ void _os_enter_critical(void)
 void _os_exit_critical(void)
 {
 	critical_nest--;
-	if (critical_nest == 0)	{
+	if (critical_nest == 0)
 		OS_ENABLE_INTERRUPTS();
-	}
 }
 
 /*
@@ -87,7 +87,7 @@ void _os_exit_critical(void)
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(const char* file, int line, const char *exp)
+void _port_assert_fail(const char *file, int line, const char *exp)
 {
 	_fail(file, line, exp);
 }
@@ -129,16 +129,18 @@ void _port_systick_init(void (*callback)(void))
  * @return  none
  * @note    none
  */
-void _port_context_switch(void *curr_pcb, void *target_pcb)
+void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 	__asm volatile
 	(
 	 /* store necessary regs */
 	 "	push	{r4, r5}			\n"
 	 /* store pcb instances to local */
-	 "	ldr	r4, old_pcb_local		\n"
-	 "	ldr	r5, new_pcb_local		\n"
+	 "	ldr	r4, =old_pcb_local		\n"
+	 "	str	r4, [r4]			\n"
 	 "	str	r0, [r4]			\n"
+	 "	ldr	r5, =new_pcb_local		\n"
+	 "	str	r5, [r5]			\n"
 	 "	str	r1, [r5]			\n"
 	 /* trigger a pendsv exception */
 	 "	ldr	r4, =0xE000ED04			\n"
@@ -158,25 +160,24 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
  * @return  none
  * @note    none
  */
-void _port_first_switch(void *target_pcb)
+void _port_first_switch(uint32 target_pcb)
 {
 	__asm volatile
 	(
 	 /* store necessary regs */
 	 "	push	{r4, r5}			\n"
-	 /* store pcb instances to local */
-	 "	ldr	r4, old_pcb_first		\n"
-	 "	ldr	r5, new_pcb_first		\n"
-	 /* set old_pcb as null */
+	 /* reset psp */
 	 "	mov	r4, #0				\n"
-	 "	str	r1, [r5]			\n"
+	 "	msr	psp, r4				\n"
+	 /* load target_pcb pointer to local*/
+	 "	ldr	r5, =new_pcb_first		\n"
+	 "	ldr	r5, [r5]			\n"
+	 /* update new_pcb */
+	 "	str	r0, [r5]			\n"
 	 /* set pendsv interrupt priority as lowest */
 	 "	ldr	r4, =0xE000ED20			\n"
 	 "	ldr	r5, =0x00FF0000			\n"
 	 "	str	r5, [r4]			\n"
-	 /* reset psp */
-	 "	mov	r4, #0				\n"
-	 "	msr	psp, r4				\n"
 	 /* trigger a pendsv exception */
 	 "	ldr	r4, =0xE000ED04			\n"
 	 "	ldr	r5, =0x10000000			\n"
@@ -186,8 +187,8 @@ void _port_first_switch(void *target_pcb)
 	 /* enable interrupts at processer level */
 	 "	cpsie	i				\n"
 	 "	bx	lr				\n"
-	 "old_pcb_first: .word old_pcb			\n"
 	 "new_pcb_first: .word new_pcb			\n"
+	 "var_dbg_const: .word var_dbg			\n"
 	);
 }
 
@@ -202,7 +203,7 @@ void _port_first_switch(void *target_pcb)
  */
 uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
 {
-	uint32 *stack;
+	uint32 *stack = NULL;
 	stack = (uint32 *)stack_base;
 
 	*stack     = PSR_INIT_VALUE;	/* xpsr */
@@ -245,24 +246,35 @@ void __exc_pendsv(void)
 	 "	cbz	r0, __pendsv_skip		\n"
 	 /* store r4-r11*/
 	 "	stmfd	r0!, {r4-r11}			\n"
+	 "	ldr	r1, =old_pcb_const		\n"
+	 /* load ram addr of old pcb into r1 */
+	 "	ldr	r1, [r1]			\n"
+	 /* load sp of old pcb into r1 */
+	 "	ldr	r1, [r1]			\n"
 	 /* update sp of current pcb with psp */
-	 "	ldr	r1, old_pcb_const		\n"
 	 "	str	r0, [r1]			\n"
-	 /* load new pcb to into r4 */
+	 /* load new pcb to into r0 */
 	 "	__pendsv_skip:				\n"
-	 "	ldr	r0, new_pcb_const		\n"
-	 /* load sp of new pcb into r4 */
+	 "	ldr	r0, =new_pcb_const		\n"
+	 /* load ram addr of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"
-//	 /* restore r4-r11 */
+	 /* load sp of new pcb into r0 */
+	 "	ldr	r0, [r0]			\n"
+#if 1
+	 /* debugging purpose only */
+	 "	ldr	r2, =var_dbg			\n"
+	 "	str	r0, [r2]			\n"
+#endif
+	 /* restore r4-r11 */
 //	 "	ldmfd	r0!, {r4-r11}			\n"
 	 /* save sp of new pcb to psp*/
-	 "	msr	psp, r0				\n"
+//	 "	msr	psp, r0				\n"
 	 /* restore interrupts' mask status */
 	 "	msr	primask, r3			\n"
-//	 /* ensure exception returns uses psp */
+	 /* ensure exception returns uses psp */
 //	 "	orr	lr, lr, #0x04			\n"
 	 /* let's move! */
-	 "	bx	lr				\n"
+//	 "	bx	lr				\n"
 	 "old_pcb_const: .word old_pcb			\n"
 	 "new_pcb_const: .word new_pcb			\n"
 	);
