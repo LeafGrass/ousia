@@ -196,6 +196,7 @@ static void __ps_idle(void *args)
  * @brief   dump stack of process
  * @param   p_pcb -i- pointer of pcb
  * @return  nothing
+ * @note    FIXME need to resolve big/little endian
  */
 static void __dump_stack(const struct _pcb_t *p_pcb)
 {
