@@ -43,7 +43,7 @@ Source Tree Architecture
     Useful template files are placed here, such as porting code template.
 
 
-How to start for fresh new environment
+How to Start for Fresh New Environment
 --------------------------------------
 -   Install toolchain
 -   Make
@@ -53,7 +53,7 @@ How to start for fresh new environment
     As for stm32 on linux host, we use dfu/serial/jtag to upload firmware,
     setup like below:
 -   Install Codesourcery toolchain. (e.g. arm-2011.03-42-arm-none-eabi)
--   Install dfu-util/pyserial/openocd (if you want to use specific one).
+-   Install dfu-util/pyserial/openocd (it's up to your preference).
     Ps: In fedora or ubuntu, yum/apt-get install them is ok.
 -   Resolve usb or serial access problems.
     (e.g. copy ousia/support/dfu/45-maple.rules to /etc/udev/rules.d/)
@@ -116,15 +116,14 @@ Download Code to Target Chip
     For stm32, you need to decide which MEMORY_TARGET to use:
     jtag, flash, or ram.
 -   Do proper operation on hardware. (i.e. change boot jumper or reset or sth.)
--   Then type 'make install' is fo everything for you.
+-   Then type 'make install' and it will do everything for you.
 
-Ps: For stm32, there maybe a bootloader, 'make bootloader' will Download
+Ps: For stm32, there may be a bootloader, 'make bootloader' will Download
 bootloader code to chip via serial. And for simulation on x86, no code
 downloading procedure is needed. See Makefile for detailed information.
 
 
 Acknowledgments
 ---------------
-Parts of make system and libmaple stm32 low-level code are borrowed from
-libmaple.
+Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
 Thanks to their excellent works! - http://leaflabs.com
