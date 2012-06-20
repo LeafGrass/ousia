@@ -96,166 +96,6 @@ static struct _pcb_t ps_idle_pcb;
 
 uint32 var_dbg = 0;
 
-/*
- * @brief   create a process
- * @param   pcb -i- pointer of process control block
- *          pentry -i- process main function entry
- *          args -i- process main function args
- *          stack_base -i- start address of stack
- *          stack_size -i- process private stack size
- * @return  pid if create success
- * @note    TODO we'd better use dynamic memory in the future
- *          to allocate a pcb and a stack if for a new process
- *          FIXME if pcb is a pointer holder, it should be **p_pcb
- */
-int32 os_process_create(void *pcb, void *pentry, void *args,
-			void *stack_base, uint32 stack_size)
-{
-	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
-
-	/* TODO here to allocate resources to a process */
-
-	if (pcb == NULL || pentry == NULL || stack_base == NULL)
-		return -OS_ERR;
-
-	new_pcb->stack_ptr = _port_context_init(pentry, args, stack_base);
-	new_pcb->pentry = pentry;
-	new_pcb->stack_size = stack_size;
-
-	/* TODO enqueue pcb */
-	pqcb.p_head = new_pcb;
-	os_logk(LOG_INFO, "new process is created, new pcb = 0x%X\n", new_pcb);
-
-	return new_pcb->pid;
-}
-
-/*
- * @brief   os process sleep routine
- * @param   tms -i- sleep time in ms
- * @return  os_status
- */
-os_status os_process_sleep(uint32 tms)
-{
-	os_status ret = OS_OK;
-
-	/* TODO here to calculate time */
-
-	/*
-	 * call scheduler
-	 * FIXME need to make sure everything is ready for process
-	 * scheduling and context switch before start a schedule
-	 */
-	_sys_sched_schedule();
-
-	return ret;
-}
-
-/*
- * @brief   suspend a process
- * @param   pid -i- pid of target process
- * @return  os_status
- * @note    none
- */
-os_status os_process_suspend(uint32 pid)
-{
-	os_status ret = OS_OK;
-	return ret;
-}
-
-/*
- * @brief   resume a process
- * @param   pid -i- pid of target process
- * @return  os_status
- * @note    none
- */
-os_status os_process_resume(uint32 pid)
-{
-	os_status ret = OS_OK;
-	return ret;
-}
-
-/*
- * @brief   start ousia scheduler to work
- * @param   none
- * @return  os_status
- * @note    none
- */
-os_status _sys_sched_init(void)
-{
-	os_status ret = OS_OK;
-	return ret;
-}
-
-/*
- * @brief   initialize process before user application starts
- * @param   none
- * @return  pid if create success
- * @note    none
- */
-os_status _sys_sched_process_init(void)
-{
-	os_status ret = OS_OK;
-	void *ps_init_stack_base;
-	void *ps_idle_stack_base;
-
-#if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
-	ps_init_stack_base = (void *)&__ps_init_stack[PS_INIT_STACK_SIZE - 1];
-	ps_idle_stack_base = (void *)&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1];
-#else
-	ps_init_stack_base = __ps_init_stack;
-	ps_idle_stack_base = __ps_idle_stack;
-#endif
-
-	/* TODO create two processes at init */
-	os_process_create(&ps_init_pcb, __ps_init, NULL,
-			ps_init_stack_base, PS_INIT_STACK_SIZE);
-	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
-			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
-
-	return ret;
-}
-
-/*
- * @brief   start a schedule
- * @param   none
- * @return  os_status
- * @note    none
- */
-os_status _sys_sched_schedule(void)
-{
-	os_status ret = OS_OK;
-
-	ret = sched_class.do_schedule(&pqcb);
-
-	/* TODO here to trigger os context switch */
-	_port_context_switch((uint32)&curr_pcb, (uint32)pqcb.p_head);
-
-	return ret;
-}
-
-/*
- * @brief   start our scheduler, os begin to run
- * @param   none
- * @return  none
- * @note    we should be getting into the first pendsv isr
- *          after first switch and never back again
- */
-void _sys_sched_startup(void)
-{
-	uint32 i;
-	if (&pqcb.p_head == NULL) {
-		os_logk(LOG_ERROR, "first process is not ready!\n");
-	} else {
-		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
-		_port_first_switch((uint32)pqcb.p_head);
-	}
-	while (1) {
-		os_logk(LOG_ERROR, "ps_idle_sp: 0x%X, var_dbg: 0x%X\n",
-				&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1], var_dbg);
-		for(i = 0; i < 1000000UL; i++);
-	}
-}
-
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
 /*
  * @brief   earliest deadline first scheduling
@@ -350,4 +190,198 @@ static void __ps_idle(void *args)
 	while (1) {
 		os_process_sleep(1000);
 	}
+}
+
+/*
+ * @brief   dump stack of process
+ * @param   p_pcb -i- pointer of pcb
+ * @return  nothing
+ */
+static void __dump_stack(const struct _pcb_t *p_pcb)
+{
+	uint32 *sp = NULL;
+	if (p_pcb == NULL || p_pcb->stack_ptr == NULL) {
+		os_logk(LOG_ERROR, "%s - pcb: 0x%X, sp: 0x%X\n",
+				__FUNCTION__, p_pcb, p_pcb->stack_ptr);
+		return;
+	}
+	sp = p_pcb->stack_ptr;
+	os_logk(LOG_INFO, "pcb:  0x%X, sp: 0x%X\n", p_pcb, sp);
+	os_logk(LOG_INFO, "xpsr: 0x%08X\t| 0x%08X\n", *(sp + 15), sp + 15);
+	os_logk(LOG_INFO, "pc:   0x%08X\t| 0x%08X\n", *(sp + 14), sp + 14);
+	os_logk(LOG_INFO, "lr:   0x%08X\t| 0x%08X\n", *(sp + 13), sp + 13);
+	os_logk(LOG_INFO, "r12:  0x%08X\t| 0x%08X\n", *(sp + 12), sp + 12);
+	os_logk(LOG_INFO, "r3:   0x%08X\t| 0x%08X\n", *(sp + 11), sp + 11);
+	os_logk(LOG_INFO, "r2:   0x%08X\t| 0x%08X\n", *(sp + 10), sp + 10);
+	os_logk(LOG_INFO, "r1:   0x%08X\t| 0x%08X\n", *(sp + 9), sp + 9);
+	os_logk(LOG_INFO, "r0:   0x%08X\t| 0x%08X\n", *(sp + 8), sp + 8);
+	os_logk(LOG_INFO, "r11:  0x%08X\t| 0x%08X\n", *(sp + 7), sp + 7);
+	os_logk(LOG_INFO, "r10:  0x%08X\t| 0x%08X\n", *(sp + 6), sp + 6);
+	os_logk(LOG_INFO, "r9:   0x%08X\t| 0x%08X\n", *(sp + 5), sp + 5);
+	os_logk(LOG_INFO, "r8:   0x%08X\t| 0x%08X\n", *(sp + 4), sp + 4);
+	os_logk(LOG_INFO, "r7:   0x%08X\t| 0x%08X\n", *(sp + 3), sp + 3);
+	os_logk(LOG_INFO, "r6:   0x%08X\t| 0x%08X\n", *(sp + 2), sp + 2);
+	os_logk(LOG_INFO, "r5:   0x%08X\t| 0x%08X\n", *(sp + 1), sp + 1);
+	os_logk(LOG_INFO, "r4:   0x%08X\t| 0x%08X\n", *sp, sp);
+}
+
+/*
+ * @brief   start ousia scheduler to work
+ * @param   none
+ * @return  os_status
+ * @note    none
+ */
+os_status _sys_sched_init(void)
+{
+	os_status ret = OS_OK;
+	return ret;
+}
+
+/*
+ * @brief   initialize process before user application starts
+ * @param   none
+ * @return  pid if create success
+ * @note    none
+ */
+os_status _sys_sched_process_init(void)
+{
+	os_status ret = OS_OK;
+	void *ps_init_stack_base;
+	void *ps_idle_stack_base;
+
+#if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
+	ps_init_stack_base = (void *)&__ps_init_stack[PS_INIT_STACK_SIZE - 1];
+	ps_idle_stack_base = (void *)&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1];
+#else
+	ps_init_stack_base = __ps_init_stack;
+	ps_idle_stack_base = __ps_idle_stack;
+#endif
+
+	/* TODO create two processes at init */
+	os_process_create(&ps_init_pcb, __ps_init, NULL,
+			ps_init_stack_base, PS_INIT_STACK_SIZE);
+	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
+			ps_idle_stack_base, PS_IDLE_STACK_SIZE);
+
+	return ret;
+}
+
+/*
+ * @brief   start a schedule
+ * @param   none
+ * @return  os_status
+ * @note    none
+ */
+os_status _sys_sched_schedule(void)
+{
+	os_status ret = OS_OK;
+
+	ret = sched_class.do_schedule(&pqcb);
+
+	/* TODO here to trigger os context switch */
+	_port_context_switch((uint32)&curr_pcb, (uint32)pqcb.p_head);
+
+	return ret;
+}
+
+/*
+ * @brief   start our scheduler, os begin to run
+ * @param   none
+ * @return  none
+ * @note    we should be getting into the first pendsv isr
+ *          after first switch and never back again
+ */
+void _sys_sched_startup(void)
+{
+	uint32 i;
+	if (pqcb.p_head == NULL) {
+		os_logk(LOG_ERROR, "first process is not ready!\n");
+	} else {
+		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
+		_port_first_switch((uint32)pqcb.p_head);
+	}
+	while (1) {
+		os_logk(LOG_ERROR, "ps_idle_sp: 0x%X-0x%X, var_dbg: 0x%X\n",
+				&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1], __ps_init_stack, var_dbg);
+		for(i = 0; i < 1000000UL; i++);
+	}
+}
+
+/*
+ * @brief   create a process
+ * @param   pcb -i- pointer of process control block
+ *          pentry -i- process main function entry
+ *          args -i- process main function args
+ *          stack_base -i- start address of stack
+ *          stack_size -i- process private stack size
+ * @return  pid if create success
+ * @note    TODO we'd better use dynamic memory in the future
+ *          to allocate a pcb and a stack if for a new process
+ *          FIXME if pcb is a pointer holder, it should be **p_pcb
+ */
+int32 os_process_create(void *pcb, void *pentry, void *args,
+			void *stack_base, uint32 stack_size)
+{
+	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
+
+	/* TODO here to allocate resources to a process */
+
+	if (pcb == NULL || pentry == NULL || stack_base == NULL)
+		return -OS_ERR;
+
+	new_pcb->stack_ptr = _port_context_init(pentry, args, stack_base);
+	new_pcb->pentry = pentry;
+	new_pcb->stack_size = stack_size;
+
+	/* TODO enqueue pcb */
+	pqcb.p_head = new_pcb;
+	os_logk(LOG_INFO, "new process is created, new pcb = 0x%X\n", new_pcb);
+	__dump_stack(new_pcb);
+
+	return new_pcb->pid;
+}
+
+/*
+ * @brief   os process sleep routine
+ * @param   tms -i- sleep time in ms
+ * @return  os_status
+ */
+os_status os_process_sleep(uint32 tms)
+{
+	os_status ret = OS_OK;
+
+	/* TODO here to calculate time */
+
+	/*
+	 * call scheduler
+	 * FIXME need to make sure everything is ready for process
+	 * scheduling and context switch before start a schedule
+	 */
+	_sys_sched_schedule();
+
+	return ret;
+}
+
+/*
+ * @brief   suspend a process
+ * @param   pid -i- pid of target process
+ * @return  os_status
+ * @note    none
+ */
+os_status os_process_suspend(uint32 pid)
+{
+	os_status ret = OS_OK;
+	return ret;
+}
+
+/*
+ * @brief   resume a process
+ * @param   pid -i- pid of target process
+ * @return  os_status
+ * @note    none
+ */
+os_status os_process_resume(uint32 pid)
+{
+	os_status ret = OS_OK;
+	return ret;
 }

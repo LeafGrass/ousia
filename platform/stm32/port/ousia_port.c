@@ -136,11 +136,9 @@ void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 	 /* store necessary regs */
 	 "	push	{r4, r5}			\n"
 	 /* store pcb instances to local */
-	 "	ldr	r4, =old_pcb_local		\n"
-	 "	str	r4, [r4]			\n"
+	 "	ldr	r4, =old_pcb			\n"
 	 "	str	r0, [r4]			\n"
-	 "	ldr	r5, =new_pcb_local		\n"
-	 "	str	r5, [r5]			\n"
+	 "	ldr	r5, =new_pcb			\n"
 	 "	str	r1, [r5]			\n"
 	 /* trigger a pendsv exception */
 	 "	ldr	r4, =0xE000ED04			\n"
@@ -149,8 +147,6 @@ void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 	 /* restore pushed regs and go back to wait pendsv */
 	 "	pop	{r4, r5}			\n"
 	 "	bx	lr				\n"
-	 "old_pcb_local: .word old_pcb			\n"
-	 "new_pcb_local: .word new_pcb			\n"
 	);
 }
 
@@ -169,10 +165,9 @@ void _port_first_switch(uint32 target_pcb)
 	 /* reset psp */
 	 "	mov	r4, #0				\n"
 	 "	msr	psp, r4				\n"
-	 /* load target_pcb pointer to local*/
-	 "	ldr	r5, =new_pcb_first		\n"
-	 "	ldr	r5, [r5]			\n"
-	 /* update new_pcb */
+	 /* load addr of new_pcb in ram to local*/
+	 "	ldr	r5, =new_pcb			\n"
+	 /* update new_pcb by target_pcb */
 	 "	str	r0, [r5]			\n"
 	 /* set pendsv interrupt priority as lowest */
 	 "	ldr	r4, =0xE000ED20			\n"
@@ -187,8 +182,6 @@ void _port_first_switch(uint32 target_pcb)
 	 /* enable interrupts at processer level */
 	 "	cpsie	i				\n"
 	 "	bx	lr				\n"
-	 "new_pcb_first: .word new_pcb			\n"
-	 "var_dbg_const: .word var_dbg			\n"
 	);
 }
 
@@ -237,7 +230,7 @@ void __exc_pendsv(void)
 	__asm volatile
 	(
 	 /* backup interrupts' mask status */
-	 "	mrs	r3, primask			\n"
+	 "	mrs	r2, primask			\n"
 	 /* disable interrups in processor level */
 	 "	cpsid	i				\n"
 	 /* get current psp */
@@ -246,37 +239,36 @@ void __exc_pendsv(void)
 	 "	cbz	r0, __pendsv_skip		\n"
 	 /* store r4-r11*/
 	 "	stmfd	r0!, {r4-r11}			\n"
-	 "	ldr	r1, =old_pcb_const		\n"
-	 /* load ram addr of old pcb into r1 */
+	 /* load ram addr of old_pcb into r1 */
+	 "	ldr	r1, =old_pcb			\n"
+	 /* load content of old_pcb (addr of sp) into r1 */
 	 "	ldr	r1, [r1]			\n"
-	 /* load sp of old pcb into r1 */
+	 /* load content of sp into r1 */
 	 "	ldr	r1, [r1]			\n"
-	 /* update sp of current pcb with psp */
+	 /* save psp to this sp */
 	 "	str	r0, [r1]			\n"
 	 /* load new pcb to into r0 */
 	 "	__pendsv_skip:				\n"
-	 "	ldr	r0, =new_pcb_const		\n"
+	 "	ldr	r0, =new_pcb			\n"
 	 /* load ram addr of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"
 	 /* load sp of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"
 #if 1
 	 /* debugging purpose only */
-	 "	ldr	r2, =var_dbg			\n"
-	 "	str	r0, [r2]			\n"
+	 "	ldr	r3, =var_dbg			\n"
+	 "	str	r0, [r3]			\n"
 #endif
 	 /* restore r4-r11 */
-//	 "	ldmfd	r0!, {r4-r11}			\n"
+	 "	ldmfd	r0!, {r4-r11}			\n"
 	 /* save sp of new pcb to psp*/
-//	 "	msr	psp, r0				\n"
+	 "	msr	psp, r0				\n"
 	 /* restore interrupts' mask status */
-	 "	msr	primask, r3			\n"
+	 "	msr	primask, r2			\n"
 	 /* ensure exception returns uses psp */
-//	 "	orr	lr, lr, #0x04			\n"
+	 "	orr	lr, lr, #0x04			\n"
 	 /* let's move! */
-//	 "	bx	lr				\n"
-	 "old_pcb_const: .word old_pcb			\n"
-	 "new_pcb_const: .word new_pcb			\n"
+	 "	bx	lr				\n"
 	);
 }
 
