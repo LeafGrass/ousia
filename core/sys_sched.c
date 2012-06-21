@@ -303,7 +303,7 @@ void _sys_sched_startup(void)
 	}
 	while (1) {
 		os_logk(LOG_ERROR, "ps_idle_sp: 0x%X-0x%X, var_dbg: 0x%X\n",
-				&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1], __ps_init_stack, var_dbg);
+				&__ps_idle_stack[PS_IDLE_STACK_SIZE - 1], __ps_idle_stack, var_dbg);
 		for(i = 0; i < 1000000UL; i++);
 	}
 }
