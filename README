@@ -118,7 +118,7 @@ Download Code to Target Chip
 -   Do proper operation on hardware. (i.e. change boot jumper or reset or sth.)
 -   Then type 'make install' and it will do everything for you.
 
-Ps: For stm32, there may be a bootloader, 'make bootloader' will Download
+Ps: For stm32, there may be a bootloader, 'make bootloader' will download
 bootloader code to chip via serial. And for simulation on x86, no code
 downloading procedure is needed. See Makefile for detailed information.
 
