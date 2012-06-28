@@ -197,6 +197,7 @@ static void __ps_idle(void *args)
  * @param   p_pcb -i- pointer of pcb
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
+ *          FIXME this function should has no business with specific chip
  */
 static void __dump_stack(const struct _pcb_t *p_pcb)
 {
