@@ -1,0 +1,2 @@
+dfu-util-0.6.tar.bz2 is source of dfu-util tool.
+To build it, we need libusb developers package, that is, e.g. libusb-devel in fedora.
