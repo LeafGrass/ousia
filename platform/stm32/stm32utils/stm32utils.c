@@ -24,19 +24,20 @@
  * @log     2011.8 initial revision
  */
 
-#include <libmaple.h>
-#include <libmaple_types.h>
-#include <flash.h>
-#include <rcc.h>
-#include <nvic.h>
-#include <systick.h>
-#include <gpio.h>
-#include <adc.h>
-#include <timer.h>
-#include <usb.h>
-#include <usb_cdcacm.h>
-#include <usart.h>
-#include <util.h>
+#include <libmaple/libmaple.h>
+#include <libmaple/libmaple_types.h>
+#include <libmaple/flash.h>
+#include <libmaple/rcc.h>
+#include <series/rcc.h>
+#include <libmaple/nvic.h>
+#include <libmaple/systick.h>
+#include <libmaple/gpio.h>
+#include <libmaple/adc.h>
+#include <libmaple/timer.h>
+#include <libmaple/usart.h>
+#include <libmaple/util.h>
+#include <libmaple/usb.h>
+#include <libmaple/usb_cdcacm.h>
 
 #include <stm32/stm32utils/stm32utils.h>
 
@@ -108,7 +109,8 @@ static void flash_setup(void)
  * @brief   initialize clock on chip
  * @param   none
  * @return  none
- * @note    none
+ * @note    FIXME These APIs are deprecated in libmaple
+ *          since they only support stm32f1, we are still using it
  */
 static void clocks_setup(void)
 {
@@ -126,6 +128,9 @@ static void clocks_setup(void)
  */
 static void nvic_setup(void)
 {
+#define USER_ADDR_ROM 0x08005000
+#define USER_ADDR_RAM 0x20000C00
+
 #ifdef VECT_TAB_FLASH
 	nvic_init(USER_ADDR_ROM, 0);
 #elif defined VECT_TAB_RAM

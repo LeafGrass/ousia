@@ -13,20 +13,24 @@ MEMORY_TARGET = flash
 # These are specialized for stm32.
 
 ifeq ($(BOARD), mini)
-MCU = STM32F103CB
-DENSITY = STM32_MEDIUM_DENSITY
-VENDOR_ID = 1EAF
-PRODUCT_ID = 0003
-ERROR_LED_PORT = GPIOB
-ERROR_LED_PIN  = 1
-USART_CONSOLE_BANK = USART1
-VCOM_ID_PRODUCT	= 0004
-USB_DISC_DEV = GPIOB
-USB_DISC_BIT = 9
+MCU := STM32F103CB
+MCU_SERIES := stm32f1
+MCU_F1_LINE := performance
+LD_MEM_DIR := sram_20k_flash_128k
+VENDOR_ID := 1EAF
+PRODUCT_ID := 0003
+ERROR_LED_PORT := GPIOB
+ERROR_LED_PIN  := 1
+USART_CONSOLE_BANK := USART1
+VCOM_ID_PRODUCT	:= 0004
+USB_DISC_DEV := GPIOB
+USB_DISC_BIT := 9
 endif
 ifeq ($(BOARD), leach)
 MCU = STM32F103RB
-DENSITY = STM32_MEDIUM_DENSITY
+MCU_SERIES := stm32f1
+MCU_F1_LINE := performance
+LD_MEM_DIR := sram_20k_flash_128k
 VENDOR_ID = 1EAF
 PRODUCT_ID = 0003
 ERROR_LED_PORT = GPIOA
@@ -38,7 +42,9 @@ USB_DISC_BIT = 12
 endif
 ifeq ($(BOARD), leach_h)
 MCU = STM32F103VC
-DENSITY = STM32_HIGH_DENSITY
+MCU_SERIES := stm32f1
+MCU_F1_LINE := performance
+LD_MEM_DIR := sram_64k_flash_512k
 VENDOR_ID = 1EAF
 PRODUCT_ID = 0003
 ERROR_LED_PORT = GPIOA
@@ -49,25 +55,28 @@ USB_DISC_DEV = GPIOC
 USB_DISC_BIT = 12
 endif
 
-# STM32 family-specific configuration values.
-# NB: these only work for STM32F1 performance line chips, but those
-# are the only ones we support at this time.  If you add support for
-# STM32F1 connectivity line MCUs or other STM32 families, this section
-# will need to change.
+ifeq ($(MCU_SERIES), stm32f1)
+	MCU_LINE := $(MCU_F1_LINE)
+endif
+ifeq ($(MCU_SERIES), stm32f2)
+	MCU_LINE := $(MCU_F2_LINE)
+endif
 LDDIR := $(PLATFORM_PATH)/$(TARGET_PLATFORM)/ld
-LD_FAMILY_PATH := $(LDDIR)/stm32/f1/performance
+LD_SERIES_PATH := $(LDDIR)/stm32/series/$(MCU_SERIES)
+LD_MEM_PATH := $(LDDIR)/stm32/mem/$(LD_MEM_DIR)
+LD_SERIES_LINE_PATH := $(LDDIR)/stm32/series/$(MCU_SERIES)/$(MCU_LINE)
 
 # Some target specific things
 ifeq ($(MEMORY_TARGET), ram)
-	LDSCRIPT := $(BOARD)/ram.ld
+	LD_SCRIPT_PATH := $(LDDIR)/$(MEMORY_TARGET).ld
 	VECT_BASE_ADDR := VECT_TAB_RAM
 endif
 ifeq ($(MEMORY_TARGET), flash)
-	LDSCRIPT := $(BOARD)/flash.ld
+	LD_SCRIPT_PATH := $(LDDIR)/$(MEMORY_TARGET).ld
 	VECT_BASE_ADDR := VECT_TAB_FLASH
 endif
 ifeq ($(MEMORY_TARGET), jtag)
-	LDSCRIPT := $(BOARD)/jtag.ld
+	LD_SCRIPT_PATH := $(LDDIR)/$(MEMORY_TARGET).ld
 	VECT_BASE_ADDR := VECT_TAB_BASE
 endif
 
@@ -75,7 +84,6 @@ GLOBAL_FLAGS := \
 	$(VERFLAGS) \
 	-DOUSIA \
 	-D__PLATFORM_STM32__ \
-	-D$(DENSITY) \
 	-D$(VECT_BASE_ADDR) \
 	-DBOARD_$(BOARD) \
 	-DMCU_$(MCU) \
@@ -96,8 +104,13 @@ GLOBAL_ASFLAGS := \
 	-x assembler-with-cpp $(GLOBAL_FLAGS)
 
 LDFLAGS := \
-	-T$(LDDIR)/$(LDSCRIPT) -L$(LDDIR) \
-	-mcpu=cortex-m3 -mthumb -Xlinker -L $(LD_FAMILY_PATH) \
+	-Xlinker \
+	-T$(LD_SCRIPT_PATH) \
+	-L$(LD_SERIES_PATH) \
+	-L$(LD_MEM_PATH) \
+	-L$(LD_SERIES_LINE_PATH) \
+	-L$(LDDIR) \
+	-mcpu=cortex-m3 -mthumb \
 	--gc-sections --print-gc-sections --march=armv7-m -Wall
 
 # Build Environment

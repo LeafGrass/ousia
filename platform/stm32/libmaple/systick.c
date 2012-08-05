@@ -31,11 +31,11 @@
  *****************************************************************************/
 
 /**
- * @file systick.c
- * @brief System timer interrupt handler and initialization routines
+ * @file libmaple/systick.c
+ * @brief System timer (SysTick).
  */
 
-#include "systick.h"
+#include <libmaple/systick.h>
 
 #define SYSTICK_USE_CALLBACK /* improve efficiency in __exc_systick */
 
@@ -78,13 +78,6 @@ void systick_enable(void) {
     SYSTICK_BASE->CSR = (SYSTICK_CSR_CLKSOURCE_CORE   |
                          SYSTICK_CSR_ENABLE           |
                          SYSTICK_CSR_TICKINT_PEND);
-}
-
-/**
- * @brief Returns the system uptime, in milliseconds.
- */
-uint32 systick_uptime(void) {
-    return systick_uptime_millis;
 }
 
 /**

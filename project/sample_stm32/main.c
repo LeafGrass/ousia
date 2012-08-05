@@ -1,10 +1,11 @@
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 
-#include <stm32/libmaple/libmaple.h>
-#include <stm32/libmaple/libmaple_types.h>
-#include <stm32/libmaple/gpio.h>
-#include <stm32/libmaple/usart.h>
+/* FIXME for temporary debug only */
+#include <stm32/libmaple/include/libmaple/libmaple.h>
+#include <stm32/libmaple/include/libmaple/libmaple_types.h>
+#include <stm32/libmaple/include/libmaple/gpio.h>
+#include <stm32/libmaple/include/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
 #include <sys/sched.h>
@@ -106,6 +107,5 @@ int main(void)
 		delay(500);
 	}
 #endif
-
 	return 0;
 }

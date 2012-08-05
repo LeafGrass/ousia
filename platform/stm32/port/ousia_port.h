@@ -29,7 +29,6 @@
 
 
 #include <port/ousia_cfg.h>
-#include <stm32/libmaple/util.h>
 
 #define OS_THROB_RATE   1000
 

@@ -4,8 +4,19 @@ dirstack_$(sp)  := $(d)
 d               := $(dir)
 USR_BUILDDIRS   += $(BUILD_PATH)/$(d)
 
+# FIXME for temporary debug only
+LIBMAPLE_INCLUDES := \
+	-I$(PLATFORM_PATH)/stm32/libmaple \
+	-I$(PLATFORM_PATH)/stm32/libmaple/include \
+	-I$(PLATFORM_PATH)/stm32/libmaple/$(MCU_SERIES)/include \
+	-I$(PLATFORM_PATH)/stm32/libmaple/usb \
+	-I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
+
 # Local flags
 CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(DRIVER_INCLUDES) $(FRAMEWORK_INCLUDES) -Wall
+
+# FIXME for temporary debug only
+CFLAGS_$(d) += $(LIBMAPLE_INCLUDES)
 
 # Local rules and targets
 # libmaple

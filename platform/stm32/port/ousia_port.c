@@ -25,9 +25,9 @@
  */
 
 #include <ousia/ousia_type.h>
-#include <stm32/libmaple/systick.h>
-#include <stm32/libmaple/util.h>
-#include <stm32/stm32utils/stm32utils.h>
+#include <libmaple/systick.h>
+#include <libmaple/util.h>
+#include <stm32utils/stm32utils.h>
 #include <port/ousia_port.h>
 
 
