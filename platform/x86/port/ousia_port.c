@@ -24,9 +24,10 @@
  * @log     2011.8 initial revision
  */
 
-#include <stdlib.h>
+#include <ousia/ousia_type.h>
 #include <x86/x86utils/x86utils.h>
 #include <port/ousia_port.h>
+#include <stdlib.h>
 
 static unsigned int critical_nest;
 
@@ -114,7 +115,7 @@ void _port_systick_init(void (*callback)(void))
  * @return  none
  * @note    FIXME needs verification and complete
  */
-void _port_context_switch(void *curr_pcb, void *target_pcb)
+void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 }
 
@@ -124,7 +125,7 @@ void _port_context_switch(void *curr_pcb, void *target_pcb)
  * @return  none
  * @note    none
  */
-void _port_first_switch(void *target_pcb)
+void _port_first_switch(uint32 target_pcb)
 {
 }
 
