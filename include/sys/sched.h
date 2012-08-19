@@ -33,9 +33,9 @@
  */
 enum _pstate {
 	/*PSTAT_BLOCK  = -1,*/
-	PSTAT_SLEEP = 0,
-	PSTAT_RUN   = 1,
-	PSTAT_READY = 2
+	PSTAT_SLEEPING = 0,
+	PSTAT_RUNNING  = 1,
+	PSTAT_READY    = 2
 };
 
 /*
@@ -44,7 +44,7 @@ enum _pstate {
 struct _pcb_t {
 	void *stack_ptr;
 	void (*pentry)(void *args);
-	uint32 stack_size;
+	uint32 stack_sz;
 	uint32 pid;
 	int32 prio;
 	enum _pstate stat;

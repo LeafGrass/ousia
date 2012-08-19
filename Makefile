@@ -72,6 +72,7 @@ include $(SUPPORT_PATH)/make/build-targets.mk
 .PHONY: MSG_INFO build-check install bootloader sketch lib clean distclean tarball help
 
 # Download code to target device
+# FIXME so many port related hard code here :(
 install: $(BUILD_PATH)/$(OUSIA_TARGET).bin
 ifeq ($(DOWNLOAD_MODE), jtag)
 	$(SHELL) $(SCRIPT_PATH)/download.sh

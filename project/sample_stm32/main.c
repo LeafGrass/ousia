@@ -50,7 +50,9 @@ int main(void)
 
 	ret = os_init();
 	os_assert(ret == OS_OK);
+#if 1
 	os_kick_off();
+#endif
 
 	for (;;) {
 #if 0

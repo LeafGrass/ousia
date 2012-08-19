@@ -95,9 +95,9 @@ GLOBAL_FLAGS := \
 	-DUSB_DISC_BIT=$(USB_DISC_BIT)
 
 GLOBAL_CFLAGS := \
-	-g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m \
+	-g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m -O2 \
 	-nostdlib -ffunction-sections -fdata-sections \
-	-Wl,--gc-sections $(GLOBAL_FLAGS) \
+	-Wl,--gc-sections -Wno-unused-function $(GLOBAL_FLAGS) \
 
 GLOBAL_ASFLAGS := \
 	-mcpu=cortex-m3 -march=armv7-m -mthumb \

@@ -124,8 +124,8 @@ void _port_systick_init(void (*callback)(void))
 
 /*
  * @brief   context switch routine
- * @param   curr_pcb (r0) -i- old process control block
- *          target_pcb (r1) -i- new process control block
+ * @param   curr_pcb (r0) -i- addr of old process control block
+ *          target_pcb (r1) -i- addr of new process control block
  * @return  none
  * @note    none
  */
@@ -152,7 +152,7 @@ void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 
 /*
  * @brief   first switch for os start
- * @param   target_pcb (r0) -i- new process control block
+ * @param   target_pcb (r0) -i- addr of new process control block
  * @return  none
  * @note    none
  */
@@ -254,7 +254,7 @@ void __exc_pendsv(void)
 	 "	ldr	r0, [r0]			\n"
 	 /* load sp of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"
-#if 1
+#if 0
 	 /* debugging purpose only */
 	 "	ldr	r3, =var_dbg			\n"
 	 "	str	r0, [r3]			\n"
