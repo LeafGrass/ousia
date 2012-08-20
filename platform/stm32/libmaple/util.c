@@ -50,11 +50,22 @@ extern __weak usart_dev* __lm_enable_error_usart(void);
 #define HAVE_ERROR_LED
 #endif
 
+static void (*error_hook)(void *psp);
+
+static inline void *__get_psp(void)
+{
+    uint32 r;
+    __asm volatile ("mrs %0, psp\n" : "=r"(r));
+    return (void *)r;
+}
+
 /* (Called from exc.S with global interrupts disabled.) */
 __attribute__((noreturn)) void __error(void) {
     if (__lm_error) {
         __lm_error();
     }
+    if (error_hook)
+        error_hook(__get_psp);
     /* Reenable global interrupts */
     nvic_globalirq_enable();
     throb();
@@ -122,7 +133,7 @@ __attribute__((noreturn)) void throb(void) {
 #ifdef HAVE_ERROR_LED
     int32  slope   = 1;
     uint32 CC      = 0x0000;
-    uint32 TOP_CNT = 0x0200;
+    uint32 TOP_CNT = 0x0400;
     uint32 i       = 0;
 
     gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_MODE_OUTPUT);
@@ -151,4 +162,9 @@ __attribute__((noreturn)) void throb(void) {
     while (1)
         ;
 #endif
+}
+
+void register_error_hook(void (*fn)(void *psp))
+{
+    error_hook = fn;
 }

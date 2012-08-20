@@ -54,6 +54,26 @@
 #define os_enter_critical() _os_enter_critical()
 #define os_exit_critical()  _os_exit_critical()
 
+struct pt_regs {
+	uint32 r4;
+	uint32 r5;
+	uint32 r6;
+	uint32 r9;
+	uint32 r7;
+	uint32 r8;
+	uint32 r10;
+	uint32 r11;
+	uint32 r0;
+	uint32 r1;
+	uint32 r2;
+	uint32 r3;
+	uint32 r12;
+	uint32 lr;
+	uint32 pc;
+	uint32 xpsr;
+};
+typedef struct pt_regs pt_regs_t;
+
 extern uint32 var_dbg;
 
 void _os_enter_critical(void);

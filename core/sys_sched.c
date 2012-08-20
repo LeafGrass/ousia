@@ -306,6 +306,8 @@ os_status _sys_sched_schedule(void)
 	os_logk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, (uint32)pqcb.p_head);
 
+	__dump_stack(curr_pcb);
+
 	/* TODO here to trigger os context switch */
 	_port_context_switch((uint32)curr_pcb, (uint32)pqcb.p_head);
 
