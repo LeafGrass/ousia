@@ -27,6 +27,9 @@
 #ifndef __SYS_UTILS_H__
 #define __SYS_UTILS_H__
 
+/* user main process entry */
+extern void ps_main(void *args);
+
 os_status os_init(void);
 void os_kick_off(void);
 

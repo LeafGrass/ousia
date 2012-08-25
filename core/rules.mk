@@ -14,6 +14,7 @@ CFLAGS_$(d) := -I$(d) -I$(PLATFORM_PATH)/$(TARGET_PLATFORM) -I$(d)/ulib $(CORE_I
 
 # Local rules and targets (add source files here)
 cSRCS_$(d) := \
+	sys_main.c \
 	sys_print.c \
 	sys_sched.c \
 	sys_time.c \

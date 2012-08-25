@@ -79,6 +79,7 @@ extern uint32 var_dbg;
 void _os_enter_critical(void);
 void _os_exit_critical(void);
 void _os_port_init(void);
+void _os_port_bsp_init(void);
 void _port_assert_fail(const char *file, int line, const char *exp);
 void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
 void _port_systick_init(void (*callback)(void));

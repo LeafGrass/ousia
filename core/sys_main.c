@@ -19,36 +19,33 @@
  */
 
 /*
- * @file    platform/x86/port/ousia_port.c
- * @brief   x86 porting code types and macros
- * @log     2011.8 initial revision
+ * @file    core/sys_main.c
+ * @brief   implementation of ousia scheduler
+ * @log     2012.8 initial revision
  */
 
-#ifndef __OUSIA_PORT_H__
-#define __OUSIA_PORT_H__
-
+#include <ousia/ousia_type.h>
 
 #include <port/ousia_cfg.h>
+#include <port/ousia_port.h>
 
-#define OS_SET_INTERRUPT_MASK()
-#define OS_CLEAR_INTERRUPT_MASK()
+#include <sys/print.h>
+#include <sys/time.h>
+#include <sys/sched.h>
+#include <sys/debug.h>
+#include <sys/utils.h>
 
-#define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
-#define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
+/*
+ * @brief   start entry after asmlinkage
+ * @param   none
+ * @return  none
+ */
+void os_main(void)
+{
+	int ret;
 
-#define os_enter_critical() _os_enter_critical()
-#define os_exit_critical()  _os_exit_critical()
-
-void _os_enter_critical(void);
-void _os_exit_critical(void);
-void _os_port_init(void);
-void _os_port_bsp_init(void);
-void _port_assert_fail(const char* file, int line, const char *exp);
-void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
-void _port_systick_init(void (*callback)(void));
-void _port_context_switch(uint32 curr_pcb, uint32 target_pcb);
-void _port_first_switch(uint32 target_pcb);
-void *_port_context_init(void *pentry, void *args, void *stack_base);
-
-
-#endif /* OUSIA_PORT_H */
+	_os_port_bsp_init();
+	ret = os_init();
+	os_assert(ret == OS_OK);
+	os_kick_off();
+}

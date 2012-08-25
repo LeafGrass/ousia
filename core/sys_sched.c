@@ -35,24 +35,7 @@
 #include <sys/debug.h>
 
 
-#define PS_INIT_STACK_SIZE	128
-#define PS_IDLE_STACK_SIZE	512
-
-#if 0
-static struct _pcb_t curr_pcb = {
-	.stack_ptr = NULL,
-	.pentry = NULL,
-	.stack_sz = 0,
-	.pid = 0,
-	.prio = 0,
-	.stat = PSTAT_SLEEPING,
-	.timer = NULL,
-	.p_prev = NULL,
-	.p_next = NULL
-};
-#else
 static struct _pcb_t *curr_pcb;
-#endif
 
 /*
  * FIXME Use memory pool here?
@@ -62,11 +45,6 @@ static struct _pqcb_t pqcb = {
 	.p_head = NULL,
 	.p_tail = NULL
 };
-
-static uint8 __ps_init_stack[PS_INIT_STACK_SIZE] = {0};
-static uint8 __ps_idle_stack[PS_IDLE_STACK_SIZE] = {0};
-static struct _pcb_t ps_init_pcb;
-static struct _pcb_t ps_idle_pcb;
 
 uint32 var_dbg = 0;
 
@@ -141,9 +119,15 @@ static os_status __do_strategy_rghs(struct _pqcb_t *pq)
 		/* should be -EPARAM */
 		return -OS_ERR;
 	}
-	pq->pnum = 1;
-	pq->p_head = &ps_idle_pcb;
-	pq->p_tail = &ps_idle_pcb;
+
+	/*
+	 * TODO
+	 * schedule algorithm implementation here:
+	 * pq->pnum =
+	 * pq->p_head =
+	 * pq->p_tail =
+	 */
+
 	os_logk(LOG_DEBUG, "%s, schedule done.\n", __func__);
 	return ret;
 }
@@ -162,30 +146,6 @@ static struct _sched_class_t sched_class = {
 	.do_schedule = __do_strategy_edfs_optimized
 #endif
 };
-
-/*
- * @brief   process - init
- * @param   args -i/o- reserved
- * @return  void
- */
-static void __ps_init(void *args)
-{
-	os_logk(LOG_INFO, "process %s is here!\n", __func__);
-	os_process_suspend(curr_pcb->pid);
-}
-
-/*
- * @brief   process - idle
- * @param   args -i/o- reserved
- * @return  void
- */
-static void __ps_idle(void *args)
-{
-	os_logk(LOG_INFO, "process %s is here!\n", __func__);
-	while (1) {
-		os_process_sleep(1000);
-	}
-}
 
 /*
  * @brief   dump process control block
@@ -261,36 +221,6 @@ os_status _sys_sched_init(void)
 }
 
 /*
- * @brief   initialize process before user application starts
- * @param   none
- * @return  pid if create success
- * @note    none
- */
-os_status _sys_sched_process_init(void)
-{
-	os_status ret = OS_OK;
-	void *ps_init_stack_base;
-	void *ps_idle_stack_base;
-
-#if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
-	/* FIXME ARCH_BIT can only be 32, hard code here :( */
-	ps_init_stack_base = (void *)&__ps_init_stack[PS_INIT_STACK_SIZE - 4];
-	ps_idle_stack_base = (void *)&__ps_idle_stack[PS_IDLE_STACK_SIZE - 4];
-#else
-	ps_init_stack_base = __ps_init_stack;
-	ps_idle_stack_base = __ps_idle_stack;
-#endif
-
-	/* TODO create two processes at init */
-	os_process_create(&ps_init_pcb, __ps_init, NULL,
-			  ps_init_stack_base, PS_INIT_STACK_SIZE);
-	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
-			  ps_idle_stack_base, PS_IDLE_STACK_SIZE);
-
-	return ret;
-}
-
-/*
  * @brief   start a schedule
  * @param   none
  * @return  os_status
@@ -350,6 +280,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 			void *stack_base, uint32 stack_sz)
 {
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
+	uint8 *stk = (uint8 *)stack_base;
 
 	os_logk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n", new_pcb, stack_base);
 
@@ -358,7 +289,12 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	if (pcb == NULL || pentry == NULL || stack_base == NULL)
 		return -OS_ERR;
 
-	new_pcb->stack_ptr = _port_context_init(pentry, args, stack_base);
+#if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
+	/* FIXME ARCH_BIT can only be 32, hard code here :( */
+	stk = stk + stack_sz - 4;
+#endif
+
+	new_pcb->stack_ptr = _port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
 	new_pcb->stack_sz = stack_sz;
 

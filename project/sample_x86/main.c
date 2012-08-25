@@ -9,6 +9,10 @@
 #include <sys/time.h>
 #include <sys/utils.h>
 
+void ps_main(void *args)
+{
+}
+
 int main(void)
 {
 	os_status ret = OS_OK;

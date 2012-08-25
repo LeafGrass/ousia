@@ -43,6 +43,16 @@ void _os_port_init(void)
 }
 
 /*
+ * @brief   bsp related init
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_port_bsp_init(void)
+{
+}
+
+/*
  * @brief   enter critical
  * @param   none
  * @return  none

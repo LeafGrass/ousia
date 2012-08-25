@@ -46,7 +46,11 @@
 
 extern void __libc_init_array(void);
 
-extern int main(int, char**, char**);
+#if 0
+extern int os_main(int, char**, char**);
+#else
+void os_main(void);
+#endif
 
 extern void exit(int) __attribute__((noreturn, weak));
 
@@ -63,7 +67,7 @@ void __attribute__((noreturn)) start_c(void) {
     struct rom_img_cfg *img_cfg = (struct rom_img_cfg*)&_lm_rom_img_cfgp;
     int *src = img_cfg->img_start;
     int *dst = (int*)&_data;
-    int exit_code;
+    int exit_code = 0;
 
     /* Initialize .data, if necessary. */
     if (src != dst) {
@@ -83,7 +87,11 @@ void __attribute__((noreturn)) start_c(void) {
     __libc_init_array();
 
     /* Jump to main. */
-    exit_code = main(0, 0, 0);
+#if 0
+    exit_code = os_main(0, 0, 0);
+#else
+    os_main();
+#endif
     if (exit) {
         exit(exit_code);
     }

@@ -27,6 +27,8 @@
 #include <ousia/ousia_type.h>
 #include <libmaple/systick.h>
 #include <libmaple/util.h>
+#include <libmaple/delay.h>
+#include <libmaple/gpio.h>
 #include <stm32utils/stm32utils.h>
 #include <port/ousia_port.h>
 
@@ -40,6 +42,12 @@ static volatile uint32 new_pcb = 0;
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
 
+static void __busy_wait(uint32 ms)
+{
+	while (ms--)
+		delay_us(1000);
+}
+
 /*
  * @brief   porting related init
  * @param   none
@@ -52,6 +60,29 @@ void _os_port_init(void)
 	new_pcb = 0;
 	critical_nest = 0;
 	return;
+}
+
+/*
+ * @brief   bsp related init
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_port_bsp_init(void)
+{
+	int i;
+
+	stm32utils_board_init();
+
+	/*
+	 * led flashes, sign of system starts to run
+	 * FIXME at least 1000+ms to wait for usb device, or the foregoing
+	 * characters may be lost, that is too long to wait ...
+	 */
+	for(i = 0; i < 24; i++) {
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		__busy_wait(50);
+	}
 }
 
 /*
