@@ -25,6 +25,9 @@
  */
 
 #include <ousia/ousia_type.h>
+#include <sys/debug.h>
+#include <sys/print.h>
+#include <sys/time.h>
 #include <libmaple/systick.h>
 #include <libmaple/util.h>
 #include <libmaple/delay.h>
@@ -86,6 +89,70 @@ void _os_port_bsp_init(void)
 }
 
 /*
+ * @brief   band printf callback to low-level io control
+ * @param   stdout_putp -i/o- generally none
+ *          stdout_putf -i/o- low-level printf specific io implementation
+ * @return  none
+ * @note    none
+ */
+void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+{
+	*stdout_putp = NULL;
+#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
+	*stdout_putf = stm32utils_usb_putc;
+#else
+	*stdout_putf = stm32utils_io_putc;
+#endif
+}
+
+/*
+ * @brief   register callback function of system tick handler and init
+ * @param   callback -i- pointer to callback function
+ * @return  none
+ * @note    WARNING if libmaple for stm32 is used, this function must be called
+ */
+void _port_systick_init(void (*callback)(void))
+{
+	/* api of libmaple */
+	systick_attach_callback(callback);
+	systick_init(SYSTICK_RELOAD_VAL);
+}
+
+/*
+ * @brief   process private context initialize
+ * @param   pentry -i- process main function entry
+ *          args -i- process main function args
+ *          stack_base -i- start address of stack
+ * @return  pointer to initialized stack
+ * @note    TODO we may not need to initialize each reg
+ *               init value of lr needs to be confirmed
+ */
+uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
+{
+	uint32 *stack = NULL;
+	stack = (uint32 *)stack_base;
+
+	*stack     = PSR_INIT_VALUE;	/* xpsr */
+	*(--stack) = (uint32)pentry;	/* pc */
+	*(--stack) = (uint32)pentry;	/* lr */
+	*(--stack) = 0;			/* r12 */
+	*(--stack) = 0;			/* r3 */
+	*(--stack) = 0;			/* r2 */
+	*(--stack) = 0;			/* r1 */
+	*(--stack) = (uint32)args;	/* r0 */
+	*(--stack) = 0;			/* r11 */
+	*(--stack) = 0;			/* r10 */
+	*(--stack) = 0;			/* r9 */
+	*(--stack) = 0;			/* r8 */
+	*(--stack) = 0;			/* r7 */
+	*(--stack) = 0;			/* r6 */
+	*(--stack) = 0;			/* r5 */
+	*(--stack) = 0;			/* r4 */
+
+	return stack;
+}
+
+/*
  * @brief   enter critical
  * @param   none
  * @return  none
@@ -124,33 +191,33 @@ void _port_assert_fail(const char *file, int line, const char *exp)
 }
 
 /*
- * @brief   band printf callback to low-level io control
- * @param   stdout_putp -i/o- generally none
- *          stdout_putf -i/o- low-level printf specific io implementation
- * @return  none
- * @note    none
+ * @brief   dump the stack of specific pcb
+ * @param   p_pcb -i- pointer of pcb
+ * @return  nothing
+ * @note    FIXME need to resolve big/little endian
  */
-void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void _port_dump_stack(const pt_regs_t *pt)
 {
-	*stdout_putp = NULL;
-#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
-	*stdout_putf = stm32utils_usb_putc;
-#else
-	*stdout_putf = stm32utils_io_putc;
-#endif
-}
-
-/*
- * @brief   register callback function of system tick handler and init
- * @param   callback -i- pointer to callback function
- * @return  none
- * @note    WARNING if libmaple for stm32 is used, this function must be called
- */
-void _port_systick_init(void (*callback)(void))
-{
-	/* api of libmaple */
-	systick_attach_callback(callback);
-	systick_init(SYSTICK_RELOAD_VAL);
+	if (pt == NULL) {
+		os_logk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
+		return;
+	}
+	os_logk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
+	os_logk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
+	os_logk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
+	os_logk(LOG_INFO, "r12:  0x%08X\n", pt->r12);
+	os_logk(LOG_INFO, "r3:   0x%08X\n", pt->r3);
+	os_logk(LOG_INFO, "r2:   0x%08X\n", pt->r2);
+	os_logk(LOG_INFO, "r1:   0x%08X\n", pt->r1);
+	os_logk(LOG_INFO, "r0:   0x%08X\n", pt->r0);
+	os_logk(LOG_INFO, "r11:  0x%08X\n", pt->r11);
+	os_logk(LOG_INFO, "r10:  0x%08X\n", pt->r10);
+	os_logk(LOG_INFO, "r9:   0x%08X\n", pt->r9);
+	os_logk(LOG_INFO, "r8:   0x%08X\n", pt->r8);
+	os_logk(LOG_INFO, "r7:   0x%08X\n", pt->r7);
+	os_logk(LOG_INFO, "r6:   0x%08X\n", pt->r6);
+	os_logk(LOG_INFO, "r5:   0x%08X\n", pt->r5);
+	os_logk(LOG_INFO, "r4:   0x%08X\n", pt->r4);
 }
 
 /*
@@ -214,40 +281,6 @@ void _port_first_switch(uint32 target_pcb)
 	 "	cpsie	i				\n"
 	 "	bx	lr				\n"
 	);
-}
-
-/*
- * @brief   process private context initialize
- * @param   pentry -i- process main function entry
- *          args -i- process main function args
- *          stack_base -i- start address of stack
- * @return  pointer to initialized stack
- * @note    TODO we may not need to initialize each reg
- *               init value of lr needs to be confirmed
- */
-uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
-{
-	uint32 *stack = NULL;
-	stack = (uint32 *)stack_base;
-
-	*stack     = PSR_INIT_VALUE;	/* xpsr */
-	*(--stack) = (uint32)pentry;	/* pc */
-	*(--stack) = (uint32)pentry;	/* lr */
-	*(--stack) = 0;			/* r12 */
-	*(--stack) = 0;			/* r3 */
-	*(--stack) = 0;			/* r2 */
-	*(--stack) = 0;			/* r1 */
-	*(--stack) = (uint32)args;	/* r0 */
-	*(--stack) = 0;			/* r11 */
-	*(--stack) = 0;			/* r10 */
-	*(--stack) = 0;			/* r9 */
-	*(--stack) = 0;			/* r8 */
-	*(--stack) = 0;			/* r7 */
-	*(--stack) = 0;			/* r6 */
-	*(--stack) = 0;			/* r5 */
-	*(--stack) = 0;			/* r4 */
-
-	return stack;
 }
 
 /*

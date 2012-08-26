@@ -50,12 +50,12 @@ static struct _pqcb_t pqcb = {
 /*
  * @brief   earliest deadline first scheduling
  * @param   pq -i/o- process queue control block
- * @return  os_status
+ * @return  int32
  * @note
  */
-static os_status __do_strategy_edfs(struct _pqcb_t *pq)
+static int32 __do_strategy_edfs(struct _pqcb_t *pq)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }
 #endif
@@ -64,12 +64,12 @@ static os_status __do_strategy_edfs(struct _pqcb_t *pq)
 /*
  * @brief   earliest deadline first scheduling, optimized for overall
  * @param   pq -i/o- process queue control block
- * @return  os_status
+ * @return  int32
  * @note
  */
-static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq)
+static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pq)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }
 #endif
@@ -78,12 +78,12 @@ static os_status __do_strategy_edfs_optimized(struct _pqcb_t *pq)
 /*
  * @brief   completely fair scheduling
  * @param   pq -i/o- process queue control block
- * @return  os_status
+ * @return  int32
  * @note
  */
-static os_status __do_strategy_cfs(struct _pqcb_t *pq)
+static int32 __do_strategy_cfs(struct _pqcb_t *pq)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }
 #endif
@@ -92,12 +92,12 @@ static os_status __do_strategy_cfs(struct _pqcb_t *pq)
 /*
  * @brief   highest priority first scheduling
  * @param   pq -i/o- process queue control block
- * @return  os_status
+ * @return  int32
  * @note
  */
-static os_status __do_strategy_hpfs(struct _pqcb_t *pq)
+static int32 __do_strategy_hpfs(struct _pqcb_t *pq)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }
 #endif
@@ -106,16 +106,16 @@ static os_status __do_strategy_hpfs(struct _pqcb_t *pq)
 /*
  * @brief   rough scheduling
  * @param   pq -i/o- process queue control block
- * @return  os_status
+ * @return  int32
  * @note    :P
  */
-static os_status __do_strategy_rghs(struct _pqcb_t *pq)
+static int32 __do_strategy_rghs(struct _pqcb_t *pq)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	if (pq == NULL) {
 		os_assert(pq);
 		/* should be -EPARAM */
-		return -OS_ERR;
+		return -OS_EFAIL;
 	}
 
 	/*
@@ -168,78 +168,40 @@ static void __dump_pcb(const struct _pcb_t *p_pcb)
 	os_logk(LOG_INFO, "prev:      0x%08X\n", p_pcb->p_prev);
 	os_logk(LOG_INFO, "next:      0x%08X\n", p_pcb->p_next);
 	os_logk(LOG_INFO, "----------------------------\n");
-}
-
-/*
- * @brief   dump stack of process
- * @param   p_pcb -i- pointer of pcb
- * @return  nothing
- * @note    FIXME need to resolve big/little endian
- *          FIXME this function should has no business with specific chip
- */
-static void __dump_stack(const struct _pcb_t *p_pcb)
-{
-	uint32 *stk = NULL;
-	if (p_pcb == NULL || p_pcb->stack_ptr == NULL) {
-		os_logk(LOG_ERROR, "%s - pcb: 0x%X, stk: 0x%X\n",
-				__func__, p_pcb, p_pcb->stack_ptr);
-		return;
-	}
-	stk = p_pcb->stack_ptr;
-	os_logk(LOG_INFO, "pcb:  0x%X, stk: 0x%X\n", p_pcb, stk);
-	os_logk(LOG_INFO, "xpsr: 0x%08X\t| 0x%08X\n", *(stk + 15), stk + 15);
-	os_logk(LOG_INFO, "pc:   0x%08X\t| 0x%08X\n", *(stk + 14), stk + 14);
-	os_logk(LOG_INFO, "lr:   0x%08X\t| 0x%08X\n", *(stk + 13), stk + 13);
-	os_logk(LOG_INFO, "r12:  0x%08X\t| 0x%08X\n", *(stk + 12), stk + 12);
-	os_logk(LOG_INFO, "r3:   0x%08X\t| 0x%08X\n", *(stk + 11), stk + 11);
-	os_logk(LOG_INFO, "r2:   0x%08X\t| 0x%08X\n", *(stk + 10), stk + 10);
-	os_logk(LOG_INFO, "r1:   0x%08X\t| 0x%08X\n", *(stk + 9), stk + 9);
-	os_logk(LOG_INFO, "r0:   0x%08X\t| 0x%08X\n", *(stk + 8), stk + 8);
-	os_logk(LOG_INFO, "r11:  0x%08X\t| 0x%08X\n", *(stk + 7), stk + 7);
-	os_logk(LOG_INFO, "r10:  0x%08X\t| 0x%08X\n", *(stk + 6), stk + 6);
-	os_logk(LOG_INFO, "r9:   0x%08X\t| 0x%08X\n", *(stk + 5), stk + 5);
-	os_logk(LOG_INFO, "r8:   0x%08X\t| 0x%08X\n", *(stk + 4), stk + 4);
-	os_logk(LOG_INFO, "r7:   0x%08X\t| 0x%08X\n", *(stk + 3), stk + 3);
-	os_logk(LOG_INFO, "r6:   0x%08X\t| 0x%08X\n", *(stk + 2), stk + 2);
-	os_logk(LOG_INFO, "r5:   0x%08X\t| 0x%08X\n", *(stk + 1), stk + 1);
-	os_logk(LOG_INFO, "r4:   0x%08X\t| 0x%08X\n", *stk, stk);
-	__dump_pcb(p_pcb);
+	_port_dump_stack((pt_regs_t *)p_pcb->stack_ptr);
 }
 
 /*
  * @brief   start ousia scheduler to work
  * @param   none
- * @return  os_status
+ * @return  int32
  * @note    none
  */
-os_status _sys_sched_init(void)
+int32 _sys_sched_init(void)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }
 
 /*
  * @brief   start a schedule
  * @param   none
- * @return  os_status
+ * @return  int32
  * @note    none
  */
-os_status _sys_sched_schedule(void)
+void _sys_sched_schedule(void)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
+	struct _pcb_t *tmp = curr_pcb;
 
 	ret = sched_class.do_schedule(&pqcb);
 	os_assert(ret == 0);
 
 	os_logk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, (uint32)pqcb.p_head);
-#if 0
-	__dump_stack(curr_pcb);
-#endif
 	/* TODO here to trigger os context switch */
-	_port_context_switch((uint32)curr_pcb, (uint32)pqcb.p_head);
-
-	return ret;
+	curr_pcb = pqcb.p_head;
+	_port_context_switch((uint32)tmp, (uint32)pqcb.p_head);
 }
 
 /*
@@ -272,6 +234,7 @@ void _sys_sched_startup(void)
  * @return  pid if create success
  * @note    TODO we'd better use dynamic memory in the future
  *          to allocate a pcb and a stack if for a new process
+ *          so, pcb structure should not be opened for user
  *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
 int32 os_process_create(void *pcb, void *pentry, void *args,
@@ -285,7 +248,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	/* TODO here to allocate resources to a process */
 
 	if (pcb == NULL || pentry == NULL || stack_base == NULL)
-		return -OS_ERR;
+		return -OS_EFAIL;
 
 #if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
 	/* FIXME ARCH_BIT can only be 32, hard code here :( */
@@ -299,7 +262,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	/* TODO enqueue pcb */
 	pqcb.p_head = new_pcb;
 #if 1
-	__dump_stack(new_pcb);
+	__dump_pcb(new_pcb);
 #endif
 
 	return new_pcb->pid;
@@ -308,12 +271,12 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 /*
  * @brief   delete a process
  * @param   pid -i- pid of target process
- * @return  os_status
+ * @return  int32
  * @note    none
  */
-os_status os_process_delete(uint32 pid)
+int32 os_process_delete(uint32 pid)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 
 	/*
 	 * TODO
@@ -328,11 +291,11 @@ os_status os_process_delete(uint32 pid)
 /*
  * @brief   os process sleep routine
  * @param   tms -i- sleep time in ms
- * @return  os_status
+ * @return  int32
  */
-os_status os_process_sleep(uint32 tms)
+int32 os_process_sleep(uint32 tms)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 
 	os_logk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
 
@@ -351,12 +314,12 @@ os_status os_process_sleep(uint32 tms)
 /*
  * @brief   suspend a process
  * @param   pid -i- pid of target process
- * @return  os_status
+ * @return  int32
  * @note    none
  */
-os_status os_process_suspend(uint32 pid)
+int32 os_process_suspend(uint32 pid)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 
 	os_logk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
 	_sys_sched_schedule();
@@ -367,11 +330,11 @@ os_status os_process_suspend(uint32 pid)
 /*
  * @brief   resume a process
  * @param   pid -i- pid of target process
- * @return  os_status
+ * @return  int32
  * @note    none
  */
-os_status os_process_resume(uint32 pid)
+int32 os_process_resume(uint32 pid)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 	return ret;
 }

@@ -66,17 +66,17 @@ struct _pqcb_t {
  * scheduler class
  */
 struct _sched_class_t {
-	os_status (*do_schedule)(struct _pqcb_t *pq);
+	int32 (*do_schedule)(struct _pqcb_t *pq);
 };
 
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);
-os_status os_process_delete(uint32 pid);
-os_status os_process_sleep(uint32 tms);
-os_status os_process_suspend(uint32 pid);
-os_status os_process_resume(uint32 pid);
-os_status _sys_sched_init(void);
-os_status _sys_sched_schedule(void);
+int32 os_process_delete(uint32 pid);
+int32 os_process_sleep(uint32 tms);
+int32 os_process_suspend(uint32 pid);
+int32 os_process_resume(uint32 pid);
+int32 _sys_sched_init(void);
+void _sys_sched_schedule(void);
 void _sys_sched_startup(void);
 
 

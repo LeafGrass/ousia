@@ -30,7 +30,7 @@
 /* user main process entry */
 extern void ps_main(void *args);
 
-os_status os_init(void);
+int32 os_init(void);
 void os_kick_off(void);
 
 #endif /* __SYS_UTILS_H__ */

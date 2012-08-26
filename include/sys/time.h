@@ -39,7 +39,6 @@ struct _ptcb_t {
 };
 
 uint32 os_systime_get(void);
-void os_systime_set(uint32 time);
 void _sys_timetick_init(void);
 
 

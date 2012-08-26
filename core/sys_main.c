@@ -42,7 +42,7 @@
  */
 void os_main(void)
 {
-	int ret;
+	int32 ret;
 
 	_os_port_bsp_init();
 	ret = os_init();

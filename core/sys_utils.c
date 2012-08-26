@@ -34,9 +34,9 @@
 #include <sys/debug.h>
 
 
-#define PS_INIT_STACK_SIZE	128
-#define PS_IDLE_STACK_SIZE	128
-#define PS_MAIN_STACK_SIZE	512
+#define PS_INIT_STACK_SIZE	1024
+#define PS_IDLE_STACK_SIZE	1024
+#define PS_MAIN_STACK_SIZE	2048
 
 /* FIXME memory of init process should be recycled */
 static uint8 __ps_init_stack[PS_INIT_STACK_SIZE] = {0};
@@ -66,6 +66,7 @@ static void __ps_idle(void *args)
  */
 static void __ps_init(void *args)
 {
+	os_logk(LOG_INFO, "process %s is here!\n", __func__);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
 			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
 	os_process_create(&ps_main_pcb, ps_main, NULL,
@@ -79,9 +80,9 @@ static void __ps_init(void *args)
  * @return  pid if create success
  * @note    none
  */
-static os_status __sys_process_init(void)
+static int32 __sys_process_init(void)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 
 	/* TODO create two processes at init */
 	os_process_create(&ps_init_pcb, __ps_init, NULL,
@@ -97,9 +98,9 @@ static os_status __sys_process_init(void)
  * @note    this function should be called before all other syscalls
  *          interrupts should better no be enabled before os init finished
  */
-os_status os_init(void)
+int32 os_init(void)
 {
-	os_status ret = OS_OK;
+	int32 ret = OS_OK;
 
 	_os_port_init();
 	_init_printf();

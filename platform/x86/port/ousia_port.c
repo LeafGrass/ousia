@@ -93,6 +93,18 @@ void _port_assert_fail(const char* file, int line, const char *exp)
 }
 
 /*
+ * @brief   dump the stack of specific pcb
+ * @param   p_pcb -i- pointer of pcb
+ * @return  nothing
+ * @note    FIXME need to resolve big/little endian
+ */
+void _port_dump_stack(const pt_regs_t *pt)
+{
+	if (pt == NULL)
+		return;
+}
+
+/*
  * @brief   band printf callback to low-level io control
  * @param   stdout_putp -i/o- generally none
  *          stdout_putf -i/o- low-level printf specific io implementation

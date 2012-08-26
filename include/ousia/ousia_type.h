@@ -48,11 +48,7 @@ typedef enum {
 	TRUE  = !FALSE
 } bool;
 
-typedef enum _os_status
-{
-	OS_OK = 0,
-	OS_ERR = 1
-} os_status;
-
+#define OS_OK		0
+#define OS_EFAIL	1
 
 #endif /* __OUSIA_TYPE_H__ */

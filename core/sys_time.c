@@ -46,16 +46,6 @@ uint32 os_systime_get(void)
 }
 
 /*
- * @brief   set system time
- * @param   time -i- 32 bit integer value for time
- * @return  none
- * @note    FIXME is this necessary?
- */
-void os_systime_set(uint32 time)
-{
-}
-
-/*
  * @brief   system timetick init
  * @param   none
  * @return  none

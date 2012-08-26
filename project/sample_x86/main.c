@@ -15,7 +15,7 @@ void ps_main(void *args)
 
 int main(void)
 {
-	os_status ret = OS_OK;
+	int ret = OS_OK;
 
 	x86utils_system_init();
 	ret = os_init();

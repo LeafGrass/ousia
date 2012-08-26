@@ -58,9 +58,9 @@ struct pt_regs {
 	uint32 r4;
 	uint32 r5;
 	uint32 r6;
-	uint32 r9;
 	uint32 r7;
 	uint32 r8;
+	uint32 r9;
 	uint32 r10;
 	uint32 r11;
 	uint32 r0;
@@ -74,18 +74,17 @@ struct pt_regs {
 };
 typedef struct pt_regs pt_regs_t;
 
-extern uint32 var_dbg;
-
 void _os_enter_critical(void);
 void _os_exit_critical(void);
 void _os_port_init(void);
 void _os_port_bsp_init(void);
-void _port_assert_fail(const char *file, int line, const char *exp);
 void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
 void _port_systick_init(void (*callback)(void));
+uint32 *_port_context_init(void *pentry, void *args, void *stack_base);
+void _port_assert_fail(const char *file, int line, const char *exp);
+void _port_dump_stack(const pt_regs_t *pt);
 void _port_context_switch(uint32 curr_pcb, uint32 target_pcb) __attribute__ ((naked));
 void _port_first_switch(uint32 target_pcb) __attribute__ ((naked));
-uint32 *_port_context_init(void *pentry, void *args, void *stack_base);
 
 
 #endif /* OUSIA_PORT_H */
