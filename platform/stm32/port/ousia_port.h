@@ -83,6 +83,7 @@ void _port_systick_init(void (*callback)(void));
 uint32 *_port_context_init(void *pentry, void *args, void *stack_base);
 void _port_assert_fail(const char *file, int line, const char *exp);
 void _port_dump_stack(const pt_regs_t *pt);
+void _port_hard_fault_hook(uint32 psp);
 void _port_context_switch(uint32 curr_pcb, uint32 target_pcb) __attribute__ ((naked));
 void _port_first_switch(uint32 target_pcb) __attribute__ ((naked));
 

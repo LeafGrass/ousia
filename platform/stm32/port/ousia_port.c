@@ -62,6 +62,7 @@ void _os_port_init(void)
 	old_pcb = 0;
 	new_pcb = 0;
 	critical_nest = 0;
+	register_error_hook(_port_hard_fault_hook);
 	return;
 }
 
@@ -202,6 +203,7 @@ void _port_dump_stack(const pt_regs_t *pt)
 		os_logk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
 		return;
 	}
+	os_logk(LOG_INFO, "xpsr: 0x%08X, 0x%08X\n", pt->xpsr, *(uint32 *)pt->xpsr);
 	os_logk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
 	os_logk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
 	os_logk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
@@ -218,6 +220,22 @@ void _port_dump_stack(const pt_regs_t *pt)
 	os_logk(LOG_INFO, "r6:   0x%08X\n", pt->r6);
 	os_logk(LOG_INFO, "r5:   0x%08X\n", pt->r5);
 	os_logk(LOG_INFO, "r4:   0x%08X\n", pt->r4);
+}
+
+/*
+ * @brief   dump stack hook
+ * @param   p_pcb -i- pointer of pcb
+ * @return  nothing
+ * @note    for hard fault handler callback
+ *          FIXME usb output will make system hang
+ */
+void _port_hard_fault_hook(uint32 psp)
+{
+	pt_regs_t *p = (pt_regs_t *)psp;
+	p = p;
+#if 0
+	_port_dump_stack(p);
+#endif
 }
 
 /*
