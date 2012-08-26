@@ -71,6 +71,7 @@ struct _sched_class_t {
 
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);
+os_status os_process_delete(uint32 pid);
 os_status os_process_sleep(uint32 tms);
 os_status os_process_suspend(uint32 pid);
 os_status os_process_resume(uint32 pid);

@@ -46,8 +46,6 @@ static struct _pqcb_t pqcb = {
 	.p_tail = NULL
 };
 
-uint32 var_dbg = 0;
-
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
 /*
  * @brief   earliest deadline first scheduling
@@ -235,9 +233,9 @@ os_status _sys_sched_schedule(void)
 
 	os_logk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, (uint32)pqcb.p_head);
-
+#if 0
 	__dump_stack(curr_pcb);
-
+#endif
 	/* TODO here to trigger os context switch */
 	_port_context_switch((uint32)curr_pcb, (uint32)pqcb.p_head);
 
@@ -308,6 +306,26 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 }
 
 /*
+ * @brief   delete a process
+ * @param   pid -i- pid of target process
+ * @return  os_status
+ * @note    none
+ */
+os_status os_process_delete(uint32 pid)
+{
+	os_status ret = OS_OK;
+
+	/*
+	 * TODO
+	 * 1. remove the process from pqcb
+	 * 2. reschedule
+	 */
+	_sys_sched_schedule();
+
+	return ret;
+}
+
+/*
  * @brief   os process sleep routine
  * @param   tms -i- sleep time in ms
  * @return  os_status
@@ -339,7 +357,10 @@ os_status os_process_sleep(uint32 tms)
 os_status os_process_suspend(uint32 pid)
 {
 	os_status ret = OS_OK;
+
 	os_logk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
+	_sys_sched_schedule();
+
 	return ret;
 }
 

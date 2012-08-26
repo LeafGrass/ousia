@@ -79,7 +79,7 @@ void _os_port_bsp_init(void)
 	 * FIXME at least 1000+ms to wait for usb device, or the foregoing
 	 * characters may be lost, that is too long to wait ...
 	 */
-	for(i = 0; i < 24; i++) {
+	for (i = 0; i < 24; i++) {
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 		__busy_wait(50);
 	}
@@ -285,11 +285,6 @@ void __exc_pendsv(void)
 	 "	ldr	r0, [r0]			\n"
 	 /* load sp of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"
-#if 0
-	 /* debugging purpose only */
-	 "	ldr	r3, =var_dbg			\n"
-	 "	str	r0, [r3]			\n"
-#endif
 	 /* restore r4-r11 */
 	 "	ldmfd	r0!, {r4-r11}			\n"
 	 /* save sp of new pcb to psp*/

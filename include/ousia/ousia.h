@@ -46,7 +46,7 @@
 	os_printf("Ousia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
 	os_printf("\tby LeafGrass - leafgrass.g@gmail.com"); \
 	os_printf("\n\n"); \
-	os_log("hello ousia :P\n\n"); \
+	os_log("# Hello Ousia :)\n\n"); \
 }
 
 

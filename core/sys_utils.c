@@ -47,19 +47,6 @@ static struct _pcb_t ps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
 /*
- * @brief   process - init
- * @param   args -i/o- reserved
- * @return  void
- */
-static void __ps_init(void *args)
-{
-	os_logk(LOG_INFO, "process %s is here!\n", __func__);
-	os_process_create(&ps_main_pcb, ps_main, NULL,
-			  __ps_main_stack, PS_MAIN_STACK_SIZE);
-	os_process_suspend(ps_init_pcb.pid);
-}
-
-/*
  * @brief   process - idle
  * @param   args -i/o- reserved
  * @return  void
@@ -70,6 +57,20 @@ static void __ps_idle(void *args)
 	while (1) {
 		/* collect statistics */
 	}
+}
+
+/*
+ * @brief   process - init
+ * @param   args -i/o- reserved
+ * @return  void
+ */
+static void __ps_init(void *args)
+{
+	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
+			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
+	os_process_create(&ps_main_pcb, ps_main, NULL,
+			  __ps_main_stack, PS_MAIN_STACK_SIZE);
+	os_process_suspend(ps_init_pcb.pid);
 }
 
 /*
@@ -85,10 +86,6 @@ static os_status __sys_process_init(void)
 	/* TODO create two processes at init */
 	os_process_create(&ps_init_pcb, __ps_init, NULL,
 			  __ps_init_stack, PS_INIT_STACK_SIZE);
-	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
-			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
-	os_process_create(&ps_main_pcb, ps_main, NULL,
-			  __ps_main_stack, PS_MAIN_STACK_SIZE);
 
 	return ret;
 }

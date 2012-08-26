@@ -3,8 +3,8 @@
 
 VERSION = 0
 SUBLEVEL = 0
-DEVNUM = 4
-VERNAME = Delavay-Fir
+DEVNUM = 5
+VERNAME = Earleaf-Acacia
 
 ########################################
 # User Customization Items
