@@ -203,7 +203,6 @@ void _port_dump_stack(const pt_regs_t *pt)
 		os_logk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
 		return;
 	}
-	os_logk(LOG_INFO, "xpsr: 0x%08X, 0x%08X\n", pt->xpsr, *(uint32 *)pt->xpsr);
 	os_logk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
 	os_logk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
 	os_logk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
