@@ -28,7 +28,7 @@ EXTERN(__stm32_vector_table)
 EXTERN(start_c)
 
 /* main entry point */
-EXTERN(main)
+EXTERN(os_main)
 
 /* Initial stack pointer value. */
 EXTERN(__msp_init)
