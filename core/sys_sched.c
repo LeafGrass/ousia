@@ -126,7 +126,7 @@ static int32 __do_strategy_rghs(struct _pqcb_t *pq)
 	 * pq->p_tail =
 	 */
 
-	os_logk(LOG_DEBUG, "%s, schedule done.\n", __func__);
+	os_printk(LOG_DEBUG, "%s, schedule done.\n", __func__);
 	return ret;
 }
 #endif
@@ -154,20 +154,20 @@ static struct _sched_class_t sched_class = {
 static void __dump_pcb(const struct _pcb_t *p_pcb)
 {
 	if (p_pcb == NULL) {
-		os_logk(LOG_ERROR, "%s - pcb: 0x%X\n", __func__, p_pcb);
+		os_printk(LOG_ERROR, "%s - pcb: 0x%X\n", __func__, p_pcb);
 		return;
 	}
-	os_logk(LOG_INFO, "--- dump pcb: 0x%08X ---\n", p_pcb);
-	os_logk(LOG_INFO, "stack_ptr: 0x%08X\n", p_pcb->stack_ptr);
-	os_logk(LOG_INFO, "pentry:    0x%08X\n", p_pcb->pentry);
-	os_logk(LOG_INFO, "stack_sz:  %d\n", p_pcb->stack_sz);
-	os_logk(LOG_INFO, "pid:       %d\n", p_pcb->pid);
-	os_logk(LOG_INFO, "prio:      %d\n", p_pcb->prio);
-	os_logk(LOG_INFO, "stat:      %d\n", p_pcb->stat);
-	os_logk(LOG_INFO, "timer:     0x%08X\n", p_pcb->timer);
-	os_logk(LOG_INFO, "prev:      0x%08X\n", p_pcb->p_prev);
-	os_logk(LOG_INFO, "next:      0x%08X\n", p_pcb->p_next);
-	os_logk(LOG_INFO, "----------------------------\n");
+	os_printk(LOG_INFO, "--- dump pcb: 0x%08X ---\n", p_pcb);
+	os_printk(LOG_INFO, "stack_ptr: 0x%08X\n", p_pcb->stack_ptr);
+	os_printk(LOG_INFO, "pentry:    0x%08X\n", p_pcb->pentry);
+	os_printk(LOG_INFO, "stack_sz:  %d\n", p_pcb->stack_sz);
+	os_printk(LOG_INFO, "pid:       %d\n", p_pcb->pid);
+	os_printk(LOG_INFO, "prio:      %d\n", p_pcb->prio);
+	os_printk(LOG_INFO, "stat:      %d\n", p_pcb->stat);
+	os_printk(LOG_INFO, "timer:     0x%08X\n", p_pcb->timer);
+	os_printk(LOG_INFO, "prev:      0x%08X\n", p_pcb->p_prev);
+	os_printk(LOG_INFO, "next:      0x%08X\n", p_pcb->p_next);
+	os_printk(LOG_INFO, "----------------------------\n");
 	_port_dump_stack((pt_regs_t *)p_pcb->stack_ptr);
 }
 
@@ -197,7 +197,7 @@ void _sys_sched_schedule(void)
 	ret = sched_class.do_schedule(&pqcb);
 	os_assert(ret == 0);
 
-	os_logk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
+	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, (uint32)pqcb.p_head);
 	/* TODO here to trigger os context switch */
 	curr_pcb = pqcb.p_head;
@@ -214,13 +214,13 @@ void _sys_sched_schedule(void)
 void _sys_sched_startup(void)
 {
 	if (pqcb.p_head == NULL) {
-		os_logk(LOG_ERROR, "first process is not ready!\n");
+		os_printk(LOG_ERROR, "first process is not ready!\n");
 	} else {
-		os_logk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
+		os_printk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
 		curr_pcb = pqcb.p_head;
 		_port_first_switch((uint32)pqcb.p_head);
 	}
-	os_logk(LOG_ERROR, "%s, shoud never be here!\n");
+	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
 	while (1);
 }
 
@@ -243,7 +243,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
 
-	os_logk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n", new_pcb, stack_base);
+	os_printk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n", new_pcb, stack_base);
 
 	/* TODO here to allocate resources to a process */
 
@@ -297,7 +297,7 @@ int32 os_process_sleep(uint32 tms)
 {
 	int32 ret = OS_OK;
 
-	os_logk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
+	os_printk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
 
 	/* TODO here to calculate time */
 
@@ -321,7 +321,7 @@ int32 os_process_suspend(uint32 pid)
 {
 	int32 ret = OS_OK;
 
-	os_logk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
+	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
 	_sys_sched_schedule();
 
 	return ret;

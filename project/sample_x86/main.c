@@ -21,13 +21,13 @@ int main(void)
 	ret = os_init();
 
 	if (ret != OS_OK) {
-		os_logk(LOG_ERROR, "init error! exit.\n");
+		os_printk(LOG_ERROR, "init error! exit.\n");
 		return -1;
 	}
 
 	while (1) {
 		system("sleep 1");
-		os_logk(LOG_INFO, "get time\n");
+		os_printk(LOG_INFO, "get time\n");
 	}
 
 	return 0;

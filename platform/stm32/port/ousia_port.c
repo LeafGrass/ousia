@@ -200,25 +200,25 @@ void _port_assert_fail(const char *file, int line, const char *exp)
 void _port_dump_stack(const pt_regs_t *pt)
 {
 	if (pt == NULL) {
-		os_logk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
+		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
 		return;
 	}
-	os_logk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
-	os_logk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
-	os_logk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
-	os_logk(LOG_INFO, "r12:  0x%08X\n", pt->r12);
-	os_logk(LOG_INFO, "r3:   0x%08X\n", pt->r3);
-	os_logk(LOG_INFO, "r2:   0x%08X\n", pt->r2);
-	os_logk(LOG_INFO, "r1:   0x%08X\n", pt->r1);
-	os_logk(LOG_INFO, "r0:   0x%08X\n", pt->r0);
-	os_logk(LOG_INFO, "r11:  0x%08X\n", pt->r11);
-	os_logk(LOG_INFO, "r10:  0x%08X\n", pt->r10);
-	os_logk(LOG_INFO, "r9:   0x%08X\n", pt->r9);
-	os_logk(LOG_INFO, "r8:   0x%08X\n", pt->r8);
-	os_logk(LOG_INFO, "r7:   0x%08X\n", pt->r7);
-	os_logk(LOG_INFO, "r6:   0x%08X\n", pt->r6);
-	os_logk(LOG_INFO, "r5:   0x%08X\n", pt->r5);
-	os_logk(LOG_INFO, "r4:   0x%08X\n", pt->r4);
+	os_printk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
+	os_printk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
+	os_printk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
+	os_printk(LOG_INFO, "r12:  0x%08X\n", pt->r12);
+	os_printk(LOG_INFO, "r3:   0x%08X\n", pt->r3);
+	os_printk(LOG_INFO, "r2:   0x%08X\n", pt->r2);
+	os_printk(LOG_INFO, "r1:   0x%08X\n", pt->r1);
+	os_printk(LOG_INFO, "r0:   0x%08X\n", pt->r0);
+	os_printk(LOG_INFO, "r11:  0x%08X\n", pt->r11);
+	os_printk(LOG_INFO, "r10:  0x%08X\n", pt->r10);
+	os_printk(LOG_INFO, "r9:   0x%08X\n", pt->r9);
+	os_printk(LOG_INFO, "r8:   0x%08X\n", pt->r8);
+	os_printk(LOG_INFO, "r7:   0x%08X\n", pt->r7);
+	os_printk(LOG_INFO, "r6:   0x%08X\n", pt->r6);
+	os_printk(LOG_INFO, "r5:   0x%08X\n", pt->r5);
+	os_printk(LOG_INFO, "r4:   0x%08X\n", pt->r4);
 }
 
 /*

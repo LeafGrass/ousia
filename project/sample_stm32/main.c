@@ -38,7 +38,7 @@ void ps_main(void *args)
 			switch(ch) {
 			case '\r':
 				os_printf("\n");
-				os_logk(LOG_INFO, "");
+				os_printk(LOG_INFO, "");
 				gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 				break;
 			case '\b':

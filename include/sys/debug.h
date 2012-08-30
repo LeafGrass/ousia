@@ -40,9 +40,11 @@
 #ifdef OS_DEBUG_PRINT
 #define __dec		(os_systime_get()/1000)
 #define __frac		(os_systime_get()%1000)
-#define _OS_PRINTF(msg, args...) \
+#define _OS_PRINTF(level, msg, args...) \
 	do { \
-		os_printf(msg, ##args); \
+		if (level > LOG_LEVEL) { \
+			os_printf(msg, ##args); \
+		} \
 	} while (0)
 #define _OS_PRINTK(level, msg, args...) \
 	do { \
@@ -74,8 +76,8 @@
 #endif
 
 #define os_assert(exp)			_OS_ASSERT(exp)
-#define os_log(msg, args...)		_OS_PRINTF(msg, ##args)
-#define os_logk(level, msg, args...)	_OS_PRINTK(level, msg, ##args)
+#define os_log(level, msg, args...)	_OS_PRINTF(level, msg, ##args)
+#define os_printk(level, msg, args...)	_OS_PRINTK(level, msg, ##args)
 
 void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 

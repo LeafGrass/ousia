@@ -53,7 +53,7 @@ static struct _pcb_t ps_main_pcb;
  */
 static void __ps_idle(void *args)
 {
-	os_logk(LOG_INFO, "process %s is here!\n", __func__);
+	os_printk(LOG_INFO, "process %s is here!\n", __func__);
 	while (1) {
 		/* collect statistics */
 	}
@@ -66,7 +66,7 @@ static void __ps_idle(void *args)
  */
 static void __ps_init(void *args)
 {
-	os_logk(LOG_INFO, "process %s is here!\n", __func__);
+	os_printk(LOG_INFO, "process %s is here!\n", __func__);
 	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
 			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
 	os_process_create(&ps_main_pcb, ps_main, NULL,
