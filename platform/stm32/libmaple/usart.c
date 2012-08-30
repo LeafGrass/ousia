@@ -43,8 +43,8 @@
  * @param dev         Serial port to be initialized
  */
 void usart_init(usart_dev *dev) {
-	dev->flag_trigger = 0;
-	dev->cnt_trigger = 0;
+    dev->flag_trigger = 0;
+    dev->cnt_trigger = 0;
     rb_init(dev->rb, USART_RX_BUF_SIZE, dev->rx_buf);
     rcc_clk_enable(dev->clk_id);
     nvic_irq_enable(dev->irq_num);

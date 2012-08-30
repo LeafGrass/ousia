@@ -396,8 +396,8 @@ typedef struct usart_dev {
                                       * a future release. */
     rcc_clk_id clk_id;               /**< RCC clock information */
     nvic_irq_num irq_num;            /**< USART NVIC interrupt */
-	uint8 cnt_trigger;               /**< counter of usart (re)trigger times */
-	uint8 flag_trigger;              /**< flag of whether usart is triggered,
+    uint8 cnt_trigger;               /**< counter of usart (re)trigger times */
+    uint8 flag_trigger;              /**< flag of whether usart is triggered,
                                       * auto cleared while any call to
                                       * usart_getc() */
 } usart_dev;
