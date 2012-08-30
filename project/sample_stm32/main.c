@@ -3,17 +3,11 @@
 
 /* FIXME for temporary debug only */
 #include <stm32/libmaple/include/libmaple/libmaple.h>
-#include <stm32/libmaple/include/libmaple/libmaple_types.h>
 #include <stm32/libmaple/include/libmaple/gpio.h>
-#include <stm32/libmaple/include/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#include <sys/sched.h>
-#include <sys/utils.h>
 #include <sys/print.h>
 #include <sys/time.h>
-#include <sys/debug.h>
-#include <char/i2c/i2c_soft.h>
 
 void delayMicroseconds(uint32 us)
 {

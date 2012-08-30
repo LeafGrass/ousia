@@ -8,9 +8,7 @@ USR_BUILDDIRS   += $(BUILD_PATH)/$(d)
 LIBMAPLE_INCLUDES := \
 	-I$(PLATFORM_PATH)/stm32/libmaple \
 	-I$(PLATFORM_PATH)/stm32/libmaple/include \
-	-I$(PLATFORM_PATH)/stm32/libmaple/$(MCU_SERIES)/include \
-	-I$(PLATFORM_PATH)/stm32/libmaple/usb \
-	-I$(PLATFORM_PATH)/stm32/libmaple/usb/usb_lib
+	-I$(PLATFORM_PATH)/stm32/libmaple/$(MCU_SERIES)/include
 
 # Local flags
 CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(DRIVER_INCLUDES) $(FRAMEWORK_INCLUDES) -Wall
