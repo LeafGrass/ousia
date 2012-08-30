@@ -11,10 +11,10 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/x86/port
 CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) -Wall -Werror
 
 # Local rules and targets
-# porting
-cSRCS_$(d) := x86/port/ousia_port.c
 # x86utils
-cSRCS_$(d) += x86/x86utils/x86utils.c
+cSRCS_$(d) := x86/x86utils/x86utils.c
+# porting
+cSRCS_$(d) += x86/port/ousia_port.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)

@@ -22,12 +22,8 @@ LIBMAPLE_INCLUDES := \
 CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) $(LIBMAPLE_INCLUDES) -Wall -Werror
 
 # Local rules and targets
-# porting
-cSRCS_$(d) := \
-	stm32/port/ousia_port.c
-
 # libmaple
-cSRCS_$(d) += \
+cSRCS_$(d) := \
 	stm32/libmaple/adc.c \
 	stm32/libmaple/dac.c \
 	stm32/libmaple/dma.c \
@@ -92,6 +88,10 @@ ifeq ($(MCU_SERIES), stm32f1)
 # stm32utils
 cSRCS_$(d) += stm32/stm32utils/stm32utils.c
 endif
+
+# porting
+cSRCS_$(d) += \
+	stm32/port/ousia_port.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
