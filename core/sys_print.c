@@ -23,6 +23,7 @@
  * @brief   implementation of ousia print system
  * @log     2011.8 initial revision
  *          2011.10 modified by Librae
+ *          2012.8 modified by Librae
  */
 
 /*
@@ -165,7 +166,9 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 				i2a(va_arg(va, int), bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
-			case 'x': case 'X' :
+			case 'p':
+			case 'x':
+			case 'X':
 				ui2a(va_arg(va, unsigned int), 16, (ch == 'X'), bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
