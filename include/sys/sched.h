@@ -27,6 +27,8 @@
 #ifndef __SYS_SCHED_H__
 #define __SYS_SCHED_H__
 
+#include <sys/ds.h>
+
 /*
  * process state
  * FIXME need an exact requirement for each state
@@ -49,15 +51,14 @@ struct _pcb_t {
 	int32 prio;
 	enum _pstate stat;
 	struct _ptcb_t *timer;
-	struct _pcb_t *p_prev;
-	struct _pcb_t *p_next;
+	struct list_head list;
 };
 
 /*
  * process queue control block
  */
 struct _pqcb_t {
-	uint32 pnum;
+	uint32 npcb;
 	struct _pcb_t *p_head;
 	struct _pcb_t *p_tail;
 };

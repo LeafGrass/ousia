@@ -36,6 +36,7 @@
 /*
  * list (doubly circularly linked list)
  */
+
 struct list_head {
 	struct list_head *next;
 	struct list_head *prev;
@@ -586,7 +587,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 	n = list_entry(pos->member.next, typeof(*pos), member)
 
 /*
- * queue
+ * tree
  */
 
 #endif /* __SYS_DS_H__ */

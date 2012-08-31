@@ -24,15 +24,14 @@
  * @log     2011.7 initial revision
  */
 
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-
 #include <port/ousia_cfg.h>
 #include <port/ousia_port.h>
-
 #include <sys/print.h>
 #include <sys/time.h>
-#include <sys/sched.h>
 #include <sys/debug.h>
+#include <sys/sched.h>
 
 
 static struct _pcb_t *curr_pcb;
@@ -41,10 +40,65 @@ static struct _pcb_t *curr_pcb;
  * FIXME Use memory pool here?
  */
 static struct _pqcb_t pqcb = {
-	.pnum = 0,
+	.npcb = 0,
 	.p_head = NULL,
 	.p_tail = NULL
 };
+
+/*
+ * @brief   process enqueue
+ * @param   p -i- pointer of pcb
+ * @return  status code
+ * @note
+ */
+static int32 __qcb_enqueue(struct _pcb_t *p)
+{
+	return 0;
+}
+
+/*
+ * @brief   process dequeue
+ * @param   p -i- pointer of pcb
+ * @return  status code
+ * @note
+ */
+static int32 __qcb_dequeue(struct _pcb_t *p)
+{
+	return 0;
+}
+
+/*
+ * @brief   __qcb_get_head
+ * @param   p -i- pointer of pcb
+ * @return  status code
+ * @note
+ */
+static inline struct _pcb_t *__pcb_get_head(struct _pcb_t *p)
+{
+	return list_entry(p->list.prev, struct _pcb_t, list);
+}
+
+/*
+ * @brief   __qcb_get_prev
+ * @param   p -i- pointer of pcb
+ * @return  status code
+ * @note
+ */
+static inline struct _pcb_t *__pcb_get_prev(struct _pcb_t *p)
+{
+	return list_entry(p->list.prev, struct _pcb_t, list);
+}
+
+/*
+ * @brief   __qcb_get_next
+ * @param   p -i- pointer of pcb
+ * @return  status code
+ * @note
+ */
+static inline struct _pcb_t *__pcb_get_next(struct _pcb_t *p)
+{
+	return list_entry(p->list.next, struct _pcb_t, list);
+}
 
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
 /*
@@ -121,7 +175,7 @@ static int32 __do_strategy_rghs(struct _pqcb_t *pq)
 	/*
 	 * TODO
 	 * schedule algorithm implementation here:
-	 * pq->pnum =
+	 * pq->npcb =
 	 * pq->p_head =
 	 * pq->p_tail =
 	 */
@@ -151,7 +205,7 @@ static struct _sched_class_t sched_class = {
  * @return  nothing
  * @note    FIXME this function should has more clear info
  */
-static void __dump_pcb(const struct _pcb_t *p_pcb)
+static void __dump_pcb(struct _pcb_t *p_pcb)
 {
 	if (p_pcb == NULL) {
 		os_printk(LOG_ERROR, "%s - pcb: 0x%X\n", __func__, p_pcb);
@@ -165,8 +219,8 @@ static void __dump_pcb(const struct _pcb_t *p_pcb)
 	os_printk(LOG_INFO, "prio:      %d\n", p_pcb->prio);
 	os_printk(LOG_INFO, "stat:      %d\n", p_pcb->stat);
 	os_printk(LOG_INFO, "timer:     0x%08X\n", p_pcb->timer);
-	os_printk(LOG_INFO, "prev:      0x%08X\n", p_pcb->p_prev);
-	os_printk(LOG_INFO, "next:      0x%08X\n", p_pcb->p_next);
+	os_printk(LOG_INFO, "prev:      0x%08X\n", __pcb_get_prev(p_pcb));
+	os_printk(LOG_INFO, "next:      0x%08X\n", __pcb_get_next(p_pcb));
 	os_printk(LOG_INFO, "----------------------------\n");
 	_port_dump_stack((pt_regs_t *)p_pcb->stack_ptr);
 }
@@ -198,7 +252,7 @@ void _sys_sched_schedule(void)
 	os_assert(ret == 0);
 
 	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
-			__func__, (uint32)curr_pcb, (uint32)pqcb.p_head);
+			__func__, (uint32)curr_pcb, pqcb.p_head);
 	/* TODO here to trigger os context switch */
 	curr_pcb = pqcb.p_head;
 	_port_context_switch((uint32)tmp, (uint32)pqcb.p_head);
@@ -259,6 +313,8 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	new_pcb->pentry = pentry;
 	new_pcb->stack_sz = stack_sz;
 
+	/* init pcb queue */
+	INIT_LIST_HEAD(&new_pcb->list);
 	/* TODO enqueue pcb */
 	pqcb.p_head = new_pcb;
 #if 1
