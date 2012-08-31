@@ -3,7 +3,8 @@ PRODUCT_ID := PC001
 GLOBAL_FLAGS := \
 	$(VERFLAGS) \
 	-DOUSIA \
-	-D__PLATFORM_X86__
+	-D__PLATFORM_X86__ \
+	-DOUSIA_USE_STDLIB
 
 GLOBAL_CFLAGS := \
 	-g3 -nostdlib -ffunction-sections -fdata-sections \

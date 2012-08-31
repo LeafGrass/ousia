@@ -2,8 +2,12 @@
 #ifndef __OUSIA_CFG_H__
 #define __OUSIA_CFG_H__
 
-#define OUSIA_USE_ULIB
+/*
+ * FIXME the macro'name should not be like this
+ * better to be something like CFG_XXX_XXX
+ */
 #define OUSIA_USE_LIBMAPLE
+#define OUSIA_DS_ADVANCED
 
 #define OUSIA_PORT_STACK_INC	1
 #define OUSIA_PORT_STACK_DEC	0

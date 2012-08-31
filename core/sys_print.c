@@ -47,15 +47,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 */
 
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
-#ifdef OUSIA_USE_ULIB
-#include <ulib/stdarg.h>
-#include <ulib/stddef.h>
-#else
-#include <stdarg.h>
-#include <stddef.h>
-#endif
 #include <sys/print.h>
 
 typedef void (*putcf)(void *dev, char ch);

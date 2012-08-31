@@ -19,24 +19,17 @@
  */
 
 /*
- * @file    include/ulib/stddef.h
- * @brief   micro implementation of stddef.h of libc
- * @log     2011.8 initial revision
+ * @file    core/sys_ds.c
+ * @brief   implementation of ousia core data structure
+ * @log     2012.8 initial revision
  */
 
-#ifndef __STDDEF_H__
-#define __STDDEF_H__
+#include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
+#include <sys/ds.h>
 
-typedef unsigned int	size_t;
-
-#undef NULL
-#if defined(__cplusplus)
-#define NULL 0
-#else
-#define NULL ((void *)0)
-#endif
-
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-
-
-#endif /* __STDDEF_H__ */
+/*
+ * @brief   sample
+ * @param   none
+ * @return  none
+ */

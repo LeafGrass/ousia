@@ -20,7 +20,8 @@ cSRCS_$(d) := \
 	sys_time.c \
 	sys_utils.c \
 	sys_ictl.c \
-	sys_debug.c
+	sys_debug.c \
+	sys_ds.c
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

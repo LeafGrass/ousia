@@ -24,6 +24,9 @@
  * @log     2011.11 first revision
  */
 
+#include <ousia/ousia.h>
+#include <ousia/ousia_type.h>
+#include <sys/ds.h>
 #include <console/console.h>
 
 /*
@@ -34,4 +37,3 @@
  * @return  an integer
  * @note    just use it and take it easy
  */
-

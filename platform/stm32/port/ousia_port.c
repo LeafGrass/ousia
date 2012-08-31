@@ -24,6 +24,7 @@
  * @log     2011.8 initial revision
  */
 
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <sys/debug.h>
 #include <sys/print.h>

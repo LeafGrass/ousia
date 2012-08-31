@@ -5,7 +5,9 @@ d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/console
 
 # Local flags
-CFLAGS_$(d) = -I$(d) -Wall -Werror
+# FIXME should not add $(PLATFORM_INCLUDES), instead, we need a cfg file parser
+#       called in Makefile then define those configs while compiling
+CFLAGS_$(d) = -I$(d) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) -Wall -Werror
 
 # Local rules and targets
 cSRCS_$(d) := console/console.c
