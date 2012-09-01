@@ -28,17 +28,8 @@
 #ifndef __OUSIA_H__
 #define __OUSIA_H__
 
-/*
- * FIXME we'd better not use stdlib, force to use ulib instead
- *       can anyone get this fixed?
- */
-#ifndef OUSIA_USE_STDLIB
 #include <ulib/stdarg.h>
 #include <ulib/stddef.h>
-#else
-#include <stdarg.h>
-#include <stddef.h>
-#endif
 
 #define VERCODE		(VERSION*100 + SUBLEVEL*10 + DEVNUM)
 #define VERSTR(str)	#str
@@ -58,6 +49,5 @@
 	os_printf("\tby LeafGrass - leafgrass.g@gmail.com"); \
 	os_printf("\n\n"); \
 }
-
 
 #endif /* __OUSIA_H__ */
