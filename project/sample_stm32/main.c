@@ -45,6 +45,9 @@ void ps_main(void *args)
 			}
 		}
 		delay(20);
+#if 0
+		os_process_suspend(0);
+#endif
 #else
 		/* uart */
 		if (USART_CONSOLE_BANK->flag_trigger) {

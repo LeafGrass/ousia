@@ -295,7 +295,10 @@ void _sys_sched_schedule(void)
 
 	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, __pq_get_head(&pqcb));
+#if 1
+	__dump_pcb(__pq_get_head(&pqcb));
 	__dump_pq(&pqcb);
+#endif
 	/* TODO here to trigger os context switch */
 	curr_pcb = __pq_get_head(&pqcb);
 	_port_context_switch((uint32)tmp, (uint32)__pq_get_head(&pqcb));
@@ -341,8 +344,15 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
 
-	os_printk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n",
-			new_pcb, stack_base);
+	os_printk(LOG_DEBUG, "===> new process: 0x%08p\n"
+			     "\t\t+-------------------\n"
+			     "\t\t| stack_base: 0x%08p\n"
+			     "\t\t| stack_sz: %d\n"
+			     "\t\t| entry: 0x%08p\n"
+			     "\t\t| prio: %d\n"
+			     "\t\t+-------------------\n",
+			     new_pcb, stack_base, stack_sz,
+			     pentry, new_pcb->prio);
 
 	/* TODO here to allocate resources to a process */
 
@@ -359,10 +369,6 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	new_pcb->stack_sz = stack_sz;
 
 	__pcb_enqueue(new_pcb);
-
-#if 1
-	__dump_pcb(new_pcb);
-#endif
 
 	return new_pcb->pid;
 }
