@@ -59,6 +59,7 @@ struct _pcb_t {
  */
 struct _pqcb_t {
 	uint32 npcb;
+	struct list_head pq;
 	struct _pcb_t *p_head;
 	struct _pcb_t *p_tail;
 };

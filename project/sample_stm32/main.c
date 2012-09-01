@@ -6,6 +6,7 @@
 #include <stm32/libmaple/include/libmaple/gpio.h>
 #include <stm32/stm32utils/stm32utils.h>
 
+#include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/time.h>
 

@@ -51,8 +51,10 @@ static struct _pqcb_t pqcb = {
  * @return  status code
  * @note
  */
-static int32 __qcb_enqueue(struct _pcb_t *p)
+static int32 __pcb_enqueue(struct _pcb_t *p)
 {
+	list_add_tail(&p->list, &pqcb.pq);
+	pqcb.npcb++;
 	return 0;
 }
 
@@ -62,26 +64,17 @@ static int32 __qcb_enqueue(struct _pcb_t *p)
  * @return  status code
  * @note
  */
-static int32 __qcb_dequeue(struct _pcb_t *p)
+static int32 __pcb_dequeue(struct _pcb_t *p)
 {
+	list_del(&p->list);
+	pqcb.npcb--;
 	return 0;
 }
 
 /*
- * @brief   __qcb_get_head
+ * @brief   __pcb_get_prev
  * @param   p -i- pointer of pcb
- * @return  status code
- * @note
- */
-static inline struct _pcb_t *__pcb_get_head(struct _pcb_t *p)
-{
-	return list_entry(p->list.prev, struct _pcb_t, list);
-}
-
-/*
- * @brief   __qcb_get_prev
- * @param   p -i- pointer of pcb
- * @return  status code
+ * @return  the prev pcb
  * @note
  */
 static inline struct _pcb_t *__pcb_get_prev(struct _pcb_t *p)
@@ -90,9 +83,9 @@ static inline struct _pcb_t *__pcb_get_prev(struct _pcb_t *p)
 }
 
 /*
- * @brief   __qcb_get_next
+ * @brief   __pcb_get_next
  * @param   p -i- pointer of pcb
- * @return  status code
+ * @return  the next pcb
  * @note
  */
 static inline struct _pcb_t *__pcb_get_next(struct _pcb_t *p)
@@ -100,14 +93,36 @@ static inline struct _pcb_t *__pcb_get_next(struct _pcb_t *p)
 	return list_entry(p->list.next, struct _pcb_t, list);
 }
 
+/*
+ * @brief   __pq_get_head
+ * @param   p_pqcb -i- pointer of pqcb
+ * @return  pcb at the queue head
+ * @note
+ */
+static inline struct _pcb_t *__pq_get_head(struct _pqcb_t *p_pqcb)
+{
+	return list_entry(p_pqcb->pq.next, struct _pcb_t, list);
+}
+
+/*
+ * @brief   __pq_get_tail
+ * @param   p_pqcb -i- pointer of pqcb
+ * @return  pcb at the queue tail
+ * @note
+ */
+static inline struct _pcb_t *__pq_get_tail(struct _pqcb_t *p_pqcb)
+{
+	return list_entry(p_pqcb->pq.prev, struct _pcb_t, list);
+}
+
 #ifdef OUSIA_SCHED_STRATEGY_EDFS
 /*
  * @brief   earliest deadline first scheduling
- * @param   pq -i/o- process queue control block
+ * @param   pqcb -i/o- process queue control block
  * @return  int32
  * @note
  */
-static int32 __do_strategy_edfs(struct _pqcb_t *pq)
+static int32 __do_strategy_edfs(struct _pqcb_t *pqcb)
 {
 	int32 ret = OS_OK;
 	return ret;
@@ -117,11 +132,11 @@ static int32 __do_strategy_edfs(struct _pqcb_t *pq)
 #ifdef OUSIA_SCHED_STRATEGY_EDFS_OPT
 /*
  * @brief   earliest deadline first scheduling, optimized for overall
- * @param   pq -i/o- process queue control block
+ * @param   pqcb -i/o- process queue control block
  * @return  int32
  * @note
  */
-static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pq)
+static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
 {
 	int32 ret = OS_OK;
 	return ret;
@@ -131,11 +146,11 @@ static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pq)
 #ifdef OUSIA_SCHED_STRATEGY_CFS
 /*
  * @brief   completely fair scheduling
- * @param   pq -i/o- process queue control block
+ * @param   pqcb -i/o- process queue control block
  * @return  int32
  * @note
  */
-static int32 __do_strategy_cfs(struct _pqcb_t *pq)
+static int32 __do_strategy_cfs(struct _pqcb_t *pqcb)
 {
 	int32 ret = OS_OK;
 	return ret;
@@ -145,11 +160,11 @@ static int32 __do_strategy_cfs(struct _pqcb_t *pq)
 #ifdef OUSIA_SCHED_STRATEGY_HPFS
 /*
  * @brief   highest priority first scheduling
- * @param   pq -i/o- process queue control block
+ * @param   pqcb -i/o- process queue control block
  * @return  int32
  * @note
  */
-static int32 __do_strategy_hpfs(struct _pqcb_t *pq)
+static int32 __do_strategy_hpfs(struct _pqcb_t *pqcb)
 {
 	int32 ret = OS_OK;
 	return ret;
@@ -159,15 +174,15 @@ static int32 __do_strategy_hpfs(struct _pqcb_t *pq)
 #ifdef OUSIA_SCHED_STRATEGY_RGHS
 /*
  * @brief   rough scheduling
- * @param   pq -i/o- process queue control block
+ * @param   pqcb -i/o- process queue control block
  * @return  int32
  * @note    :P
  */
-static int32 __do_strategy_rghs(struct _pqcb_t *pq)
+static int32 __do_strategy_rghs(struct _pqcb_t *pqcb)
 {
 	int32 ret = OS_OK;
-	if (pq == NULL) {
-		os_assert(pq);
+	if (pqcb == NULL) {
+		os_assert(pqcb);
 		/* should be -EPARAM */
 		return -OS_EFAIL;
 	}
@@ -175,9 +190,9 @@ static int32 __do_strategy_rghs(struct _pqcb_t *pq)
 	/*
 	 * TODO
 	 * schedule algorithm implementation here:
-	 * pq->npcb =
-	 * pq->p_head =
-	 * pq->p_tail =
+	 * pqcb->npcb =
+	 * pqcb->p_head =
+	 * pqcb->p_tail =
 	 */
 
 	os_printk(LOG_DEBUG, "%s, schedule done.\n", __func__);
@@ -208,7 +223,7 @@ static struct _sched_class_t sched_class = {
 static void __dump_pcb(struct _pcb_t *p_pcb)
 {
 	if (p_pcb == NULL) {
-		os_printk(LOG_ERROR, "%s - pcb: 0x%X\n", __func__, p_pcb);
+		os_printk(LOG_ERROR, "%s - pcb is NULL\n", __func__);
 		return;
 	}
 	os_printk(LOG_INFO, "--- dump pcb: 0x%08X ---\n", p_pcb);
@@ -226,14 +241,41 @@ static void __dump_pcb(struct _pcb_t *p_pcb)
 }
 
 /*
- * @brief   start ousia scheduler to work
- * @param   none
- * @return  int32
+ * @brief   dump process queue
+ * @param   p_pqcb -i- pointer of pqcb
+ * @return  nothing
  * @note    none
+ */
+static void __dump_pq(struct _pqcb_t *p_pqcb)
+{
+	struct _pcb_t *pcb;
+	if (p_pqcb == NULL) {
+		os_printk(LOG_ERROR, "%s - pqcb is NULL\n", __func__);
+		return;
+	}
+	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->npcb);
+	list_for_each_entry(pcb, &p_pqcb->pq, list) {
+		if (pcb == __pq_get_head(p_pqcb))
+			os_printk(LOG_INFO, "\t0x%08p <- head\n", pcb);
+		else if (pcb == __pq_get_tail(p_pqcb))
+			os_printk(LOG_INFO, "\t0x%08p <- tail\n", pcb);
+		else
+			os_printk(LOG_INFO, "\t0x%08p\n", pcb);
+	}
+}
+
+/*
+ * @brief   start ousia scheduler to work
+ * @param   pq -i/o- pointer to process queue list head
+ * @return  int32
+ * @note    basically, pq is the list_head of init process
  */
 int32 _sys_sched_init(void)
 {
 	int32 ret = OS_OK;
+
+	INIT_LIST_HEAD(&pqcb.pq);
+
 	return ret;
 }
 
@@ -251,11 +293,12 @@ void _sys_sched_schedule(void)
 	ret = sched_class.do_schedule(&pqcb);
 	os_assert(ret == 0);
 
-	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, p_head: 0x%08X\n",
-			__func__, (uint32)curr_pcb, pqcb.p_head);
+	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
+			__func__, (uint32)curr_pcb, __pq_get_head(&pqcb));
+	__dump_pq(&pqcb);
 	/* TODO here to trigger os context switch */
-	curr_pcb = pqcb.p_head;
-	_port_context_switch((uint32)tmp, (uint32)pqcb.p_head);
+	curr_pcb = __pq_get_head(&pqcb);
+	_port_context_switch((uint32)tmp, (uint32)__pq_get_head(&pqcb));
 }
 
 /*
@@ -267,12 +310,13 @@ void _sys_sched_schedule(void)
  */
 void _sys_sched_startup(void)
 {
-	if (pqcb.p_head == NULL) {
+	if (__pq_get_head(&pqcb) == NULL) {
 		os_printk(LOG_ERROR, "first process is not ready!\n");
 	} else {
-		os_printk(LOG_ERROR, "first process is ready, pcb = 0x%X\n", pqcb.p_head);
-		curr_pcb = pqcb.p_head;
-		_port_first_switch((uint32)pqcb.p_head);
+		os_printk(LOG_ERROR, "first process is ready, pcb = 0x%X\n",
+				__pq_get_head(&pqcb));
+		curr_pcb = __pq_get_head(&pqcb);
+		_port_first_switch((uint32)__pq_get_head(&pqcb));
 	}
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
 	while (1);
@@ -297,7 +341,8 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
 
-	os_printk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n", new_pcb, stack_base);
+	os_printk(LOG_DEBUG, "new pcb: 0x%08X, stack_base: 0x%08X\n",
+			new_pcb, stack_base);
 
 	/* TODO here to allocate resources to a process */
 
@@ -313,10 +358,8 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	new_pcb->pentry = pentry;
 	new_pcb->stack_sz = stack_sz;
 
-	/* init pcb queue */
-	INIT_LIST_HEAD(&new_pcb->list);
-	/* TODO enqueue pcb */
-	pqcb.p_head = new_pcb;
+	__pcb_enqueue(new_pcb);
+
 #if 1
 	__dump_pcb(new_pcb);
 #endif
@@ -362,6 +405,8 @@ int32 os_process_sleep(uint32 tms)
 	 * FIXME need to make sure everything is ready for process
 	 * scheduling and context switch before start a schedule
 	 */
+	__pcb_dequeue(curr_pcb);
+	__pcb_enqueue(curr_pcb);
 	_sys_sched_schedule();
 
 	return ret;
@@ -376,6 +421,9 @@ int32 os_process_sleep(uint32 tms)
 int32 os_process_suspend(uint32 pid)
 {
 	int32 ret = OS_OK;
+
+	/* FIXME hack here, dequeue curr_pcb directly */
+	__pcb_dequeue(curr_pcb);
 
 	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
 	_sys_sched_schedule();

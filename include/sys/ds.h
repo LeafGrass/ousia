@@ -391,7 +391,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 	list_entry((ptr)->next, type, member)
 
 /**
- * list_for_each	-	iterate over a list
+ * list_for_each - iterate over a list
  * @pos:	the &struct list_head to use as a loop cursor.
  * @head:	the head for your list.
  */
@@ -399,7 +399,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 	for (pos = (head)->next; pos != (head); pos = pos->next)
 
 /**
- * __list_for_each	-	iterate over a list
+ * __list_for_each - iterate over a list
  * @pos:	the &struct list_head to use as a loop cursor.
  * @head:	the head for your list.
  *
@@ -439,7 +439,7 @@ static inline void list_splice_tail_init(struct list_head *list,
 	     pos = n, n = pos->prev)
 
 /**
- * list_for_each_entry	-	iterate over list of given type
+ * list_for_each_entry - iterate over list of given type
  * @pos:	the type * to use as a loop cursor.
  * @head:	the head for your list.
  * @member:	the name of the list_struct within the struct.

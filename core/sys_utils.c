@@ -33,7 +33,6 @@
 #include <sys/utils.h>
 #include <sys/debug.h>
 
-
 #define PS_INIT_STACK_SIZE	1024
 #define PS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	2048
@@ -56,6 +55,7 @@ static void __ps_idle(void *args)
 	os_printk(LOG_INFO, "process %s is here!\n", __func__);
 	while (1) {
 		/* collect statistics */
+		os_process_sleep(1);
 	}
 }
 
