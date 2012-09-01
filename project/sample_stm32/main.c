@@ -26,6 +26,7 @@ void ps_main(void *args)
 {
 	char ch = 0;
 
+	os_dump_stack();
 	for (;;) {
 #if 1
 		/* usb */

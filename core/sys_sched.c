@@ -326,6 +326,17 @@ void _sys_sched_startup(void)
 }
 
 /*
+ * @brief   dump stack api for user
+ * @param   none
+ * @return  none
+ * @note    FIXME temporary used for debug
+ */
+void os_dump_stack(void)
+{
+	__dump_pcb(__pq_get_tail(&pqcb));
+}
+
+/*
  * @brief   create a process
  * @param   pcb -i- pointer of process control block
  *          pentry -i- process main function entry

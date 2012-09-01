@@ -71,6 +71,7 @@ struct _sched_class_t {
 	int32 (*do_schedule)(struct _pqcb_t *pq);
 };
 
+void os_dump_stack(void);
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);
 int32 os_process_delete(uint32 pid);
