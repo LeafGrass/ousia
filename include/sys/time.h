@@ -34,12 +34,14 @@
  * redundant, needs a cleansheet
  */
 struct _ptcb_t {
-	uint32 ticks;
+	uint32 ticks_running;
+	uint32 ticks_sleeping;
 	uint32 deadline;
 };
 
 uint32 os_systime_get(void);
 void _sys_timetick_init(void);
+void _sys_time_register_hook(void (*fn)(void));
 
 
 #endif /* __SYS_TIME_H__ */

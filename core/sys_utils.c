@@ -46,9 +46,13 @@ static struct _pcb_t ps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
 static uint32 n_sched = 0;
+static uint32 ticks_r = 0, ticks_s = 0;
 
 static void __sched_hook(void *args)
 {
+	struct _pcb_t *pcb = (struct _pcb_t *)args;
+	ticks_r = pcb->timer.ticks_running;
+	ticks_s = pcb->timer.ticks_sleeping;
 	n_sched++;
 }
 
@@ -67,7 +71,8 @@ static void __ps_idle(void *args)
 		/* TODO collect statistics */
 		curr = os_systime_get();
 		if (curr - last > 5000) {
-			os_printk(LOG_INFO, "%s - n_sched: %d\n", __func__, n_sched);
+			os_printk(LOG_INFO, "%s - n_sched: %d, r: %d, s: %d\n",
+					__func__, n_sched, ticks_r, ticks_s);
 			last = os_systime_get();
 		}
 		os_process_sleep(1);
@@ -120,9 +125,11 @@ int32 os_init(void)
 	_os_port_init();
 	_init_printf();
 	BOOT_LOGO();
-	_sys_timetick_init();
 	ret = _sys_sched_init();
+	os_assert(ret == 0);
+	_sys_timetick_init();
 	ret = __sys_process_init();
+	os_assert(ret == 0);
 
 	return ret;
 }

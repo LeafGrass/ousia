@@ -26,13 +26,14 @@
 
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
-#include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/time.h>
+#include <sys/sched.h>
 
 static uint32 __systime = 0;
 
 static void __systick_interrupt(void);
+static void (*__systick_hook)(void);
 
 /*
  * @brief   get system time
@@ -58,6 +59,17 @@ void _sys_timetick_init(void)
 }
 
 /*
+ * @brief   system timetick init
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _sys_time_register_hook(void (*fn)(void))
+{
+	__systick_hook = fn;
+}
+
+/*
  * @brief   os systick interrupt handler
  * @param   none
  * @return  none
@@ -67,6 +79,7 @@ static void __systick_interrupt(void)
 {
 	os_enter_critical();
 	__systime++;
+	__systick_hook();
 	os_exit_critical();
 	return;
 }

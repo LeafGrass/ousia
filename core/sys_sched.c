@@ -267,6 +267,35 @@ static void __dump_pq(struct _pqcb_t *p_pqcb)
 }
 
 /*
+ * @brief   time hook used in systick for scheduler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void __sched_time_hook(void)
+{
+	struct _pcb_t *pcb;
+	list_for_each_entry(pcb, &pqcb.pq, list) {
+		switch (pcb->stat) {
+		case PSTAT_RUNNING:
+			pcb->timer.ticks_running++;
+			break;
+		case PSTAT_SLEEPING:
+			pcb->timer.ticks_sleeping--;
+			break;
+		case PSTAT_READY:
+			/*
+			 * FIXME How about this stat?
+			 *       ticks_sleeping--, too?
+			 */
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+/*
  * @brief   start ousia scheduler to work
  * @param   pq -i/o- pointer to process queue list head
  * @return  int32
@@ -277,6 +306,7 @@ int32 _sys_sched_init(void)
 	int32 ret = OS_OK;
 
 	INIT_LIST_HEAD(&pqcb.pq);
+	_sys_time_register_hook(__sched_time_hook);
 
 	return ret;
 }
@@ -296,7 +326,7 @@ void _sys_sched_schedule(void)
 	os_assert(ret == 0);
 
 	if (sched_class.sched_hook)
-		sched_class.sched_hook(NULL);
+		sched_class.sched_hook(curr_pcb);
 
 #if 0
 	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
@@ -306,6 +336,7 @@ void _sys_sched_schedule(void)
 #endif
 	/* TODO here to trigger os context switch */
 	curr_pcb = __pq_get_head(&pqcb);
+	curr_pcb->stat = PSTAT_RUNNING;
 	_port_context_switch((uint32)tmp, (uint32)__pq_get_head(&pqcb));
 }
 
@@ -394,6 +425,10 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	new_pcb->stack_ptr = _port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
 	new_pcb->stack_sz = stack_sz;
+	new_pcb->timer.deadline = 0;
+	new_pcb->timer.ticks_sleeping = 0;
+	new_pcb->timer.ticks_running = 0;
+	new_pcb->stat = PSTAT_READY;
 
 	__pcb_enqueue(new_pcb);
 
@@ -432,14 +467,21 @@ int32 os_process_sleep(uint32 tms)
 	os_printk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
 #endif
 	/* TODO here to calculate time */
+	/*
+	 * FIXME Ticks should be calculated from tms * frequency_factor.
+	 *       Here, for stm32, just 1 ms for each tick.
+	 */
+	curr_pcb->timer.ticks_sleeping = tms;
+	curr_pcb->stat = PSTAT_SLEEPING;
+	__pcb_dequeue(curr_pcb);
 
+	/* FIXME here are hacks, for simplest muti-process testing */
+	__pcb_enqueue(curr_pcb);
 	/*
 	 * call scheduler
 	 * FIXME need to make sure everything is ready for process
 	 * scheduling and context switch before start a schedule
 	 */
-	__pcb_dequeue(curr_pcb);
-	__pcb_enqueue(curr_pcb);
 	_sys_sched_schedule();
 
 	return ret;

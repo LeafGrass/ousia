@@ -34,9 +34,9 @@
  * FIXME need an exact requirement for each state
  */
 enum _pstate {
-	/*PSTAT_BLOCK  = -1,*/
-	PSTAT_SLEEPING = 0,
-	PSTAT_RUNNING  = 1,
+	PSTAT_BLOCKING = -1,
+	PSTAT_RUNNING  = 0,
+	PSTAT_SLEEPING = 1,
 	PSTAT_READY    = 2
 };
 
@@ -50,7 +50,7 @@ struct _pcb_t {
 	uint32 pid;
 	int32 prio;
 	enum _pstate stat;
-	struct _ptcb_t *timer;
+	struct _ptcb_t timer;
 	struct list_head list;
 };
 
