@@ -51,6 +51,10 @@ static uint32 ticks_r = 0, ticks_s = 0;
 static void __sched_hook(void *args)
 {
 	struct _pcb_t *pcb = (struct _pcb_t *)args;
+	/* FIXME hack here, get pcb of idle, for testing only */
+#if 0
+	pcb = list_entry(pcb->list.next, struct _pcb_t, list);
+#endif
 	ticks_r = pcb->timer.ticks_running;
 	ticks_s = pcb->timer.ticks_sleeping;
 	n_sched++;

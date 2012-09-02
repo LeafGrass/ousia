@@ -277,11 +277,17 @@ void __sched_time_hook(void)
 	struct _pcb_t *pcb;
 	list_for_each_entry(pcb, &pqcb.pq, list) {
 		switch (pcb->stat) {
+		case PSTAT_BLOCKING:
+			pcb->timer.ticks_running = 0;
+			break;
 		case PSTAT_RUNNING:
 			pcb->timer.ticks_running++;
 			break;
 		case PSTAT_SLEEPING:
 			pcb->timer.ticks_sleeping--;
+			if (pcb->timer.ticks_sleeping == 0)
+				pcb->stat = PSTAT_READY;
+			/* TODO Do __pcb_enqueue */
 			break;
 		case PSTAT_READY:
 			/*
@@ -325,6 +331,7 @@ void _sys_sched_schedule(void)
 	ret = sched_class.do_schedule(&pqcb);
 	os_assert(ret == 0);
 
+	/* TODO This args should be able for collecting statistics */
 	if (sched_class.sched_hook)
 		sched_class.sched_hook(curr_pcb);
 
@@ -334,7 +341,7 @@ void _sys_sched_schedule(void)
 	__dump_pcb(__pq_get_head(&pqcb));
 	__dump_pq(&pqcb);
 #endif
-	/* TODO here to trigger os context switch */
+
 	curr_pcb = __pq_get_head(&pqcb);
 	curr_pcb->stat = PSTAT_RUNNING;
 	_port_context_switch((uint32)tmp, (uint32)__pq_get_head(&pqcb));
@@ -475,8 +482,13 @@ int32 os_process_sleep(uint32 tms)
 	curr_pcb->stat = PSTAT_SLEEPING;
 	__pcb_dequeue(curr_pcb);
 
-	/* FIXME here are hacks, for simplest muti-process testing */
+	/*
+	 * FIXME here is hack, enqueue directly,
+	 * for simplest muti-process testing
+	 */
+#if 1
 	__pcb_enqueue(curr_pcb);
+#endif
 	/*
 	 * call scheduler
 	 * FIXME need to make sure everything is ready for process
