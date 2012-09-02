@@ -3,8 +3,8 @@
 
 VERSION = 0
 SUBLEVEL = 0
-DEVNUM = 5
-VERNAME = Earleaf-Acacia
+DEVNUM = 6
+VERNAME = Formosa-Acacia
 
 ########################################
 # User Customization Items

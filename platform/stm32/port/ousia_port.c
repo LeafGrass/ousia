@@ -325,12 +325,10 @@ void __exc_pendsv(void)
 	 "	ldr	r1, =old_pcb			\n"
 	 /* load content of old_pcb (addr of sp) into r1 */
 	 "	ldr	r1, [r1]			\n"
-	 /* load content of sp into r1 */
-	 "	ldr	r1, [r1]			\n"
 	 /* save psp to this sp */
 	 "	str	r0, [r1]			\n"
 	 /* load new pcb to into r0 */
-	 "	__pendsv_skip:				\n"
+	 "__pendsv_skip:				\n"
 	 "	ldr	r0, =new_pcb			\n"
 	 /* load ram addr of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"

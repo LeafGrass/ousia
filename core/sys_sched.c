@@ -40,7 +40,7 @@ static struct _pcb_t *curr_pcb;
  * FIXME Use memory pool here?
  */
 static struct _pqcb_t pqcb = {
-	.npcb = 0,
+	.n_pcb = 0,
 	.p_head = NULL,
 	.p_tail = NULL
 };
@@ -54,7 +54,7 @@ static struct _pqcb_t pqcb = {
 static int32 __pcb_enqueue(struct _pcb_t *p)
 {
 	list_add_tail(&p->list, &pqcb.pq);
-	pqcb.npcb++;
+	pqcb.n_pcb++;
 	return 0;
 }
 
@@ -67,7 +67,7 @@ static int32 __pcb_enqueue(struct _pcb_t *p)
 static int32 __pcb_dequeue(struct _pcb_t *p)
 {
 	list_del(&p->list);
-	pqcb.npcb--;
+	pqcb.n_pcb--;
 	return 0;
 }
 
@@ -190,17 +190,19 @@ static int32 __do_strategy_rghs(struct _pqcb_t *pqcb)
 	/*
 	 * TODO
 	 * schedule algorithm implementation here:
-	 * pqcb->npcb =
+	 * pqcb->n_pcb =
 	 * pqcb->p_head =
 	 * pqcb->p_tail =
 	 */
-
+#if 0
 	os_printk(LOG_DEBUG, "%s, schedule done.\n", __func__);
+#endif
 	return ret;
 }
 #endif
 
 static struct _sched_class_t sched_class = {
+	.sched_hook = NULL,
 #if defined(OUSIA_SCHED_STRATEGY_EDFS)
 	.do_schedule = __do_strategy_edfs
 #elif defined(OUSIA_SCHED_STRATEGY_CFS)
@@ -253,7 +255,7 @@ static void __dump_pq(struct _pqcb_t *p_pqcb)
 		os_printk(LOG_ERROR, "%s - pqcb is NULL\n", __func__);
 		return;
 	}
-	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->npcb);
+	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
 	list_for_each_entry(pcb, &p_pqcb->pq, list) {
 		if (pcb == __pq_get_head(p_pqcb))
 			os_printk(LOG_INFO, "\t0x%08p <- head\n", pcb);
@@ -293,9 +295,12 @@ void _sys_sched_schedule(void)
 	ret = sched_class.do_schedule(&pqcb);
 	os_assert(ret == 0);
 
+	if (sched_class.sched_hook)
+		sched_class.sched_hook(NULL);
+
+#if 0
 	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, __pq_get_head(&pqcb));
-#if 1
 	__dump_pcb(__pq_get_head(&pqcb));
 	__dump_pq(&pqcb);
 #endif
@@ -323,6 +328,17 @@ void _sys_sched_startup(void)
 	}
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
 	while (1);
+}
+
+/*
+ * @brief   register a scheduler hook, called in every scheduling
+ * @param   none
+ * @return  none
+ * @note    WARNING This hook should not take a long time!
+ */
+void _sys_sched_register_hook(void (*fn)(void *args))
+{
+	sched_class.sched_hook = fn;
 }
 
 /*
@@ -412,9 +428,9 @@ int32 os_process_delete(uint32 pid)
 int32 os_process_sleep(uint32 tms)
 {
 	int32 ret = OS_OK;
-
+#if 0
 	os_printk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
-
+#endif
 	/* TODO here to calculate time */
 
 	/*

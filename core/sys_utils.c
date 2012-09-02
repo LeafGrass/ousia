@@ -45,6 +45,13 @@ static struct _pcb_t ps_init_pcb;
 static struct _pcb_t ps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
+static uint32 n_sched = 0;
+
+static void __sched_hook(void *args)
+{
+	n_sched++;
+}
+
 /*
  * @brief   process - idle
  * @param   args -i/o- reserved
@@ -52,9 +59,17 @@ static struct _pcb_t ps_main_pcb;
  */
 static void __ps_idle(void *args)
 {
-	os_printk(LOG_INFO, "process %s is here!\n", __func__);
+	static uint32 last = 0, curr = 0;
+
+	_sys_sched_register_hook(__sched_hook);
+
 	while (1) {
-		/* collect statistics */
+		/* TODO collect statistics */
+		curr = os_systime_get();
+		if (curr - last > 2000) {
+			os_printk(LOG_INFO, "%s - n_sched: %d\n", __func__, n_sched);
+			last = os_systime_get();
+		}
 		os_process_sleep(1);
 	}
 }

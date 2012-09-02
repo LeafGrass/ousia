@@ -58,7 +58,7 @@ struct _pcb_t {
  * process queue control block
  */
 struct _pqcb_t {
-	uint32 npcb;
+	uint32 n_pcb;
 	struct list_head pq;
 	struct _pcb_t *p_head;
 	struct _pcb_t *p_tail;
@@ -68,6 +68,7 @@ struct _pqcb_t {
  * scheduler class
  */
 struct _sched_class_t {
+	void (*sched_hook)(void *args);
 	int32 (*do_schedule)(struct _pqcb_t *pq);
 };
 
@@ -81,6 +82,7 @@ int32 os_process_resume(uint32 pid);
 int32 _sys_sched_init(void);
 void _sys_sched_schedule(void);
 void _sys_sched_startup(void);
+void _sys_sched_register_hook(void (*fn)(void *args));
 
 
 #endif /* __SYS_SCHED_H__ */
