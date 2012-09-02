@@ -344,7 +344,7 @@ void _sys_sched_schedule(void)
 
 	curr_pcb = __pq_get_head(&pqcb);
 	curr_pcb->stat = PSTAT_RUNNING;
-	_port_context_switch((uint32)tmp, (uint32)__pq_get_head(&pqcb));
+	_port_context_switch((uint32)tmp, (uint32)curr_pcb);
 }
 
 /*
@@ -362,6 +362,7 @@ void _sys_sched_startup(void)
 		os_printk(LOG_ERROR, "first process is ready, pcb = 0x%X\n",
 				__pq_get_head(&pqcb));
 		curr_pcb = __pq_get_head(&pqcb);
+		curr_pcb->stat = PSTAT_RUNNING;
 		_port_first_switch((uint32)__pq_get_head(&pqcb));
 	}
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
@@ -387,7 +388,7 @@ void _sys_sched_register_hook(void (*fn)(void *args))
  */
 void os_dump_stack(void)
 {
-	__dump_pcb(__pq_get_tail(&pqcb));
+	__dump_pcb(curr_pcb);
 }
 
 /*
@@ -511,6 +512,7 @@ int32 os_process_suspend(uint32 pid)
 
 	/* FIXME hack here, dequeue curr_pcb directly */
 	__pcb_dequeue(curr_pcb);
+	curr_pcb->stat = PSTAT_BLOCKING;
 
 	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
 	_sys_sched_schedule();
