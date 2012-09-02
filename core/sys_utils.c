@@ -66,7 +66,7 @@ static void __ps_idle(void *args)
 	while (1) {
 		/* TODO collect statistics */
 		curr = os_systime_get();
-		if (curr - last > 2000) {
+		if (curr - last > 5000) {
 			os_printk(LOG_INFO, "%s - n_sched: %d\n", __func__, n_sched);
 			last = os_systime_get();
 		}
