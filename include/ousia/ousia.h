@@ -45,8 +45,8 @@
 	os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"); \
 	os_printf("                      /_/ \\_ _/\n" ); \
 	os_printf("\n"); \
-	os_printf("Ousia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
-	os_printf("\tby LeafGrass - leafgrass.g@gmail.com"); \
+	os_printf("\tOusia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
+	os_printf("\t\tby LeafGrass - leafgrass.g@gmail.com"); \
 	os_printf("\n\n"); \
 }
 
