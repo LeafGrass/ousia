@@ -35,8 +35,11 @@
 
 #include <libmaple/libmaple.h>
 
+/* FIXME ulib does not support this yet */
+#if 0
 #include <sys/stat.h>
 #include <errno.h>
+#endif
 
 /* If CONFIG_HEAP_START (or CONFIG_HEAP_END) isn't defined, then
  * assume _lm_heap_start (resp. _lm_heap_end) is appropriately set by
@@ -50,6 +53,8 @@ extern char _lm_heap_end;
 #define CONFIG_HEAP_END                 ((caddr_t)&_lm_heap_end)
 #endif
 
+/* FIXME ulib does not support this yet */
+#if 0
 /*
  * _sbrk -- Increment the program break.
  *
@@ -168,3 +173,4 @@ __weak char *fgets(char *s, int bufsize, void *f) {
     cgets(s, bufsize);
     return s;
 }
+#endif

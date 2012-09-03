@@ -26,7 +26,9 @@ void ps_main(void *args)
 {
 	char ch = 0;
 
+	os_printk(LOG_INFO, "%s, start now. 0x%08p\n", __func__, args);
 	os_dump_stack();
+
 	for (;;) {
 #if 1
 		/* usb */

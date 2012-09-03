@@ -8,7 +8,8 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/mem
 CFLAGS_$(d) = -I$(d) -Wall -Werror
 
 # Local rules and targets
-cSRCS_$(d) := mem/mempool.c
+# FIXME ulib does not support stdlib yet
+#cSRCS_$(d) := mem/mempool.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 

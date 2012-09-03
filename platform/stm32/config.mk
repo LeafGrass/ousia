@@ -96,7 +96,7 @@ GLOBAL_FLAGS := \
 
 GLOBAL_CFLAGS := \
 	-g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m -O2 \
-	-nostdlib -ffunction-sections -fdata-sections \
+	-nostdlib -nostdinc -ffunction-sections -fdata-sections \
 	-Wl,--gc-sections -Wno-unused-function $(GLOBAL_FLAGS) \
 
 GLOBAL_ASFLAGS := \

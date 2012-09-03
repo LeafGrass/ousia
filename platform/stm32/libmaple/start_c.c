@@ -42,10 +42,11 @@
  * they apply.
  */
 
-#include <stddef.h>
+#include <ulib/stddef.h>
 
 extern void __libc_init_array(void);
 
+/* The main function is customized for ousia. */
 #if 0
 extern int os_main(int, char**, char**);
 #else
@@ -88,6 +89,7 @@ void __attribute__((noreturn)) start_c(void) {
 
     /* Jump to main. */
 #if 0
+    /* no exit_code provided */
     exit_code = os_main(0, 0, 0);
 #else
     os_main();

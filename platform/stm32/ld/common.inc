@@ -9,8 +9,9 @@ ENTRY(_start)
 
 /*
  * Link against libgcc, libc, and libm
+ * TODO ulib is going to support this later
  */
-GROUP(libgcc.a libc.a libm.a)
+/*GROUP(libgcc.a libc.a libm.a)*/
 
 /*
  * These force the linker to search for vector table symbols.

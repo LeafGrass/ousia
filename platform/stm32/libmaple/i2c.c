@@ -42,8 +42,6 @@
 #include <libmaple/i2c.h>
 #include <libmaple/systick.h>
 
-#include <string.h>
-
 static inline int32 wait_for_state_change(i2c_dev *dev,
                                           i2c_state state,
                                           uint32 timeout);
