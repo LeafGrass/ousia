@@ -3,8 +3,6 @@ sp := $(sp).x
 dirstack_$(sp) := $(d)
 d := $(dir)
 BUILDDIRS += $(BUILD_PATH)/$(d)
-BUILDDIRS += $(BUILD_PATH)/$(d)/cds
-BUILDDIRS += $(BUILD_PATH)/$(d)/port
 BUILDDIRS += $(BUILD_PATH)/$(d)/ulib
 
 CORE_INCLUDES := -I$(INCLUDE_PATH) -I$(CORE_PATH) -I$(PLATFORM_PATH)
