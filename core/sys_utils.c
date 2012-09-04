@@ -80,7 +80,7 @@ static void __ps_idle(void *args)
 	while (1) {
 		/* TODO collect statistics */
 		curr = os_systime_get();
-		if (curr - last > 10000) {
+		if (curr - last > 20000) {
 			os_printk(LOG_INFO, "%s - n_sched: %d, "
 					"pcb_curr_hook: 0x%08p\n",
 					__func__, n_sched, pcb_curr_hook);

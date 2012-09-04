@@ -10,18 +10,6 @@
 #include <sys/sched.h>
 #include <sys/print.h>
 
-void delayMicroseconds(uint32 us)
-{
-	delay_us(us);
-}
-
-void delay(uint32 ms)
-{
-	uint32 i;
-	for (i = 0; i < ms; i++)
-		delayMicroseconds(1000);
-}
-
 void ps_main(void *args)
 {
 	char ch = 0;
@@ -47,8 +35,6 @@ void ps_main(void *args)
 				break;
 			}
 		}
-		delay(20);
-		os_process_sleep(10);
 #else
 		/* uart */
 		if (USART_CONSOLE_BANK->flag_trigger) {
@@ -71,5 +57,6 @@ void ps_main(void *args)
 			}
 		}
 #endif
+		os_process_yield();
 	}
 }
