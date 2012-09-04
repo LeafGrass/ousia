@@ -122,10 +122,10 @@ static inline struct _pcb_t *__pq_get_tail(struct _pqcb_t *p_pqcb)
  * @return  int32
  * @note
  */
-static int32 __do_strategy_edfs(struct _pqcb_t *pqcb)
+static struct _pcb_t* __do_strategy_edfs(struct _pqcb_t *pqcb)
 {
-	int32 ret = OS_OK;
-	return ret;
+	struct _pcb_t *pcb = curr_pcb;
+	return pcb;
 }
 #endif
 
@@ -136,10 +136,10 @@ static int32 __do_strategy_edfs(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
+static struct _pcb_t* __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
 {
-	int32 ret = OS_OK;
-	return ret;
+	struct _pcb_t *pcb = curr_pcb;
+	return pcb;
 }
 #endif
 
@@ -150,10 +150,10 @@ static int32 __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static int32 __do_strategy_cfs(struct _pqcb_t *pqcb)
+static struct _pcb_t* __do_strategy_cfs(struct _pqcb_t *pqcb)
 {
-	int32 ret = OS_OK;
-	return ret;
+	struct _pcb_t *pcb = curr_pcb;
+	return pcb;
 }
 #endif
 
@@ -164,10 +164,10 @@ static int32 __do_strategy_cfs(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static int32 __do_strategy_hpfs(struct _pqcb_t *pqcb)
+static struct _pcb_t* __do_strategy_hpfs(struct _pqcb_t *pqcb)
 {
-	int32 ret = OS_OK;
-	return ret;
+	struct _pcb_t *pcb = curr_pcb;
+	return pcb;
 }
 #endif
 
@@ -175,29 +175,23 @@ static int32 __do_strategy_hpfs(struct _pqcb_t *pqcb)
 /*
  * @brief   rough scheduling
  * @param   pqcb -i/o- process queue control block
- * @return  int32
- * @note    :P
+ * @return  pcb of the ready process scheduled out
+ * @note    A rough scheduling indicates that the processes are being
+ *          scheduled to run one by one in an apple-pie order. :P
  */
-static int32 __do_strategy_rghs(struct _pqcb_t *pqcb)
+static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
 {
-	int32 ret = OS_OK;
-	if (pqcb == NULL) {
-		os_assert(pqcb);
-		/* should be -EPARAM */
-		return -OS_EFAIL;
-	}
+	struct _pcb_t *pcb = curr_pcb;
 
-	/*
-	 * TODO
-	 * schedule algorithm implementation here:
-	 * pqcb->n_pcb =
-	 * pqcb->p_head =
-	 * pqcb->p_tail =
-	 */
-#if 0
-	os_printk(LOG_DEBUG, "%s, schedule done.\n", __func__);
-#endif
-	return ret;
+	os_assert(pqcb != NULL);
+
+	do {
+		__pcb_dequeue(pcb);
+		__pcb_enqueue(pcb);
+		pcb = __pq_get_head(pqcb);
+	} while (pcb->stat != PSTAT_READY);
+
+	return pcb;
 }
 #endif
 
@@ -217,12 +211,47 @@ static struct _sched_class_t sched_class = {
 };
 
 /*
+ * @brief   systick hook used in systick for scheduler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+static void __systick_sched_hook(void)
+{
+	struct _pcb_t *pcb;
+	list_for_each_entry(pcb, &pqcb.pq, list) {
+		switch (pcb->stat) {
+		case PSTAT_BLOCKING:
+			pcb->timer.ticks_running = 0;
+			break;
+		case PSTAT_RUNNING:
+			pcb->timer.ticks_running++;
+			break;
+		case PSTAT_SLEEPING:
+			pcb->timer.ticks_sleeping--;
+			if (pcb->timer.ticks_sleeping == 0)
+				pcb->stat = PSTAT_READY;
+			/* TODO Do _sys_sched_schedule */
+			break;
+		case PSTAT_READY:
+			/*
+			 * FIXME How about this stat?
+			 *       ticks_sleeping--, too?
+			 */
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+/*
  * @brief   dump process control block
  * @param   p_pcb -i- pointer of pcb
  * @return  nothing
  * @note    FIXME this function should has more clear info
  */
-static void __dump_pcb(struct _pcb_t *p_pcb)
+void _sched_dump_pcb(struct _pcb_t *p_pcb)
 {
 	if (p_pcb == NULL) {
 		os_printk(LOG_ERROR, "%s - pcb is NULL\n", __func__);
@@ -248,7 +277,7 @@ static void __dump_pcb(struct _pcb_t *p_pcb)
  * @return  nothing
  * @note    none
  */
-static void __dump_pq(struct _pqcb_t *p_pqcb)
+void _sched_dump_pq(struct _pqcb_t *p_pqcb)
 {
 	struct _pcb_t *pcb;
 	if (p_pqcb == NULL) {
@@ -256,65 +285,40 @@ static void __dump_pq(struct _pqcb_t *p_pqcb)
 		return;
 	}
 	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
+	os_printk(LOG_INFO, "\tpcb\t\t  state\t  prio\t  run\t  sleep\n");
 	list_for_each_entry(pcb, &p_pqcb->pq, list) {
 		if (pcb == __pq_get_head(p_pqcb))
-			os_printk(LOG_INFO, "\t0x%08p <- head\n", pcb);
+			os_printk(LOG_INFO, "\t0x%08p (h)\t| %d\t| %d\t"
+					"| %d\t| %d\n",
+					pcb, pcb->stat, pcb->prio,
+					pcb->timer.ticks_running,
+					pcb->timer.ticks_sleeping);
 		else if (pcb == __pq_get_tail(p_pqcb))
-			os_printk(LOG_INFO, "\t0x%08p <- tail\n", pcb);
+			os_printk(LOG_INFO, "\t0x%08p (t)\t| %d\t| %d\t"
+					"| %d\t| %d\n",
+					pcb, pcb->stat, pcb->prio,
+					pcb->timer.ticks_running,
+					pcb->timer.ticks_sleeping);
 		else
-			os_printk(LOG_INFO, "\t0x%08p\n", pcb);
-	}
-}
-
-/*
- * @brief   time hook used in systick for scheduler
- * @param   none
- * @return  none
- * @note    none
- */
-void __sched_time_hook(void)
-{
-	struct _pcb_t *pcb;
-	list_for_each_entry(pcb, &pqcb.pq, list) {
-		switch (pcb->stat) {
-		case PSTAT_BLOCKING:
-			pcb->timer.ticks_running = 0;
-			break;
-		case PSTAT_RUNNING:
-			pcb->timer.ticks_running++;
-			break;
-		case PSTAT_SLEEPING:
-			pcb->timer.ticks_sleeping--;
-			if (pcb->timer.ticks_sleeping == 0)
-				pcb->stat = PSTAT_READY;
-			/* TODO Do __pcb_enqueue */
-			break;
-		case PSTAT_READY:
-			/*
-			 * FIXME How about this stat?
-			 *       ticks_sleeping--, too?
-			 */
-			break;
-		default:
-			break;
-		}
+			os_printk(LOG_INFO, "\t0x%08p\t| %d\t| %d\t"
+					"| %d\t| %d\n",
+					pcb, pcb->stat, pcb->prio,
+					pcb->timer.ticks_running,
+					pcb->timer.ticks_sleeping);
 	}
 }
 
 /*
  * @brief   start ousia scheduler to work
  * @param   pq -i/o- pointer to process queue list head
- * @return  int32
- * @note    basically, pq is the list_head of init process
+ * @return  process control block, basically for collecting statistics
+ * @note    none
  */
-int32 _sys_sched_init(void)
+const struct _pqcb_t* _sys_sched_init(void)
 {
-	int32 ret = OS_OK;
-
 	INIT_LIST_HEAD(&pqcb.pq);
-	_sys_time_register_hook(__sched_time_hook);
-
-	return ret;
+	_sys_time_register_hook(__systick_sched_hook);
+	return &pqcb;
 }
 
 /*
@@ -325,11 +329,11 @@ int32 _sys_sched_init(void)
  */
 void _sys_sched_schedule(void)
 {
-	int32 ret = OS_OK;
 	struct _pcb_t *tmp = curr_pcb;
+	struct _pcb_t *ready = NULL;
 
-	ret = sched_class.do_schedule(&pqcb);
-	os_assert(ret == 0);
+	ready = sched_class.do_schedule(&pqcb);
+	os_assert(ready != NULL);
 
 	/* TODO This args should be able for collecting statistics */
 	if (sched_class.sched_hook)
@@ -338,11 +342,11 @@ void _sys_sched_schedule(void)
 #if 0
 	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
 			__func__, (uint32)curr_pcb, __pq_get_head(&pqcb));
-	__dump_pcb(__pq_get_head(&pqcb));
-	__dump_pq(&pqcb);
+	_sched_dump_pcb(__pq_get_head(&pqcb));
+	_sched_dump_pq(&pqcb);
 #endif
 
-	curr_pcb = __pq_get_head(&pqcb);
+	curr_pcb = ready;
 	curr_pcb->stat = PSTAT_RUNNING;
 	_port_context_switch((uint32)tmp, (uint32)curr_pcb);
 }
@@ -371,11 +375,11 @@ void _sys_sched_startup(void)
 
 /*
  * @brief   register a scheduler hook, called in every scheduling
- * @param   none
+ * @param   args is often a const value which cannot be modified externally
  * @return  none
  * @note    WARNING This hook should not take a long time!
  */
-void _sys_sched_register_hook(void (*fn)(void *args))
+void _sys_sched_register_hook(void (*fn)(const void *args))
 {
 	sched_class.sched_hook = fn;
 }
@@ -388,7 +392,7 @@ void _sys_sched_register_hook(void (*fn)(void *args))
  */
 void os_dump_stack(void)
 {
-	__dump_pcb(curr_pcb);
+	_sched_dump_pcb(curr_pcb);
 }
 
 /*
@@ -471,25 +475,14 @@ int32 os_process_delete(uint32 pid)
 int32 os_process_sleep(uint32 tms)
 {
 	int32 ret = OS_OK;
-#if 0
-	os_printk(LOG_DEBUG, "%s, tms: %d\n", __func__, tms);
-#endif
-	/* TODO here to calculate time */
+
 	/*
 	 * FIXME Ticks should be calculated from tms * frequency_factor.
 	 *       Here, for stm32, just 1 ms for each tick.
 	 */
 	curr_pcb->timer.ticks_sleeping = tms;
 	curr_pcb->stat = PSTAT_SLEEPING;
-	__pcb_dequeue(curr_pcb);
 
-	/*
-	 * FIXME here is hack, enqueue directly,
-	 * for simplest muti-process testing
-	 */
-#if 1
-	__pcb_enqueue(curr_pcb);
-#endif
 	/*
 	 * call scheduler
 	 * FIXME need to make sure everything is ready for process
@@ -510,8 +503,6 @@ int32 os_process_suspend(uint32 pid)
 {
 	int32 ret = OS_OK;
 
-	/* FIXME hack here, dequeue curr_pcb directly */
-	__pcb_dequeue(curr_pcb);
 	curr_pcb->stat = PSTAT_BLOCKING;
 
 	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
@@ -529,5 +520,27 @@ int32 os_process_suspend(uint32 pid)
 int32 os_process_resume(uint32 pid)
 {
 	int32 ret = OS_OK;
+	return ret;
+}
+
+/*
+ * @brief   yield the cpu resource
+ * @param   none
+ * @return  int32
+ * @note    none
+ */
+int32 os_process_yield(void)
+{
+	int32 ret = OS_OK;
+
+	curr_pcb->stat = PSTAT_READY;
+
+	/*
+	 * call scheduler
+	 * FIXME need to make sure everything is ready for process
+	 * scheduling and context switch before start a schedule
+	 */
+	_sys_sched_schedule();
+
 	return ret;
 }

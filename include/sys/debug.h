@@ -63,11 +63,13 @@
 
 #define ASSERT_LEVEL ASSERT_ALL
 
-#if (DEBUG_LEVEL >= DEBUG_ALL)
+#if (ASSERT_LEVEL >= ASSERT_ALL)
 #define _OS_ASSERT(exp) \
 	do { \
 		if (exp) { \
 		} else { \
+			os_printk(LOG_ERROR, "line %d in %s, %s fail!\n", \
+					__LINE__, __FILE__, #exp); \
 			_os_assert_fail(__FILE__, __LINE__, #exp); \
 		} \
 	} while (0)

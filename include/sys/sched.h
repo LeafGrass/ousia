@@ -68,10 +68,16 @@ struct _pqcb_t {
  * scheduler class
  */
 struct _sched_class_t {
-	void (*sched_hook)(void *args);
-	int32 (*do_schedule)(struct _pqcb_t *pq);
+	void (*sched_hook)(const void *args);
+	struct _pcb_t* (*do_schedule)(struct _pqcb_t *pq);
 };
 
+void _sched_dump_pcb(struct _pcb_t *p_pcb);
+void _sched_dump_pq(struct _pqcb_t *p_pqcb);
+const struct _pqcb_t* _sys_sched_init(void);
+void _sys_sched_schedule(void);
+void _sys_sched_startup(void);
+void _sys_sched_register_hook(void (*fn)(const void *args));
 void os_dump_stack(void);
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);
@@ -79,10 +85,7 @@ int32 os_process_delete(uint32 pid);
 int32 os_process_sleep(uint32 tms);
 int32 os_process_suspend(uint32 pid);
 int32 os_process_resume(uint32 pid);
-int32 _sys_sched_init(void);
-void _sys_sched_schedule(void);
-void _sys_sched_startup(void);
-void _sys_sched_register_hook(void (*fn)(void *args));
+int32 os_process_yield(void);
 
 
 #endif /* __SYS_SCHED_H__ */

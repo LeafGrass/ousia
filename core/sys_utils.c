@@ -57,17 +57,12 @@ static struct _pcb_t ps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
 static uint32 n_sched = 0;
-static uint32 ticks_r = 0, ticks_s = 0;
+static const struct _pqcb_t *pqcb_hook = NULL;
+static const struct _pcb_t *pcb_curr_hook = NULL;
 
-static void __sched_hook(void *args)
+static void __sched_hook(const void *args)
 {
-	struct _pcb_t *pcb = (struct _pcb_t *)args;
-	/* FIXME hack here, get pcb of idle, for testing only */
-#if 0
-	pcb = list_entry(pcb->list.next, struct _pcb_t, list);
-#endif
-	ticks_r = pcb->timer.ticks_running;
-	ticks_s = pcb->timer.ticks_sleeping;
+	pcb_curr_hook = (const struct _pcb_t *)args;
 	n_sched++;
 }
 
@@ -85,12 +80,14 @@ static void __ps_idle(void *args)
 	while (1) {
 		/* TODO collect statistics */
 		curr = os_systime_get();
-		if (curr - last > 5000) {
-			os_printk(LOG_INFO, "%s - n_sched: %d, r: %d, s: %d\n",
-					__func__, n_sched, ticks_r, ticks_s);
+		if (curr - last > 10000) {
+			os_printk(LOG_INFO, "%s - n_sched: %d, "
+					"pcb_curr_hook: 0x%08p\n",
+					__func__, n_sched, pcb_curr_hook);
 			last = os_systime_get();
+			_sched_dump_pq((struct _pqcb_t *)pqcb_hook);
 		}
-		os_process_sleep(1);
+		os_process_yield();
 	}
 }
 
@@ -140,8 +137,8 @@ int32 os_init(void)
 	_os_port_init();
 	_init_printf();
 	BOOT_LOGO(__logo1, __logo2);
-	ret = _sys_sched_init();
-	os_assert(ret == 0);
+	pqcb_hook = _sys_sched_init();
+	os_assert(pqcb_hook != NULL);
 	_sys_timetick_init();
 	ret = __sys_process_init();
 	os_assert(ret == 0);
