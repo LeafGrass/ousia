@@ -34,20 +34,12 @@
 #define VERCODE		(VERSION*100 + SUBLEVEL*10 + DEVNUM)
 #define VERSTR(str)	#str
 
-#define BOOT_LOGO() \
+#define BOOT_LOGO(str1, str2) \
 { \
 	os_putchar(0x0C); \
-	os_printf("                       _\n"); \
-	os_printf("     _                / /\n"); \
-	os_printf("    | |    ___  __ _ _| |_ __ _ _  __  __ _   _   _\n"); \
-	os_printf("    | |   / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\n"); \
-	os_printf("    | |_ _  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\n"); \
-	os_printf("    |_ _ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"); \
-	os_printf("                      /_/ \\_ _/\n" ); \
-	os_printf("\n"); \
+	os_printf(str1, NULL); \
 	os_printf("\tOusia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
-	os_printf("\t\tby LeafGrass - leafgrass.g@gmail.com"); \
-	os_printf("\n\n"); \
+	os_printf(str2, NULL); \
 }
 
 #endif /* __OUSIA_H__ */

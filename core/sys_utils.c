@@ -33,6 +33,17 @@
 #include <sys/utils.h>
 #include <sys/debug.h>
 
+static const char __logo1[] =
+	"                     _\n"
+	"     _              / /\n"
+	"    | |  ___  __ _ _| |_ __ _ _  __  __ _   _   _\n"
+	"    | | / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\n"
+	"    | |_  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\n"
+	"    |_ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"
+	"                    /_/ \\_ _/\n\n";
+static const char __logo2[] =
+	"\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
+
 #define PS_INIT_STACK_SIZE	1024
 #define PS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	2048
@@ -128,7 +139,7 @@ int32 os_init(void)
 
 	_os_port_init();
 	_init_printf();
-	BOOT_LOGO();
+	BOOT_LOGO(__logo1, __logo2);
 	ret = _sys_sched_init();
 	os_assert(ret == 0);
 	_sys_timetick_init();
