@@ -36,7 +36,6 @@ cSRCS_$(d) := \
 	stm32/libmaple/rcc.c \
 	stm32/libmaple/spi.c \
 	stm32/libmaple/start_c.c \
-	stm32/libmaple/syscalls.c \
 	stm32/libmaple/systick.c \
 	stm32/libmaple/timer.c \
 	stm32/libmaple/usart.c \

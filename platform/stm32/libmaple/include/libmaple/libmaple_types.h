@@ -50,6 +50,7 @@ typedef long long int64;
 #endif
 
 typedef void (*voidFuncPtr)(void);
+typedef void (*voidArgumentFuncPtr)(void *);
 
 #define __io volatile
 #define __attr_flash __attribute__((section (".USER_FLASH")))
