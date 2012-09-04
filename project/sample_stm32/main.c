@@ -73,8 +73,10 @@ static void ps_button(void *args)
 static void ps_child(void *args)
 {
 	for (;;) {
-		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
-		os_process_sleep(1000);
+		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
+		os_process_sleep(100);
+		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
+		os_process_sleep(2900);
 	}
 }
 
