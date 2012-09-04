@@ -69,16 +69,106 @@ static void usb_putstr(const void *buf, uint32 len)
 	}
 }
 
-/*
- * @brief   enable USB (present us to USB)
- * @param   disc_dev io port for usb disc
- *          disc_bit bit of this io port for usb disc
- * @return  none
- * @note    none
- */
-void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
+enum reset_state_t {
+    DTR_UNSET,
+    DTR_HIGH,
+    DTR_NEGEDGE,
+    DTR_LOW
+};
+
+static enum reset_state_t reset_state = DTR_UNSET;
+
+static void usb_iface_setup_hook(unsigned hook, void *requestvp)
 {
-	usb_cdcacm_enable(disc_dev, disc_bit);
+	uint8 request = *(uint8*)requestvp;
+
+	/* Ignore requests we're not interested in. */
+	if (request != USB_CDCACM_SET_CONTROL_LINE_STATE)
+		return;
+
+	/*
+	 * We need to see a negative edge on DTR before we start looking
+	 * for the in-band magic reset byte sequence.
+	 */
+	uint8 dtr = usb_cdcacm_get_dtr();
+	switch (reset_state) {
+	case DTR_UNSET:
+		reset_state = dtr ? DTR_HIGH : DTR_LOW;
+		break;
+	case DTR_HIGH:
+		reset_state = dtr ? DTR_HIGH : DTR_NEGEDGE;
+		break;
+	case DTR_NEGEDGE:
+		reset_state = dtr ? DTR_HIGH : DTR_LOW;
+		break;
+	case DTR_LOW:
+		reset_state = dtr ? DTR_HIGH : DTR_LOW;
+		break;
+	}
+}
+
+static void wait_reset(void)
+{
+	delay_us(RESET_DELAY);
+	nvic_sys_reset();
+}
+
+#define STACK_TOP 0x20000800
+#define EXC_RETURN 0xFFFFFFF9
+#define DEFAULT_CPSR 0x61000000
+static void usb_rx_hook(unsigned hook, void *ignored)
+{
+	uint32 i, target;
+	static const uint8 magic[4] = {'1', 'E', 'A', 'F'};
+
+	/*
+	 * FIXME this is mad buggy; we need a new reset sequence. E.g. NAK
+	 * after each RX means you can't reset if any bytes are waiting.
+	 */
+	if (reset_state == DTR_NEGEDGE) {
+		reset_state = DTR_LOW;
+
+		if (usb_cdcacm_data_available() >= 4) {
+			/* The magic reset sequence is "1EAF". */
+			uint8 chkBuf[4];
+
+			/*
+			 * Peek at the waiting bytes, looking for reset sequence,
+			 * bailing on mismatch.
+			 */
+			usb_cdcacm_peek(chkBuf, 4);
+			for (i = 0; i < sizeof(magic); i++)
+				if (chkBuf[i] != magic[i])
+					return;
+
+			/* Got the magic sequence -> reset, presumably into the bootloader. */
+			/* Return address is wait_reset, but we must set the thumb bit. */
+			target = (uint32)wait_reset | 0x1;
+			asm volatile("mov r0, %[stack_top]      \n\t" // Reset stack
+					"mov sp, r0                \n\t"
+					"mov r0, #1                \n\t"
+					"mov r1, %[target_addr]    \n\t"
+					"mov r2, %[cpsr]           \n\t"
+					"push {r2}                 \n\t" // Fake xPSR
+					"push {r1}                 \n\t" // PC target addr
+					"push {r0}                 \n\t" // Fake LR
+					"push {r0}                 \n\t" // Fake R12
+					"push {r0}                 \n\t" // Fake R3
+					"push {r0}                 \n\t" // Fake R2
+					"push {r0}                 \n\t" // Fake R1
+					"push {r0}                 \n\t" // Fake R0
+					"mov lr, %[exc_return]     \n\t"
+					"bx lr"
+					:
+					: [stack_top] "r" (STACK_TOP),
+					[target_addr] "r" (target),
+					[exc_return] "r" (EXC_RETURN),
+					[cpsr] "r" (DEFAULT_CPSR)
+					: "r0", "r1", "r2");
+			/* Can't happen. */
+			ASSERT_FAULT(0);
+		}
+	}
 }
 
 /*
@@ -88,7 +178,21 @@ void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
  * @return  none
  * @note    none
  */
-void usb_disable(gpio_dev *disc_dev, uint8 disc_bit)
+static void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
+{
+	usb_cdcacm_enable(disc_dev, disc_bit);
+	usb_cdcacm_set_hooks(USB_CDCACM_HOOK_RX, usb_rx_hook);
+	usb_cdcacm_set_hooks(USB_CDCACM_HOOK_IFACE_SETUP, usb_iface_setup_hook);
+}
+
+/*
+ * @brief   enable USB (present us to USB)
+ * @param   disc_dev io port for usb disc
+ *          disc_bit bit of this io port for usb disc
+ * @return  none
+ * @note    none
+ */
+static void usb_disable(gpio_dev *disc_dev, uint8 disc_bit)
 {
 	usb_cdcacm_disable(disc_dev, disc_bit);
 }
