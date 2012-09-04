@@ -2,9 +2,9 @@
 # Contact - leafgrass.g@gmail.com
 
 VERSION = 0
-SUBLEVEL = 0
-DEVNUM = 6
-VERNAME = Formosa-Acacia
+SUBLEVEL = 1
+DEVNUM = 0
+VERNAME = Gallinero
 
 ########################################
 # User Customization Items

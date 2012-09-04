@@ -1,6 +1,46 @@
 Ousia Release Notes
 ===================
 
+2012-09-05 v0.1.0
+--------------------
+Brief:
+	Finally we made it!
+	We have nothing but a rough enough schduler which can perform muti-process.
+	No ipc, no lock, no interrupt handling mechanism...
+	The only things we can do are to yield, to sleep, and to schedule!
+	I believe that's all for a basis of the ugliest/simplest OS.
+Bug fixes:
+	None.
+New features:
+	None.
+Known issues:
+	A great bunch of issues....
+
+
+2012-09-02 v0.0.6
+--------------------
+Brief:
+	Fix a bug in porting code, we can achieve muti-process now.
+Bug fixes:
+	None.
+New features:
+	None.
+Known issues:
+	A big bunch of issues, see FIXME & TODO in the code.
+
+
+2012-08-26 v0.0.5
+--------------------
+Brief:
+	Context switch can be well performed.
+Bug fixes:
+	None.
+New features:
+	None.
+Known issues:
+	Bunch of issues.
+
+
 2011-10-03 v0.0.4
 --------------------
 Brief:

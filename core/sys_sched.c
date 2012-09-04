@@ -505,7 +505,7 @@ int32 os_process_suspend(uint32 pid)
 
 	curr_pcb->stat = PSTAT_BLOCKING;
 
-	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
+	os_printk(LOG_DEBUG, "%s, pid: %d\n", __func__, pid);
 	_sys_sched_schedule();
 
 	return ret;
