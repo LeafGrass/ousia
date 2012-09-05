@@ -216,7 +216,7 @@ static struct _sched_class_t sched_class = {
  * @return  none
  * @note    none
  */
-static void __systick_sched_hook(void)
+static void __systick_hook_for_sched(void)
 {
 	struct _pcb_t *pcb;
 	list_for_each_entry(pcb, &pqcb.pq, list) {
@@ -231,7 +231,7 @@ static void __systick_sched_hook(void)
 			pcb->timer.ticks_sleeping--;
 			if (pcb->timer.ticks_sleeping == 0)
 				pcb->stat = PSTAT_READY;
-			/* TODO Do _sys_sched_schedule */
+			/* TODO Do _sched_schedule */
 			break;
 		case PSTAT_READY:
 			/*
@@ -314,10 +314,10 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
  * @return  process control block, basically for collecting statistics
  * @note    none
  */
-const struct _pqcb_t* _sys_sched_init(void)
+const struct _pqcb_t* _sched_init(void)
 {
 	INIT_LIST_HEAD(&pqcb.pq);
-	_sys_time_register_hook(__systick_sched_hook);
+	_sys_time_register_hook(__systick_hook_for_sched);
 	return &pqcb;
 }
 
@@ -327,7 +327,7 @@ const struct _pqcb_t* _sys_sched_init(void)
  * @return  int32
  * @note    none
  */
-void _sys_sched_schedule(void)
+void _sched_schedule(void)
 {
 	struct _pcb_t *tmp = curr_pcb;
 	struct _pcb_t *ready = NULL;
@@ -358,7 +358,7 @@ void _sys_sched_schedule(void)
  * @note    we should be getting into the first pendsv isr
  *          after first switch and never back again
  */
-void _sys_sched_startup(void)
+void _sched_startup(void)
 {
 	if (__pq_get_head(&pqcb) == NULL) {
 		os_printk(LOG_ERROR, "first process is not ready!\n");
@@ -379,7 +379,7 @@ void _sys_sched_startup(void)
  * @return  none
  * @note    WARNING This hook should not take a long time!
  */
-void _sys_sched_register_hook(void (*fn)(const void *args))
+void _sched_register_hook(void (*fn)(const void *args))
 {
 	sched_class.sched_hook = fn;
 }
@@ -462,7 +462,7 @@ int32 os_process_delete(uint32 pid)
 	 * 1. remove the process from pqcb
 	 * 2. reschedule
 	 */
-	_sys_sched_schedule();
+	_sched_schedule();
 
 	return ret;
 }
@@ -488,7 +488,7 @@ int32 os_process_sleep(uint32 tms)
 	 * FIXME need to make sure everything is ready for process
 	 * scheduling and context switch before start a schedule
 	 */
-	_sys_sched_schedule();
+	_sched_schedule();
 
 	return ret;
 }
@@ -506,7 +506,7 @@ int32 os_process_suspend(uint32 pid)
 	curr_pcb->stat = PSTAT_BLOCKING;
 
 	os_printk(LOG_DEBUG, "%s, pid: %d\n", __func__, pid);
-	_sys_sched_schedule();
+	_sched_schedule();
 
 	return ret;
 }
@@ -540,7 +540,7 @@ int32 os_process_yield(void)
 	 * FIXME need to make sure everything is ready for process
 	 * scheduling and context switch before start a schedule
 	 */
-	_sys_sched_schedule();
+	_sched_schedule();
 
 	return ret;
 }

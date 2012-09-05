@@ -74,10 +74,10 @@ struct _sched_class_t {
 
 void _sched_dump_pcb(const struct _pcb_t *p_pcb);
 void _sched_dump_pq(const struct _pqcb_t *p_pqcb);
-const struct _pqcb_t* _sys_sched_init(void);
-void _sys_sched_schedule(void);
-void _sys_sched_startup(void);
-void _sys_sched_register_hook(void (*fn)(const void *args));
+const struct _pqcb_t* _sched_init(void);
+void _sched_schedule(void);
+void _sched_startup(void);
+void _sched_register_hook(void (*fn)(const void *args));
 void os_dump_stack(void);
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);

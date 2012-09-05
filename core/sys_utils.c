@@ -75,7 +75,7 @@ static void __ps_idle(void *args)
 {
 	static uint32 last = 0, curr = 0;
 
-	_sys_sched_register_hook(__sched_hook);
+	_sched_register_hook(__sched_hook);
 
 	while (1) {
 		/* TODO collect statistics */
@@ -112,7 +112,7 @@ static void __ps_init(void *args)
  * @return  pid if create success
  * @note    none
  */
-static int32 __sys_process_init(void)
+static int32 __process_init(void)
 {
 	int32 ret = OS_OK;
 
@@ -137,10 +137,10 @@ int32 os_init(void)
 	_os_port_init();
 	_init_printf();
 	BOOT_LOGO(__logo1, __logo2);
-	pqcb_hook = _sys_sched_init();
+	pqcb_hook = _sched_init();
 	os_assert(pqcb_hook != NULL);
-	_sys_timetick_init();
-	ret = __sys_process_init();
+	_sys_time_systick_init();
+	ret = __process_init();
 	os_assert(ret == 0);
 
 	return ret;
@@ -154,5 +154,5 @@ int32 os_init(void)
  */
 void os_kick_off(void)
 {
-	_sys_sched_startup();
+	_sched_startup();
 }

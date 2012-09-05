@@ -40,7 +40,7 @@ struct _ptcb_t {
 };
 
 uint32 os_systime_get(void);
-void _sys_timetick_init(void);
+void _sys_time_systick_init(void);
 void _sys_time_register_hook(void (*fn)(void));
 
 

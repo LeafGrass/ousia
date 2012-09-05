@@ -36,14 +36,18 @@ static void __systick_interrupt(void);
 static void (*__systick_hook)(void);
 
 /*
- * @brief   get system time
+ * @brief   os systick interrupt handler
  * @param   none
- * @return  32 bit integer value for time
+ * @return  none
  * @note    none
  */
-uint32 os_systime_get(void)
+static void __systick_interrupt(void)
 {
-	return __systime;
+	os_enter_critical();
+	__systime++;
+	__systick_hook();
+	os_exit_critical();
+	return;
 }
 
 /*
@@ -52,7 +56,7 @@ uint32 os_systime_get(void)
  * @return  none
  * @note    none
  */
-void _sys_timetick_init(void)
+void _sys_time_systick_init(void)
 {
 	__systime = 0UL;
 	_port_systick_init(&__systick_interrupt);
@@ -70,16 +74,12 @@ void _sys_time_register_hook(void (*fn)(void))
 }
 
 /*
- * @brief   os systick interrupt handler
+ * @brief   get system time
  * @param   none
- * @return  none
+ * @return  32 bit integer value for time
  * @note    none
  */
-static void __systick_interrupt(void)
+uint32 os_systime_get(void)
 {
-	os_enter_critical();
-	__systime++;
-	__systick_hook();
-	os_exit_critical();
-	return;
+	return __systime;
 }
