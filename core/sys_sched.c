@@ -47,28 +47,26 @@ static struct _pqcb_t pqcb = {
 
 /*
  * @brief   process enqueue
- * @param   p -i- pointer of pcb
+ * @param   p -i/o- pointer of pcb
  * @return  status code
  * @note
  */
-static int32 __pcb_enqueue(struct _pcb_t *p)
+static inline void __pcb_enqueue(struct _pcb_t *p)
 {
 	list_add_tail(&p->list, &pqcb.pq);
 	pqcb.n_pcb++;
-	return 0;
 }
 
 /*
  * @brief   process dequeue
- * @param   p -i- pointer of pcb
+ * @param   p -i/o- pointer of pcb
  * @return  status code
  * @note
  */
-static int32 __pcb_dequeue(struct _pcb_t *p)
+static inline void __pcb_dequeue(struct _pcb_t *p)
 {
 	list_del(&p->list);
 	pqcb.n_pcb--;
-	return 0;
 }
 
 /*
