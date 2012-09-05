@@ -77,7 +77,7 @@ static int32 __pcb_dequeue(struct _pcb_t *p)
  * @return  the prev pcb
  * @note
  */
-static inline struct _pcb_t *__pcb_get_prev(struct _pcb_t *p)
+static inline struct _pcb_t *__pcb_get_prev(const struct _pcb_t *p)
 {
 	return list_entry(p->list.prev, struct _pcb_t, list);
 }
@@ -88,7 +88,7 @@ static inline struct _pcb_t *__pcb_get_prev(struct _pcb_t *p)
  * @return  the next pcb
  * @note
  */
-static inline struct _pcb_t *__pcb_get_next(struct _pcb_t *p)
+static inline struct _pcb_t *__pcb_get_next(const struct _pcb_t *p)
 {
 	return list_entry(p->list.next, struct _pcb_t, list);
 }
@@ -99,7 +99,7 @@ static inline struct _pcb_t *__pcb_get_next(struct _pcb_t *p)
  * @return  pcb at the queue head
  * @note
  */
-static inline struct _pcb_t *__pq_get_head(struct _pqcb_t *p_pqcb)
+static inline struct _pcb_t *__pq_get_head(const struct _pqcb_t *p_pqcb)
 {
 	return list_entry(p_pqcb->pq.next, struct _pcb_t, list);
 }
@@ -110,7 +110,7 @@ static inline struct _pcb_t *__pq_get_head(struct _pqcb_t *p_pqcb)
  * @return  pcb at the queue tail
  * @note
  */
-static inline struct _pcb_t *__pq_get_tail(struct _pqcb_t *p_pqcb)
+static inline struct _pcb_t *__pq_get_tail(const struct _pqcb_t *p_pqcb)
 {
 	return list_entry(p_pqcb->pq.prev, struct _pcb_t, list);
 }
@@ -251,7 +251,7 @@ static void __systick_sched_hook(void)
  * @return  nothing
  * @note    FIXME this function should has more clear info
  */
-void _sched_dump_pcb(struct _pcb_t *p_pcb)
+void _sched_dump_pcb(const struct _pcb_t *p_pcb)
 {
 	if (p_pcb == NULL) {
 		os_printk(LOG_ERROR, "%s - pcb is NULL\n", __func__);
@@ -277,7 +277,7 @@ void _sched_dump_pcb(struct _pcb_t *p_pcb)
  * @return  nothing
  * @note    none
  */
-void _sched_dump_pq(struct _pqcb_t *p_pqcb)
+void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 {
 	struct _pcb_t *pcb;
 	if (p_pqcb == NULL) {

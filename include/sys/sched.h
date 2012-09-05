@@ -72,8 +72,8 @@ struct _sched_class_t {
 	struct _pcb_t* (*do_schedule)(struct _pqcb_t *pq);
 };
 
-void _sched_dump_pcb(struct _pcb_t *p_pcb);
-void _sched_dump_pq(struct _pqcb_t *p_pqcb);
+void _sched_dump_pcb(const struct _pcb_t *p_pcb);
+void _sched_dump_pq(const struct _pqcb_t *p_pqcb);
 const struct _pqcb_t* _sys_sched_init(void);
 void _sys_sched_schedule(void);
 void _sys_sched_startup(void);

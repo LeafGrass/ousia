@@ -85,7 +85,7 @@ static void __ps_idle(void *args)
 					"pcb_curr_hook: 0x%08p\n",
 					__func__, n_sched, pcb_curr_hook);
 			last = os_systime_get();
-			_sched_dump_pq((struct _pqcb_t *)pqcb_hook);
+			_sched_dump_pq(pqcb_hook);
 		}
 		os_process_yield();
 	}
