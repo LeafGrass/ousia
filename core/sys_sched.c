@@ -358,17 +358,11 @@ void _sched_schedule(void)
  */
 void _sched_startup(void)
 {
-	if (__pq_get_head(&pqcb) == NULL) {
-		os_printk(LOG_ERROR, "first process is not ready!\n");
-	} else {
-		os_printk(LOG_ERROR, "first process is ready, pcb = 0x%X\n",
-				__pq_get_head(&pqcb));
-		curr_pcb = __pq_get_head(&pqcb);
-		curr_pcb->stat = PSTAT_RUNNING;
-		_port_first_switch((uint32)__pq_get_head(&pqcb));
-	}
+	curr_pcb = __pq_get_head(&pqcb);
+	curr_pcb->stat = PSTAT_RUNNING;
+	_port_first_switch((uint32)__pq_get_head(&pqcb));
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
-	while (1);
+	os_assert(0);
 }
 
 /*

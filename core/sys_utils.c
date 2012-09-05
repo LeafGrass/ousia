@@ -152,7 +152,7 @@ int32 os_init(void)
  * @return  none
  * @note    will never return, everything will be handled by ousia then
  */
-void os_kick_off(void)
+inline void os_kick_off(void)
 {
 	_sched_startup();
 }
