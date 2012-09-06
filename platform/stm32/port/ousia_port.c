@@ -43,6 +43,8 @@ static uint32 critical_nest = 0;
 static volatile uint32 old_pcb = 0;
 static volatile uint32 new_pcb = 0;
 
+static void (*__hard_fault_call)(void *args);
+
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
 
@@ -50,6 +52,60 @@ static void __busy_wait(uint32 ms)
 {
 	while (ms--)
 		delay_us(1000);
+}
+
+/*
+ * @brief   default exception hook, called from asm code
+ * @param   p_pcb -i- pointer of pcb
+ * @return  nothing
+ * @note    For hard fault handler callback.
+ *          When hard fault occurs, psp locates to r0,
+ *          so (psp - 8 * 4) bytes is the entry of pt_regs (r4).
+ *          Even though psp might be not that useful to upper level,
+ *          still pass it back anyway.
+ */
+static void __hard_fault_handler(uint32 psp, uint32 exc_num)
+{
+	pt_regs_t *p;
+
+	/*
+	 * FIXME It seems only thread mode fault can we get a
+	 *       **correct** pt_regs table?
+	 *       However, in fact, it may not like this, the case in handler
+	 *       mode leads to **incorrect** might because the stack is mussed
+	 *       by us!
+	 */
+	p = (pt_regs_t *)(psp - 32);
+	os_printk(LOG_CRITICAL, "%s - psp: 0x%08X, exception number: %d\n",
+			__func__, psp, exc_num);
+	_port_dump_stack(p);
+
+	__hard_fault_call((void *)psp);
+}
+
+/*
+ * @brief   enter critical
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_enter_critical(void)
+{
+	OS_DISABLE_INTERRUPTS();
+	critical_nest++;
+}
+
+/*
+ * @brief   exit critical
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_exit_critical(void)
+{
+	critical_nest--;
+	if (critical_nest == 0)
+		OS_ENABLE_INTERRUPTS();
 }
 
 /*
@@ -63,7 +119,7 @@ void _os_port_init(void)
 	old_pcb = 0;
 	new_pcb = 0;
 	critical_nest = 0;
-	register_error_hook(_port_hard_fault_hook);
+	attach_exc_hook(__hard_fault_handler);
 	return;
 }
 
@@ -88,6 +144,17 @@ void _os_port_bsp_init(void)
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 		__busy_wait(50);
 	}
+}
+
+/*
+ * @brief   attach to hard fault handler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _port_hard_fault_attach(void (*fn)(void *args))
+{
+	__hard_fault_call = fn;
 }
 
 /*
@@ -155,31 +222,6 @@ uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
 }
 
 /*
- * @brief   enter critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_enter_critical(void)
-{
-	OS_DISABLE_INTERRUPTS();
-	critical_nest++;
-}
-
-/*
- * @brief   exit critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_exit_critical(void)
-{
-	critical_nest--;
-	if (critical_nest == 0)
-		OS_ENABLE_INTERRUPTS();
-}
-
-/*
  * @brief   assert fail alarm
  * @param   none
  * @return  none
@@ -205,39 +247,22 @@ void _port_dump_stack(const pt_regs_t *pt)
 		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
 		return;
 	}
-	os_printk(LOG_INFO, "xpsr: 0x%08X\n", pt->xpsr);
-	os_printk(LOG_INFO, "pc:   0x%08X\n", pt->pc);
-	os_printk(LOG_INFO, "lr:   0x%08X\n", pt->lr);
-	os_printk(LOG_INFO, "r12:  0x%08X\n", pt->r12);
-	os_printk(LOG_INFO, "r3:   0x%08X\n", pt->r3);
-	os_printk(LOG_INFO, "r2:   0x%08X\n", pt->r2);
-	os_printk(LOG_INFO, "r1:   0x%08X\n", pt->r1);
-	os_printk(LOG_INFO, "r0:   0x%08X\n", pt->r0);
-	os_printk(LOG_INFO, "r11:  0x%08X\n", pt->r11);
-	os_printk(LOG_INFO, "r10:  0x%08X\n", pt->r10);
-	os_printk(LOG_INFO, "r9:   0x%08X\n", pt->r9);
-	os_printk(LOG_INFO, "r8:   0x%08X\n", pt->r8);
-	os_printk(LOG_INFO, "r7:   0x%08X\n", pt->r7);
-	os_printk(LOG_INFO, "r6:   0x%08X\n", pt->r6);
-	os_printk(LOG_INFO, "r5:   0x%08X\n", pt->r5);
-	os_printk(LOG_INFO, "r4:   0x%08X\n", pt->r4);
-}
-
-/*
- * @brief   dump stack hook
- * @param   p_pcb -i- pointer of pcb
- * @return  nothing
- * @note    for hard fault handler callback
- *          FIXME usb output will make system hang
- */
-void _port_hard_fault_hook(uint32 psp)
-{
-	pt_regs_t *p = (pt_regs_t *)psp;
-	p = p;
-	os_printk(LOG_INFO, "%s - 0x%08X\n", __func__, psp);
-#if 0
-	_port_dump_stack(p);
-#endif
+	os_printk(LOG_CRITICAL, "xpsr: 0x%08X\n", pt->xpsr);
+	os_printk(LOG_CRITICAL, "pc:   0x%08X\n", pt->pc);
+	os_printk(LOG_CRITICAL, "lr:   0x%08X\n", pt->lr);
+	os_printk(LOG_CRITICAL, "r12:  0x%08X\n", pt->r12);
+	os_printk(LOG_CRITICAL, "r3:   0x%08X\n", pt->r3);
+	os_printk(LOG_CRITICAL, "r2:   0x%08X\n", pt->r2);
+	os_printk(LOG_CRITICAL, "r1:   0x%08X\n", pt->r1);
+	os_printk(LOG_CRITICAL, "r0:   0x%08X\n", pt->r0);
+	os_printk(LOG_CRITICAL, "r11:  0x%08X\n", pt->r11);
+	os_printk(LOG_CRITICAL, "r10:  0x%08X\n", pt->r10);
+	os_printk(LOG_CRITICAL, "r9:   0x%08X\n", pt->r9);
+	os_printk(LOG_CRITICAL, "r8:   0x%08X\n", pt->r8);
+	os_printk(LOG_CRITICAL, "r7:   0x%08X\n", pt->r7);
+	os_printk(LOG_CRITICAL, "r6:   0x%08X\n", pt->r6);
+	os_printk(LOG_CRITICAL, "r5:   0x%08X\n", pt->r5);
+	os_printk(LOG_CRITICAL, "r4:   0x%08X\n", pt->r4);
 }
 
 /*
@@ -329,8 +354,8 @@ void __exc_pendsv(void)
 	 "	ldr	r1, [r1]			\n"
 	 /* save psp to this sp */
 	 "	str	r0, [r1]			\n"
-	 /* load new pcb to into r0 */
 	 "__pendsv_skip:				\n"
+	 /* load new pcb to into r0 */
 	 "	ldr	r0, =new_pcb			\n"
 	 /* load ram addr of new pcb into r0 */
 	 "	ldr	r0, [r0]			\n"

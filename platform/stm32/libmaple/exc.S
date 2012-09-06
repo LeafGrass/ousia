@@ -76,6 +76,8 @@ __exc_usagefault:
 
 .thumb_func
 __default_exc:
+    ldr r3, EXC_NUMBER
+    str r0, [r3]
     ldr r2, NVIC_CCR            @ Enable returning to thread mode even if there are
     mov r1 ,#1                  @ pending exceptions. See flag NONEBASETHRDENA.
     str r1, [r2]
@@ -95,7 +97,8 @@ __default_exc:
 .align 4
 CPSR_MASK:     .word 0x61000000
 EXC_RETURN:    .word 0xFFFFFFF9
-TARGET_PC:     .word __error
 NVIC_CCR:      .word 0xE000ED14    @ NVIC configuration control register
 SYSTICK_CSR:   .word 0xE000E010    @ Systick control register
+TARGET_PC:     .word __error
+EXC_NUMBER:    .word __exc_num
 

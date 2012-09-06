@@ -70,15 +70,15 @@ static void __sched_hook(const void *args)
  * @brief   process - idle
  * @param   args -i/o- reserved
  * @return  void
+ * @note    TODO Collect statistics while idle.
  */
 static void __ps_idle(void *args)
 {
 	static uint32 last = 0, curr = 0;
 
-	_sched_register_hook(__sched_hook);
+	_sched_attach_hook(__sched_hook);
 
 	while (1) {
-		/* TODO collect statistics */
 		curr = os_systime_get();
 		if (curr - last > 20000) {
 			os_printk(LOG_INFO, "%s - n_sched: %d, "

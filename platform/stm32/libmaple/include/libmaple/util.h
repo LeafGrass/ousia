@@ -58,7 +58,7 @@ extern "C"{
 void __error(void);
 void _fail(const char*, int, const char*);
 void throb(void);
-void register_error_hook(void (*fn)(uint32 psp));
+void attach_exc_hook(void (*fn)(uint32 psp, uint32 exc_num));
 
 /*
  * Asserts and debug levels

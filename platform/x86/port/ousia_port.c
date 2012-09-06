@@ -30,27 +30,7 @@
 #include <stdlib.h>
 
 static unsigned int critical_nest;
-
-/*
- * @brief   porting related init
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_port_init(void)
-{
-	return;
-}
-
-/*
- * @brief   bsp related init
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_port_bsp_init(void)
-{
-}
+static void (*__hard_fault_call)(void *args);
 
 /*
  * @brief   enter critical
@@ -79,17 +59,49 @@ void _os_exit_critical(void)
 	}
 }
 
+
 /*
- * @brief   a simple wrap of lower level assert
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
+ * @brief   porting related init
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_port_init(void)
+{
+	return;
+}
+
+/*
+ * @brief   bsp related init
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _os_port_bsp_init(void)
+{
+}
+
+/*
+ * @brief   attach to hard fault handler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _port_hard_fault_attach(void (*fn)(void *args))
+{
+	__hard_fault_call = fn;
+}
+
+/*
+ * @brief   assert fail alarm
+ * @param   none
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(const char* file, int line, const char *exp)
+void _port_assert_fail(void)
 {
-	return;
+	while (1) {
+	}
 }
 
 /*

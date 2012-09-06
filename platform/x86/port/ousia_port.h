@@ -44,14 +44,15 @@ struct pt_regs {
 };
 typedef struct pt_regs pt_regs_t;
 
+void _os_enter_critical(void);
+void _os_exit_critical(void);
 void _os_port_init(void);
+void _os_port_bsp_init(void);
+void _port_hard_fault_attach(void (*fn)(void *args));
 void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
 void _port_systick_init(void (*callback)(void));
 void *_port_context_init(void *pentry, void *args, void *stack_base);
-void _os_port_bsp_init(void);
-void _os_enter_critical(void);
-void _os_exit_critical(void);
-void _port_assert_fail(const char* file, int line, const char *exp);
+void _port_assert_fail(void);
 void _port_dump_stack(const pt_regs_t *pt);
 void _port_context_switch(uint32 curr_pcb, uint32 target_pcb);
 void _port_first_switch(uint32 target_pcb);

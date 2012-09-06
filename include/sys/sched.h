@@ -50,7 +50,7 @@ struct _pcb_t {
 	uint32 pid;
 	int32 prio;
 	enum _pstate stat;
-	struct _ptcb_t timer;
+	struct _ptcb_t tcb;
 	struct list_head list;
 };
 
@@ -77,7 +77,8 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb);
 const struct _pqcb_t* _sched_init(void);
 void _sched_schedule(void);
 void _sched_startup(void);
-void _sched_register_hook(void (*fn)(const void *args));
+void _sched_attach_hook(void (*fn)(const void *args));
+void _sched_systick_call(void);
 void os_dump_stack(void);
 int32 os_process_create(void *pcb, void *pentry, void *args,
 		void *stack_base, uint32 stack_size);

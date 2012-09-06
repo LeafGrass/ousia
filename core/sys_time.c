@@ -20,7 +20,7 @@
 
 /*
  * @file    core/sys_time.c
- * @brief   timer related routines
+ * @brief   system time related routines
  * @log     2011.8 initial revision
  */
 
@@ -33,7 +33,6 @@
 static uint32 __systime = 0;
 
 static void __systick_interrupt(void);
-static void (*__systick_hook)(void);
 
 /*
  * @brief   os systick interrupt handler
@@ -45,7 +44,7 @@ static void __systick_interrupt(void)
 {
 	os_enter_critical();
 	__systime++;
-	__systick_hook();
+	_sched_systick_call();
 	os_exit_critical();
 	return;
 }
@@ -60,17 +59,6 @@ void _sys_time_systick_init(void)
 {
 	__systime = 0UL;
 	_port_systick_init(&__systick_interrupt);
-}
-
-/*
- * @brief   system timetick init
- * @param   none
- * @return  none
- * @note    none
- */
-void _sys_time_register_hook(void (*fn)(void))
-{
-	__systick_hook = fn;
 }
 
 /*

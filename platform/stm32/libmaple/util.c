@@ -39,6 +39,8 @@
 #include <libmaple/gpio.h>
 #include <libmaple/nvic.h>
 
+uint32 __exc_num = 0;
+
 /* (Undocumented) hooks used by Wirish to direct our behavior here */
 extern __weak void __lm_error(void);
 extern __weak usart_dev* __lm_enable_error_usart(void);
@@ -50,7 +52,7 @@ extern __weak usart_dev* __lm_enable_error_usart(void);
 #define HAVE_ERROR_LED
 #endif
 
-static void (*error_hook)(uint32 psp);
+static void (*__def_exc_hook)(uint32 psp, uint32 exc_num);
 
 static inline uint32 __get_psp(void)
 {
@@ -59,14 +61,25 @@ static inline uint32 __get_psp(void)
     return r;
 }
 
+static inline uint32 __get_msp(void)
+{
+    uint32 r;
+    __asm volatile ("mrs %0, msp\n" : "=r"(r));
+    return r;
+}
+
 /* (Called from exc.S with global interrupts disabled.) */
-__attribute__((noreturn)) void __error(void) {
-    if (error_hook)
-        error_hook(__get_psp());
+__attribute__((noreturn)) void __error(void)
+{
     if (__lm_error)
         __lm_error();
+
     /* Reenable global interrupts */
     nvic_globalirq_enable();
+
+    /* Go to ousia default exception handler. */
+    __def_exc_hook(__get_psp(), __exc_num);
+
     throb();
 }
 
@@ -79,7 +92,8 @@ __attribute__((noreturn)) void __error(void) {
  * @param exp String representation of failed assertion
  * @sideeffect Turns of all peripheral interrupts except USB.
  */
-void _fail(const char* file, int line, const char* exp) {
+void _fail(const char* file, int line, const char* exp)
+{
     if (__lm_enable_error_usart) {
         /* Initialize the error USART */
         usart_dev *err_usart = __lm_enable_error_usart();
@@ -103,7 +117,8 @@ void _fail(const char* file, int line, const char* exp) {
  * get redirected to _fail.
  */
 void __assert_func(const char* file, int line, const char* method,
-                   const char* expression) {
+                   const char* expression)
+{
     _fail(file, line, expression);
 }
 
@@ -111,7 +126,8 @@ void __assert_func(const char* file, int line, const char* method,
  * Provide an abort() implementation that aborts execution and punts
  * to __error().
  */
-void abort() {
+void abort()
+{
     if (__lm_enable_error_usart) {
         /* Initialize the error USART */
         usart_dev *err_usart = __lm_enable_error_usart();
@@ -128,7 +144,8 @@ void abort() {
  * @brief Fades the error LED on and off
  * @sideeffect Sets output push-pull on ERROR_LED_PIN.
  */
-__attribute__((noreturn)) void throb(void) {
+__attribute__((noreturn)) void throb(void)
+{
 #ifdef HAVE_ERROR_LED
     int32  slope   = 1;
     uint32 CC      = 0x0000;
@@ -163,7 +180,7 @@ __attribute__((noreturn)) void throb(void) {
 #endif
 }
 
-void register_error_hook(void (*fn)(uint32 psp))
+void attach_exc_hook(void (*fn)(uint32 psp, uint32 exc_num))
 {
-    error_hook = fn;
+    __def_exc_hook = fn;
 }

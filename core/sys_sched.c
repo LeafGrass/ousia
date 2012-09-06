@@ -209,25 +209,37 @@ static struct _sched_class_t sched_class = {
 };
 
 /*
- * @brief   systick hook used in systick for scheduler
+ * @brief   hook to porting layer then asm code
  * @param   none
  * @return  none
  * @note    none
  */
-static void __systick_hook_for_sched(void)
+void __sched_hard_fault_hook(void *args)
+{
+	_sched_dump_pcb(curr_pcb);
+	_sched_dump_pq(&pqcb);
+}
+
+/*
+ * @brief   called in systick for scheduler
+ * @param   none
+ * @return  none
+ * @note    none
+ */
+void _sched_systick_call(void)
 {
 	struct _pcb_t *pcb;
 	list_for_each_entry(pcb, &pqcb.pq, list) {
 		switch (pcb->stat) {
 		case PSTAT_BLOCKING:
-			pcb->timer.ticks_running = 0;
+			pcb->tcb.ticks_running = 0;
 			break;
 		case PSTAT_RUNNING:
-			pcb->timer.ticks_running++;
+			pcb->tcb.ticks_running++;
 			break;
 		case PSTAT_SLEEPING:
-			pcb->timer.ticks_sleeping--;
-			if (pcb->timer.ticks_sleeping == 0)
+			pcb->tcb.ticks_sleeping--;
+			if (pcb->tcb.ticks_sleeping == 0)
 				pcb->stat = PSTAT_READY;
 			/* TODO Do _sched_schedule */
 			break;
@@ -255,18 +267,17 @@ void _sched_dump_pcb(const struct _pcb_t *p_pcb)
 		os_printk(LOG_ERROR, "%s - pcb is NULL\n", __func__);
 		return;
 	}
-	os_printk(LOG_INFO, "--- dump pcb: 0x%08X ---\n", p_pcb);
+	os_printk(LOG_INFO, ">>> dump pcb: 0x%08X <<<\n", p_pcb);
 	os_printk(LOG_INFO, "stack_ptr: 0x%08X\n", p_pcb->stack_ptr);
 	os_printk(LOG_INFO, "pentry:    0x%08X\n", p_pcb->pentry);
 	os_printk(LOG_INFO, "stack_sz:  %d\n", p_pcb->stack_sz);
 	os_printk(LOG_INFO, "pid:       %d\n", p_pcb->pid);
 	os_printk(LOG_INFO, "prio:      %d\n", p_pcb->prio);
 	os_printk(LOG_INFO, "stat:      %d\n", p_pcb->stat);
-	os_printk(LOG_INFO, "timer:     0x%08X\n", p_pcb->timer);
+	os_printk(LOG_INFO, "tcb:       0x%08X\n", &p_pcb->tcb);
 	os_printk(LOG_INFO, "prev:      0x%08X\n", __pcb_get_prev(p_pcb));
 	os_printk(LOG_INFO, "next:      0x%08X\n", __pcb_get_next(p_pcb));
 	os_printk(LOG_INFO, "----------------------------\n");
-	_port_dump_stack((pt_regs_t *)p_pcb->stack_ptr);
 }
 
 /*
@@ -289,20 +300,20 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 			os_printk(LOG_INFO, "\t0x%08p (h)\t| %d\t| %d\t"
 					"| %d\t| %d\n",
 					pcb, pcb->stat, pcb->prio,
-					pcb->timer.ticks_running,
-					pcb->timer.ticks_sleeping);
+					pcb->tcb.ticks_running,
+					pcb->tcb.ticks_sleeping);
 		else if (pcb == __pq_get_tail(p_pqcb))
 			os_printk(LOG_INFO, "\t0x%08p (t)\t| %d\t| %d\t"
 					"| %d\t| %d\n",
 					pcb, pcb->stat, pcb->prio,
-					pcb->timer.ticks_running,
-					pcb->timer.ticks_sleeping);
+					pcb->tcb.ticks_running,
+					pcb->tcb.ticks_sleeping);
 		else
 			os_printk(LOG_INFO, "\t0x%08p\t| %d\t| %d\t"
 					"| %d\t| %d\n",
 					pcb, pcb->stat, pcb->prio,
-					pcb->timer.ticks_running,
-					pcb->timer.ticks_sleeping);
+					pcb->tcb.ticks_running,
+					pcb->tcb.ticks_sleeping);
 	}
 }
 
@@ -315,7 +326,7 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 const struct _pqcb_t* _sched_init(void)
 {
 	INIT_LIST_HEAD(&pqcb.pq);
-	_sys_time_register_hook(__systick_hook_for_sched);
+	_port_hard_fault_attach(__sched_hard_fault_hook);
 	return &pqcb;
 }
 
@@ -371,7 +382,7 @@ void _sched_startup(void)
  * @return  none
  * @note    WARNING This hook should not take a long time!
  */
-void _sched_register_hook(void (*fn)(const void *args))
+void _sched_attach_hook(void (*fn)(const void *args))
 {
 	sched_class.sched_hook = fn;
 }
@@ -380,11 +391,13 @@ void _sched_register_hook(void (*fn)(const void *args))
  * @brief   dump stack api for user
  * @param   none
  * @return  none
- * @note    FIXME temporary used for debug
+ * @note    FIXME Temporarily used for debug.
+ *                We need to dump **really** stack.
  */
 void os_dump_stack(void)
 {
 	_sched_dump_pcb(curr_pcb);
+	_port_dump_stack((pt_regs_t *)curr_pcb->stack_ptr);
 }
 
 /*
@@ -429,9 +442,9 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 	new_pcb->stack_ptr = _port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
 	new_pcb->stack_sz = stack_sz;
-	new_pcb->timer.deadline = 0;
-	new_pcb->timer.ticks_sleeping = 0;
-	new_pcb->timer.ticks_running = 0;
+	new_pcb->tcb.deadline = 0;
+	new_pcb->tcb.ticks_sleeping = 0;
+	new_pcb->tcb.ticks_running = 0;
 	new_pcb->stat = PSTAT_READY;
 
 	__pcb_enqueue(new_pcb);
@@ -472,7 +485,7 @@ int32 os_process_sleep(uint32 tms)
 	 * FIXME Ticks should be calculated from tms * frequency_factor.
 	 *       Here, for stm32, just 1 ms for each tick.
 	 */
-	curr_pcb->timer.ticks_sleeping = tms;
+	curr_pcb->tcb.ticks_sleeping = tms;
 	curr_pcb->stat = PSTAT_SLEEPING;
 
 	/*
