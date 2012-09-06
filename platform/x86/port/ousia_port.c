@@ -81,13 +81,11 @@ void _os_exit_critical(void)
 
 /*
  * @brief   a simple wrap of lower level assert
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
+ * @param   none
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(const char* file, int line, const char *exp)
+void _port_assert_fail(void)
 {
 	return;
 }
