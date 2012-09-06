@@ -180,16 +180,17 @@ void _os_exit_critical(void)
 }
 
 /*
- * @brief   a simple wrap of lower level assert
- * @param   file -i- __FILE__
- *          line -i- __LINE__
- *          exp -i- assert expression
+ * @brief   assert fail alarm
+ * @param   none
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(const char *file, int line, const char *exp)
+void _port_assert_fail(void)
 {
-	_fail(file, line, exp);
+	while (1) {
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		__busy_wait(250);
+	}
 }
 
 /*
@@ -233,6 +234,7 @@ void _port_hard_fault_hook(uint32 psp)
 {
 	pt_regs_t *p = (pt_regs_t *)psp;
 	p = p;
+	os_printk(LOG_INFO, "%s - 0x%08X\n", __func__, psp);
 #if 0
 	_port_dump_stack(p);
 #endif

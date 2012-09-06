@@ -58,30 +58,26 @@
 #endif
 
 #define ASSERT_NONE	0
-#define ASSERT_ERROR	1
-#define ASSERT_ALL	2
+#define ASSERT_ALL	1
+#define ASSERT_LEVEL	ASSERT_ALL
 
-#define ASSERT_LEVEL ASSERT_ALL
+void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
 #if (ASSERT_LEVEL >= ASSERT_ALL)
 #define _OS_ASSERT(exp) \
 	do { \
 		if (exp) { \
 		} else { \
-			os_printk(LOG_ERROR, "line %d in %s, %s fail!\n", \
-					__LINE__, __FILE__, #exp); \
 			_os_assert_fail(__FILE__, __LINE__, #exp); \
 		} \
 	} while (0)
 #else
-#define ASSERT(exp) (void)((0))
+#define _OS_ASSERT(exp) (void)((0))
 #endif
 
 #define os_assert(exp)			_OS_ASSERT(exp)
 #define os_log(level, msg, args...)	_OS_PRINTF(level, msg, ##args)
 #define os_printk(level, msg, args...)	_OS_PRINTK(level, msg, ##args)
-
-void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
 
 #endif /* __SYS_DEBUG_H__ */
