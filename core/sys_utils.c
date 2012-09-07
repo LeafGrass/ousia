@@ -56,14 +56,22 @@ static struct _pcb_t __cps_init_pcb;
 static struct _pcb_t __cps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
-static uint32 n_sched = 0;
+static uint32 n_sched_one_second = 0;
 static const struct _pqcb_t *pqcb_hook = NULL;
 static const struct _pcb_t *pcb_curr_hook = NULL;
 
 static void __sched_hook(const void *args)
 {
+	static uint32 curr = 0, last = 0;
+	static uint32 n_sched = 0;
 	pcb_curr_hook = (const struct _pcb_t *)args;
+	curr = os_systime_get();
 	n_sched++;
+	if (curr - last > 1000) {
+		n_sched_one_second = n_sched;
+		n_sched = 0;
+		last = curr;
+	}
 }
 
 /*
@@ -80,15 +88,15 @@ static void __cps_idle(void *args)
 
 	while (1) {
 		curr = os_systime_get();
+
 		if (curr - last > 2000) {
-			os_putchar(0x0C);
-			os_printk(LOG_INFO, "%d sched in the last minute, "
+			os_printk(LOG_INFO, "%d sched in the last second, "
 					"pcb_curr_hook: 0x%08p\n",
-					n_sched, pcb_curr_hook);
+					n_sched_one_second, pcb_curr_hook);
 			last = os_systime_get();
 			_sched_dump_pq(pqcb_hook);
-			n_sched = 0;
 		}
+
 		os_process_yield();
 	}
 }
