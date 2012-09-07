@@ -80,12 +80,14 @@ static void __cps_idle(void *args)
 
 	while (1) {
 		curr = os_systime_get();
-		if (curr - last > 20000) {
-			os_printk(LOG_INFO, "%s - n_sched: %d, "
+		if (curr - last > 2000) {
+			os_putchar(0x0C);
+			os_printk(LOG_INFO, "%d sched in the last minute, "
 					"pcb_curr_hook: 0x%08p\n",
-					__func__, n_sched, pcb_curr_hook);
+					n_sched, pcb_curr_hook);
 			last = os_systime_get();
 			_sched_dump_pq(pqcb_hook);
+			n_sched = 0;
 		}
 		os_process_yield();
 	}

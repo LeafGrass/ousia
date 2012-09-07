@@ -294,26 +294,18 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 		return;
 	}
 	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
-	os_printk(LOG_INFO, "\tpcb\t\t  state\t  prio\t  run\t  sleep\n");
+	os_printk(LOG_INFO, "   pid   pcb      state  prio     "
+			    "run   sleep  name\n");
 	list_for_each_entry(pcb, &p_pqcb->pq, list) {
-		if (pcb == __pq_get_head(p_pqcb))
-			os_printk(LOG_INFO, "\t0x%08p (h)\t| %d\t| %d\t"
-					"| %d\t| %d\n",
-					pcb, pcb->stat, pcb->prio,
-					pcb->tcb.ticks_running,
-					pcb->tcb.ticks_sleeping);
-		else if (pcb == __pq_get_tail(p_pqcb))
-			os_printk(LOG_INFO, "\t0x%08p (t)\t| %d\t| %d\t"
-					"| %d\t| %d\n",
-					pcb, pcb->stat, pcb->prio,
-					pcb->tcb.ticks_running,
-					pcb->tcb.ticks_sleeping);
-		else
-			os_printk(LOG_INFO, "\t0x%08p\t| %d\t| %d\t"
-					"| %d\t| %d\n",
-					pcb, pcb->stat, pcb->prio,
-					pcb->tcb.ticks_running,
-					pcb->tcb.ticks_sleeping);
+		os_printk(LOG_INFO, " %4d  0x%8p  %2d   %4d "
+				"%6d.%1d %4d.%1d   "
+				"%s\n",
+				pcb->pid, pcb, pcb->stat, pcb->prio,
+				pcb->tcb.ticks_running/1000,
+				(pcb->tcb.ticks_running%1000)/100,
+				pcb->tcb.ticks_sleeping/1000,
+				(pcb->tcb.ticks_sleeping%1000)/100,
+				pcb->name);
 	}
 }
 
