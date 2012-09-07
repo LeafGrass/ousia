@@ -83,17 +83,22 @@ static void __sched_hook(const void *args)
 static void __cps_idle(void *args)
 {
 	static uint32 last = 0, curr = 0;
+	static uint32 last_ticks = 0;
+	struct _pcb_t *idle = (struct _pcb_t *)args;
+	uint32 ticks_delta = 0;
 
 	_sched_attach_hook(__sched_hook);
 
 	while (1) {
 		curr = os_systime_get();
 
-		if (curr - last > 2000) {
-			os_printk(LOG_INFO, "%d sched in the last second, "
-					"pcb_curr_hook: 0x%08p\n",
-					n_sched_one_second, pcb_curr_hook);
+		if (curr - last > 10000) {
 			last = os_systime_get();
+			ticks_delta = idle->tcb.ticks_running - last_ticks;
+			last_ticks = idle->tcb.ticks_running;
+			os_printk(LOG_DEBUG, "%d sched in the last second, "
+					"cpu usage: %%%d (fake)\n",
+					n_sched_one_second, 100-ticks_delta/100);
 			_sched_dump_pq(pqcb_hook);
 		}
 
@@ -110,7 +115,7 @@ static void __cps_init(void *args)
 {
 	os_printk(LOG_INFO, "process %s is here!\n", __func__);
 
-	os_process_create(&__cps_idle_pcb, __cps_idle, NULL,
+	os_process_create(&__cps_idle_pcb, __cps_idle, &__cps_idle_pcb,
 			  __cps_idle_stack, CPS_IDLE_STACK_SIZE);
 
 	/* Now we can start the user main entry, the commonly known main() */
