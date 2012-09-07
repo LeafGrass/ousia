@@ -404,6 +404,7 @@ void os_dump_stack(void)
  * @brief   create a process
  * @param   pcb -i- pointer of process control block
  *          pentry -i- process main function entry
+ *          name -i- process name
  *          args -i- process main function args
  *          stack_base -i- start address of stack
  *          stack_sz -i- process private stack size
