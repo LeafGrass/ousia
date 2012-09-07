@@ -44,16 +44,16 @@ static const char __logo1[] =
 static const char __logo2[] =
 	"\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
 
-#define PS_INIT_STACK_SIZE	1024
-#define PS_IDLE_STACK_SIZE	1024
+#define CPS_INIT_STACK_SIZE	1024
+#define CPS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	2048
 
 /* FIXME memory of init process should be recycled */
-static uint8 __ps_init_stack[PS_INIT_STACK_SIZE] = {0};
-static uint8 __ps_idle_stack[PS_IDLE_STACK_SIZE] = {0};
-static uint8 __ps_main_stack[PS_MAIN_STACK_SIZE] = {0};
-static struct _pcb_t ps_init_pcb;
-static struct _pcb_t ps_idle_pcb;
+static uint8 __cps_init_stack[CPS_INIT_STACK_SIZE] = {0};
+static uint8 __cps_idle_stack[CPS_IDLE_STACK_SIZE] = {0};
+static uint8 ps_main_stack[PS_MAIN_STACK_SIZE] = {0};
+static struct _pcb_t __cps_init_pcb;
+static struct _pcb_t __cps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
 static uint32 n_sched = 0;
@@ -67,12 +67,12 @@ static void __sched_hook(const void *args)
 }
 
 /*
- * @brief   process - idle
+ * @brief   core process - idle
  * @param   args -i/o- reserved
  * @return  void
  * @note    TODO Collect statistics while idle.
  */
-static void __ps_idle(void *args)
+static void __cps_idle(void *args)
 {
 	static uint32 last = 0, curr = 0;
 
@@ -92,22 +92,26 @@ static void __ps_idle(void *args)
 }
 
 /*
- * @brief   process - init
+ * @brief   core process - init
  * @param   args -i/o- reserved
  * @return  void
  */
-static void __ps_init(void *args)
+static void __cps_init(void *args)
 {
 	os_printk(LOG_INFO, "process %s is here!\n", __func__);
-	os_process_create(&ps_idle_pcb, __ps_idle, NULL,
-			  __ps_idle_stack, PS_IDLE_STACK_SIZE);
+
+	os_process_create(&__cps_idle_pcb, __cps_idle, NULL,
+			  __cps_idle_stack, CPS_IDLE_STACK_SIZE);
+
+	/* Now we can start the user main entry, the commonly known main() */
 	os_process_create(&ps_main_pcb, ps_main, NULL,
-			  __ps_main_stack, PS_MAIN_STACK_SIZE);
-	os_process_suspend(ps_init_pcb.pid);
+			  ps_main_stack, PS_MAIN_STACK_SIZE);
+
+	os_process_suspend(__cps_init_pcb.pid);
 }
 
 /*
- * @brief   initialize process before user application starts
+ * @brief   initialize core process before user application starts
  * @param   none
  * @return  pid if create success
  * @note    none
@@ -117,8 +121,8 @@ static int32 __process_init(void)
 	int32 ret = OS_OK;
 
 	/* TODO create two processes at init */
-	os_process_create(&ps_init_pcb, __ps_init, NULL,
-			  __ps_init_stack, PS_INIT_STACK_SIZE);
+	os_process_create(&__cps_init_pcb, __cps_init, NULL,
+			  __cps_init_stack, CPS_INIT_STACK_SIZE);
 
 	return ret;
 }

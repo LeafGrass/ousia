@@ -51,10 +51,4 @@ typedef enum {
 #define OS_OK		0
 #define OS_EFAIL	1
 
-#define container_of(ptr, type, member) \
-({ \
-	const typeof(((type *)0)->member) *__mptr = (ptr); \
-	(type *)((char *)__mptr - offsetof(type, member)); \
-})
-
 #endif /* __OUSIA_TYPE_H__ */

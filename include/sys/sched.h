@@ -46,6 +46,7 @@ enum _pstate {
 struct _pcb_t {
 	void *stack_ptr;
 	void (*pentry)(void *args);
+	char *name;
 	uint32 stack_sz;
 	uint32 pid;
 	int32 prio;
@@ -80,8 +81,13 @@ void _sched_startup(void);
 void _sched_attach_hook(void (*fn)(const void *args));
 void _sched_systick_call(void);
 void os_dump_stack(void);
-int32 os_process_create(void *pcb, void *pentry, void *args,
-		void *stack_base, uint32 stack_size);
+int32 __os_process_create(void *pcb, void *pentry, char *name,
+			  void *args, void *stack_base, uint32 stack_size);
+#define os_process_create(_pcb, _pentry, _args, _stack_base, _stack_size) \
+	do { \
+		__os_process_create(_pcb, _pentry, __stringify(_pentry), \
+				_args, _stack_base, _stack_size); \
+	} while (0)
 int32 os_process_delete(uint32 pid);
 int32 os_process_sleep(uint32 tms);
 int32 os_process_suspend(uint32 pid);

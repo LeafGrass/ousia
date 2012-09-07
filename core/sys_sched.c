@@ -413,20 +413,21 @@ void os_dump_stack(void)
  *          so, pcb structure should not be opened for user
  *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
-int32 os_process_create(void *pcb, void *pentry, void *args,
-			void *stack_base, uint32 stack_sz)
+int32 __os_process_create(void *pcb, void *pentry, char *name,
+			  void *args, void *stack_base, uint32 stack_sz)
 {
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
 
 	os_printk(LOG_DEBUG, "===> new process: 0x%08p\n"
 			     "\t\t+-------------------\n"
+			     "\t\t| name: %s\n"
 			     "\t\t| stack_base: 0x%08p\n"
 			     "\t\t| stack_sz: %d\n"
 			     "\t\t| entry: 0x%08p\n"
 			     "\t\t| prio: %d\n"
 			     "\t\t+-------------------\n",
-			     new_pcb, stack_base, stack_sz,
+			     new_pcb, name, stack_base, stack_sz,
 			     pentry, new_pcb->prio);
 
 	/* TODO here to allocate resources to a process */
@@ -441,6 +442,7 @@ int32 os_process_create(void *pcb, void *pentry, void *args,
 
 	new_pcb->stack_ptr = _port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
+	new_pcb->name = name;
 	new_pcb->stack_sz = stack_sz;
 	new_pcb->tcb.deadline = 0;
 	new_pcb->tcb.ticks_sleeping = 0;

@@ -42,4 +42,13 @@
 	os_printf(str2, NULL); \
 }
 
+#define container_of(ptr, type, member) \
+({ \
+	const typeof(((type *)0)->member) *__mptr = (ptr); \
+	(type *)((char *)__mptr - offsetof(type, member)); \
+})
+
+#define __stringify_1(x...)	#x
+#define __stringify(x...)	__stringify_1(x)
+
 #endif /* __OUSIA_H__ */
