@@ -67,7 +67,7 @@ static void __sched_hook(const void *args)
 	pcb_curr_hook = (const struct _pcb_t *)args;
 	curr = os_systime_get();
 	n_sched++;
-	if (curr - last > 1000) {
+	if (curr - last > 999) {
 		n_sched_one_second = n_sched;
 		n_sched = 0;
 		last = curr;
@@ -85,6 +85,8 @@ static void __cps_idle(void *args)
 	static uint32 last = 0, curr = 0;
 	static uint32 last_ticks = 0;
 	struct _pcb_t *idle = (struct _pcb_t *)args;
+	struct _pcb_t *pcb;
+
 	uint32 ticks_delta = 0;
 
 	_sched_attach_hook(__sched_hook);
@@ -92,17 +94,28 @@ static void __cps_idle(void *args)
 	while (1) {
 		curr = os_systime_get();
 
-		if (curr - last > 10000) {
+		if (curr - last > 3999) {
+			os_putchar(0x0c);
 			last = os_systime_get();
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
 			os_printk(LOG_DEBUG, "%d sched in the last second, "
-					"cpu usage: %%%d (fake)\n",
-					n_sched_one_second, 100-ticks_delta/100);
+					"cpu usage: %%%d\n",
+					n_sched_one_second, 100-ticks_delta/40);
 			_sched_dump_pq(pqcb_hook);
 		}
 
-		os_process_yield();
+		/*
+		 * Check if there is any process ready,
+		 * or leave in the idle loop of itself.
+		 * TODO Preemption.
+		 */
+		list_for_each_entry(pcb, &pqcb_hook->pq, list) {
+			if (pcb == idle)
+				continue;
+			if (pcb->stat == PSTAT_READY)
+				os_process_yield();
+		}
 	}
 }
 
