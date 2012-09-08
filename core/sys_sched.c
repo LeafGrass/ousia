@@ -294,11 +294,11 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 		return;
 	}
 	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
-	os_printk(LOG_INFO, "   pid   pcb      state  prio     "
+	os_printk(LOG_INFO, "   pid   pcb      state  prio      "
 			    "run      sleep   name\n");
 	list_for_each_entry(pcb, &p_pqcb->pq, list) {
 		os_printk(LOG_INFO, " %4d  0x%8p  %2d   %4d "
-				"%6d.%03d %4d.%03d   "
+				"%7d.%03d %4d.%03d   "
 				"%s\n",
 				pcb->pid, pcb, pcb->stat, pcb->prio,
 				pcb->tcb.ticks_running/1000,
