@@ -27,6 +27,7 @@
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
+#include <sys/mm.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 #include <sys/print.h>
@@ -44,9 +45,9 @@ static const char __logo1[] =
 static const char __logo2[] =
 	"\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
 
-#define CPS_INIT_STACK_SIZE	1024
+#define CPS_INIT_STACK_SIZE	256
 #define CPS_IDLE_STACK_SIZE	1024
-#define PS_MAIN_STACK_SIZE	2048
+#define PS_MAIN_STACK_SIZE	1024
 
 /* FIXME memory of init process should be recycled */
 static uint8 __cps_init_stack[CPS_INIT_STACK_SIZE] = {0};
@@ -169,6 +170,8 @@ int32 os_init(void)
 	_os_port_init();
 	_init_printf();
 	BOOT_LOGO(__logo1, __logo2);
+	ret = _mm_heap_init();
+	os_assert(ret == 0);
 	pqcb_hook = _sched_init();
 	os_assert(pqcb_hook != NULL);
 	_sys_time_systick_init();

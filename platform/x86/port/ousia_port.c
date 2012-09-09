@@ -28,6 +28,11 @@
 #include <x86/x86utils/x86utils.h>
 #include <port/ousia_port.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
+uint8 *__heap_start;
+uint8 *__heap_end;
 
 static unsigned int critical_nest;
 static void (*__hard_fault_call)(void *args);
@@ -68,7 +73,8 @@ void _os_exit_critical(void)
  */
 void _os_port_init(void)
 {
-	return;
+	__heap_start = (uint8 *)malloc(OUSIA_MM_HEAP_SIZE);
+	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
 }
 
 /*
@@ -101,6 +107,7 @@ void _port_hard_fault_attach(void (*fn)(void *args))
 void _port_assert_fail(void)
 {
 	while (1) {
+		usleep(10*1000*1000);
 	}
 }
 

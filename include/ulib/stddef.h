@@ -24,8 +24,8 @@
  * @log     2011.8 initial revision
  */
 
-#ifndef __STDDEF_H__
-#define __STDDEF_H__
+#ifndef __ULIB_STDDEF_H__
+#define __ULIB_STDDEF_H__
 
 typedef unsigned int	size_t;
 

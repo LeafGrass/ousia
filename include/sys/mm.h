@@ -27,13 +27,6 @@
 #ifndef __SYS_MM_H__
 #define __SYS_MM_H__
 
-/*
- * @brief   sample function
- * @param   a -i- an integer
- *          b -i- another integer
- *          pResult -o- result
- * @return  an integer
- * @note    just use it and take it easy
- */
+int32 _mm_heap_init(void);
 
 #endif /* __SYS_MM_H__ */

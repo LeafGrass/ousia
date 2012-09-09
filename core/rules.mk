@@ -14,12 +14,17 @@ CFLAGS_$(d) := -I$(d) -I$(PLATFORM_PATH)/$(TARGET_PLATFORM) -I$(d)/ulib $(CORE_I
 cSRCS_$(d) := \
 	sys_main.c \
 	sys_print.c \
+	sys_mm.c \
 	sys_sched.c \
 	sys_time.c \
 	sys_utils.c \
 	sys_ictl.c \
 	sys_debug.c \
 	sys_ds.c
+
+# ulib
+cSRCS_$(d) += ulib/string.c
+
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)

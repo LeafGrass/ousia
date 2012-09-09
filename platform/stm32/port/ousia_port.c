@@ -39,6 +39,12 @@
 
 #define PSR_INIT_VALUE	0x01000000L
 
+extern uint32 _lm_heap_start;
+extern uint32 _lm_heap_end;
+
+uint8 *__heap_start;
+uint8 *__heap_end;
+
 static uint32 critical_nest = 0;
 static volatile uint32 old_pcb = 0;
 static volatile uint32 new_pcb = 0;
@@ -112,15 +118,18 @@ void _os_exit_critical(void)
  * @brief   porting related init
  * @param   none
  * @return  none
- * @note    none
+ * @note    FIXME Do it later than or before bsp_init?
  */
 void _os_port_init(void)
 {
 	old_pcb = 0;
 	new_pcb = 0;
 	critical_nest = 0;
+	__heap_start = (uint8 *)&_lm_heap_start;
+	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
+	__heap_end = (__heap_end > (uint8 *)&_lm_heap_end) ?
+		(uint8 *)&_lm_heap_end : __heap_end;
 	attach_exc_hook(__hard_fault_handler);
-	return;
 }
 
 /*
