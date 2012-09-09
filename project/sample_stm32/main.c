@@ -72,6 +72,7 @@ static void ps_button(void *args)
 
 static void ps_child(void *args)
 {
+	os_dump_stack();
 	for (;;) {
 		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
 		os_process_sleep(99);
@@ -88,6 +89,6 @@ void ps_main(void *args)
 			  ps_button_stack, PS_BUTTON_STACK_SIZE);
 	for (;;) {
 		app_console_echo();
-		os_process_sleep(20);
+		os_process_sleep(10);
 	}
 }

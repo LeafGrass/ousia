@@ -270,6 +270,7 @@ void _sched_dump_pcb(const struct _pcb_t *p_pcb)
 	os_printk(LOG_INFO, ">>> dump pcb: 0x%08X <<<\n", p_pcb);
 	os_printk(LOG_INFO, "stack_ptr: 0x%08X\n", p_pcb->stack_ptr);
 	os_printk(LOG_INFO, "pentry:    0x%08X\n", p_pcb->pentry);
+	os_printk(LOG_INFO, "name:      %s\n", p_pcb->name);
 	os_printk(LOG_INFO, "stack_sz:  %d\n", p_pcb->stack_sz);
 	os_printk(LOG_INFO, "pid:       %d\n", p_pcb->pid);
 	os_printk(LOG_INFO, "prio:      %d\n", p_pcb->prio);
@@ -333,23 +334,18 @@ void _sched_schedule(void)
 	struct _pcb_t *tmp = curr_pcb;
 	struct _pcb_t *ready = NULL;
 
-	ready = sched_class.do_schedule(&pqcb);
-	os_assert(ready != NULL);
-
 	/* TODO This args should be able for collecting statistics */
 	if (sched_class.sched_hook)
 		sched_class.sched_hook(curr_pcb);
 
-#if 0
-	os_printk(LOG_INFO, "%s, curr_pcb: 0x%08X, head: 0x%08X\n",
-			__func__, (uint32)curr_pcb, __pq_get_head(&pqcb));
-	_sched_dump_pcb(__pq_get_head(&pqcb));
-	_sched_dump_pq(&pqcb);
-#endif
+	ready = sched_class.do_schedule(&pqcb);
+	os_assert(ready != NULL);
 
-	curr_pcb = ready;
-	curr_pcb->stat = PSTAT_RUNNING;
-	_port_context_switch((uint32)tmp, (uint32)curr_pcb);
+	if (ready != curr_pcb) {
+		curr_pcb = ready;
+		curr_pcb->stat = PSTAT_RUNNING;
+		_port_context_switch((uint32)tmp, (uint32)curr_pcb);
+	}
 }
 
 /*
