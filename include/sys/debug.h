@@ -36,8 +36,7 @@
 #define LOG_CRITICAL	5
 #define LOG_LEVEL	LOG_ALL
 
-#define OS_DEBUG_PRINT	1
-#ifdef OS_DEBUG_PRINT
+#ifdef OUSIA_DEBUG_PRINT
 #define __dec		(os_systime_get()/1000)
 #define __frac		(os_systime_get()%1000)
 #define _OS_PRINTF(level, msg, args...) \
@@ -63,7 +62,7 @@
 
 void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
-#if (ASSERT_LEVEL >= ASSERT_ALL)
+#if defined(OUSIA_DEBUG_ASSERT) && (ASSERT_LEVEL >= ASSERT_ALL)
 #define _OS_ASSERT(exp) \
 	do { \
 		if (exp) { \

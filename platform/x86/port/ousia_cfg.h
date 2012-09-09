@@ -2,6 +2,12 @@
 #ifndef __OUSIA_CFG_H__
 #define __OUSIA_CFG_H__
 
+/*
+ * FIXME the macro'name should not be like this
+ * better to be something like CFG_XXX_XXX
+ */
+#define OUSIA_DEBUG_PRINT
+#define OUSIA_DEBUG_ASSERT
 #define OUSIA_DS_ADVANCED
 
 #define OUSIA_PORT_STACK_INC	1
