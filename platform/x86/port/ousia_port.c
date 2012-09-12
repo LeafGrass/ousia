@@ -85,6 +85,7 @@ void _os_port_init(void)
  */
 void _os_port_bsp_init(void)
 {
+	x86utils_system_init();
 }
 
 /*

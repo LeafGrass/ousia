@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
@@ -25,8 +26,7 @@ int main(void)
 	}
 
 	while (1) {
-		system("sleep 1");
-		os_printk(LOG_INFO, "get time\n");
+		usleep(10000);
 	}
 
 	return 0;
