@@ -27,4 +27,6 @@
 #ifndef __CONSOLE_H__
 #define __CONSOLE_H__
 
+void ps_console(void *args);
+
 #endif /* __CONSOLE_H__ */

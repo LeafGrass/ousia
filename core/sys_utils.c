@@ -96,14 +96,16 @@ static void __cps_idle(void *args)
 		curr = os_systime_get();
 
 		if (curr - last > 3999) {
-			os_putchar(0x0c);
+			/*os_putchar(0x0c);*/
 			last = os_systime_get();
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
+#if 0
 			os_printk(LOG_DEBUG, "%d sched in the last second, "
 					"cpu usage: %%%d\n",
 					n_sched_one_second, 100-ticks_delta/40);
 			_sched_dump_pq(pqcb_hook);
+#endif
 		}
 
 		/*

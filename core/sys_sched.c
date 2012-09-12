@@ -185,7 +185,8 @@ static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
 
 	do {
 		__pcb_dequeue(pcb);
-		__pcb_enqueue(pcb);
+		if (pcb->stat != PSTAT_KILLING)
+			__pcb_enqueue(pcb);
 		pcb = __pq_get_head(pqcb);
 	} while (pcb->stat != PSTAT_READY);
 
@@ -458,6 +459,7 @@ int32 os_process_delete(uint32 pid)
 	 * 1. remove the process from pqcb
 	 * 2. reschedule
 	 */
+	curr_pcb->stat = PSTAT_KILLING;
 	_sched_schedule();
 
 	return ret;

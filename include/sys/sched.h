@@ -34,6 +34,7 @@
  * FIXME need an exact requirement for each state
  */
 enum _pstate {
+	PSTAT_KILLING  = -2,
 	PSTAT_BLOCKING = -1,
 	PSTAT_RUNNING  = 0,
 	PSTAT_SLEEPING = 1,

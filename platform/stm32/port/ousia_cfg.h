@@ -19,7 +19,7 @@
 #define OUSIA_PRINT_TYPE_USB	1
 #define OUSIA_PRINT_TYPE	OUSIA_PRINT_TYPE_USB
 
-#define OUSIA_MM_HEAP_SIZE	8192
+#define OUSIA_MM_HEAP_SIZE	4096
 
 /*
  * scheduler strategy
