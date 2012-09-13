@@ -35,6 +35,7 @@
 #include <stm32/libmaple/include/libmaple/libmaple.h>
 #include <stm32/stm32utils/stm32utils.h>
 
+/*#define DEBUG_CONSOLE*/
 #define USB_SERIAL
 
 #define CMD_CHAR_BUF_SIZE	32
@@ -45,9 +46,10 @@ struct cmd_handle {
 	int32 (*cmd_fn)(void *args);
 };
 
-struct cmd_char_queue {
+struct cmd_char_stack {
 	int32 nc;
-	struct list_head cq;
+	int32 nc_tot;
+	struct list_head s;
 };
 
 struct cmd_char {
@@ -56,9 +58,11 @@ struct cmd_char {
 };
 
 struct console_cmd {
-	struct cmd_char_queue	cmdcq;
-	struct cmd_char		cmd_char_buf[CMD_CHAR_BUF_SIZE];
-	char			cmd_fn_args[CMD_FN_ARGS_SIZE];
+	struct cmd_char_stack	ccs;
+	struct cmd_char		cbuf[CMD_CHAR_BUF_SIZE];
+#if 0
+	char			cargs[CMD_FN_ARGS_SIZE];
+#endif
 };
 
 /*
@@ -118,63 +122,57 @@ static struct console_cmd conc;
 static uint8 ps_cmdexec_stack[PS_CMDEXEC_STACK_SIZE] = {0};
 static struct _pcb_t ps_cmdexec_pcb;
 
-static void __cmd_char_enqueue(struct console_cmd *c, char ch)
+static void __cmd_char_push(struct console_cmd *conc, char ch)
 {
-	struct cmd_char *cmdc;
-	if (c->cmdcq.nc >= 0 && c->cmdcq.nc < (CMD_CHAR_BUF_SIZE - 1)) {
-		cmdc = &c->cmd_char_buf[c->cmdcq.nc];
-		cmdc->c = ch;
-		list_add_tail(&cmdc->list, &c->cmdcq.cq);
-		c->cmdcq.nc++;
+	struct cmd_char *cc;
+
+	if (conc->ccs.nc >= 0 && conc->ccs.nc < CMD_CHAR_BUF_SIZE) {
+		cc = &conc->cbuf[conc->ccs.nc];
+		cc->c = ch;
+		list_add(&cc->list, &conc->ccs.s);
+		conc->ccs.nc++;
 	}
+	conc->ccs.nc_tot++;
 }
 
-static char __cmd_char_discard_enqueue(struct console_cmd *c)
+static void __cmd_char_pop(struct console_cmd *conc)
 {
-	struct cmd_char *cmdc;
-	char ch;
-	if (c->cmdcq.nc > 0 && c->cmdcq.nc < CMD_CHAR_BUF_SIZE) {
-		cmdc = &c->cmd_char_buf[0];
-		ch = cmdc->c;
-		list_rotate_left(&c->cmdcq.cq);
-		c->cmdcq.nc--;
-		return ch;
-	} else
-		return -1;
+	struct cmd_char *cc;
+
+	if (conc->ccs.nc_tot > conc->ccs.nc) {
+		conc->ccs.nc_tot--;
+		return;
+	}
+	if (conc->ccs.nc > 0 && conc->ccs.nc <= CMD_CHAR_BUF_SIZE) {
+		cc = &conc->cbuf[conc->ccs.nc - 1];
+		cc->c = 0;
+		list_del(&cc->list);
+		conc->ccs.nc--;
+	}
+	if (conc->ccs.nc_tot > 0)
+		conc->ccs.nc_tot--;
 }
 
-static char __cmd_char_dequeue(struct console_cmd *c)
-{
-	struct cmd_char *cmdc;
-	char ch;
-	if (c->cmdcq.nc > 0 && c->cmdcq.nc < CMD_CHAR_BUF_SIZE) {
-		cmdc = &c->cmd_char_buf[c->cmdcq.nc];
-		ch = cmdc->c;
-		list_del(&cmdc->list);
-		c->cmdcq.nc--;
-		return ch;
-	} else
-		return -1;
-}
-
-static void __cmd_char_queue_flush(struct cmd_char_queue *q)
+static void __cmd_char_stack_flush(struct console_cmd *conc)
 {
 	struct cmd_char *cc, *cc_tmp;
-	list_for_each_entry_safe(cc, cc_tmp, &q->cq, list) {
+	list_for_each_entry_safe(cc, cc_tmp, &conc->ccs.s, list) {
 		list_del(&cc->list);
 		cc->c = 0;
 	}
-	q->nc = 0;
+	conc->ccs.nc = 0;
+	conc->ccs.nc_tot = 0;
+	memset(conc->cbuf, 0, sizeof(conc->cbuf));
 }
 
-static int32 seek_cmd_function(struct console_cmd *c)
+static int32 seek_cmd_function(struct console_cmd *conc)
 {
 	int32 index;
 	int32 i;
 	char cw[16] = {0};
 
-	for (i = 0; i < c->cmdcq.nc; i++) {
-		cw[i] = c->cmd_char_buf[i].c;
+	for (i = 0; i < conc->ccs.nc; i++) {
+		cw[i] = conc->cbuf[i].c;
 		if (cw[i] == ' ' || cw[i] == '\0')
 			break;
 	}
@@ -189,31 +187,29 @@ static int32 seek_cmd_function(struct console_cmd *c)
 	return -1;
 }
 
-static int32 process_enter(struct console_cmd *c)
+static int32 process_enter(struct console_cmd *conc)
 {
-	int32 cmd_index = 0;
-#if 1
-	cmd_index = seek_cmd_function(c);
+#ifndef DEBUG_CONSOLE
+	int32 cmd_index = -1;
+	cmd_index = seek_cmd_function(conc);
 	if (cmd_index >= 0) {
 		os_process_create(&ps_cmdexec_pcb, ps_cmdexec, (void *)cmd_index,
 				  ps_cmdexec_stack, PS_CMDEXEC_STACK_SIZE);
 	}
 #else
-	/* for debug only */
-	int i;
-	cmd_index = cmd_index;
-	cmd_ret = cmd_ret;
-	for (i = 0; i < c->cmdcq.nc; i++)
-		os_printf("%c", c->cmd_char_buf[i].c);
-	os_printf("\n");
+	struct cmd_char *cc;
+	list_for_each_entry_reverse(cc, &conc->ccs.s, list) {
+		os_printf("%c", cc->c);
+	}
+	os_printf("\nnc: %d, tot: %d\n", conc->ccs.nc, conc->ccs.nc_tot);
 #endif
-	__cmd_char_queue_flush(&c->cmdcq);
+	__cmd_char_stack_flush(conc);
 	os_printf("$ ");
 
 	return 0;
 }
 
-static void console_echo(struct console_cmd *c)
+static void console_echo(struct console_cmd *conc)
 {
 	char ch = 0;
 
@@ -222,16 +218,15 @@ static void console_echo(struct console_cmd *c)
 		switch (ch) {
 		case '\r':
 			os_printf("\n");
-			process_enter(c);
+			process_enter(conc);
 			break;
 		case '\b':
 			os_printf("\b \b");
-			/* FIXME crash if enable line below */
-			/*__cmd_char_discard_enqueue(c);*/
+			__cmd_char_pop(conc);
 			break;
 		default:
 			os_printf("%c", ch);
-			__cmd_char_enqueue(c, ch);
+			__cmd_char_push(conc, ch);
 			break;
 		}
 	}
@@ -259,7 +254,7 @@ static void console_echo(struct console_cmd *c)
 
 void ps_console(void *args)
 {
-	INIT_LIST_HEAD(&conc.cmdcq.cq);
+	INIT_LIST_HEAD(&conc.ccs.s);
 	for (;;) {
 		console_echo(&conc);
 		os_process_sleep(10);
