@@ -409,15 +409,15 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
 
-	os_printk(LOG_DEBUG, "===> new process: 0x%08p\n"
-			     "\t\t+-------------------\n"
-			     "\t\t| name: %s\n"
+	os_printk(LOG_INFO, "===> new process: %s\n", name);
+	os_printk(LOG_DEBUG, "\t\t+-------------------\n"
+			     "\t\t| pcb: 0x%08p\n"
 			     "\t\t| stack_base: 0x%08p\n"
 			     "\t\t| stack_sz: %d\n"
 			     "\t\t| entry: 0x%08p\n"
 			     "\t\t| prio: %d\n"
 			     "\t\t+-------------------\n",
-			     new_pcb, name, stack_base, stack_sz,
+			     new_pcb, stack_base, stack_sz,
 			     pentry, new_pcb->prio);
 
 	/* TODO here to allocate resources to a process */
@@ -503,7 +503,7 @@ int32 os_process_suspend(uint32 pid)
 
 	curr_pcb->stat = PSTAT_BLOCKING;
 
-	os_printk(LOG_DEBUG, "%s, pid: %d\n", __func__, pid);
+	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
 	_sched_schedule();
 
 	return ret;

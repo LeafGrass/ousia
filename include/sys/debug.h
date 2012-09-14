@@ -34,20 +34,20 @@
 #define LOG_WARN	3
 #define LOG_ERROR	4
 #define LOG_CRITICAL	5
-#define LOG_LEVEL	LOG_ALL
+#define LOG_LEVEL	LOG_INFO
 
 #ifdef OUSIA_DEBUG_PRINT
 #define __dec		(os_systime_get()/1000)
 #define __frac		(os_systime_get()%1000)
 #define _OS_PRINTF(level, msg, args...) \
 	do { \
-		if (level > LOG_LEVEL) { \
+		if (level >= LOG_LEVEL) { \
 			os_printf(msg, ##args); \
 		} \
 	} while (0)
 #define _OS_PRINTK(level, msg, args...) \
 	do { \
-		if (level > LOG_LEVEL) { \
+		if (level >= LOG_LEVEL) { \
 			os_printf("[%6u.%03u] " msg, __dec, __frac, ##args); \
 		} \
 	} while (0)

@@ -100,6 +100,7 @@ static void __cps_idle(void *args)
 			last = os_systime_get();
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
+			/* TODO Collect the statistics and **store** them */
 #if 0
 			os_printk(LOG_DEBUG, "%d sched in the last second, "
 					"cpu usage: %%%d\n",
@@ -129,7 +130,7 @@ static void __cps_idle(void *args)
  */
 static void __cps_init(void *args)
 {
-	os_printk(LOG_INFO, "process %s is here!\n", __func__);
+	os_printk(LOG_DEBUG, "process %s is here!\n", __func__);
 
 	os_process_create(&__cps_idle_pcb, __cps_idle, &__cps_idle_pcb,
 			  __cps_idle_stack, CPS_IDLE_STACK_SIZE);
@@ -171,6 +172,7 @@ int32 os_init(void)
 
 	_os_port_init();
 	_init_printf();
+	os_putchar(0x0c);
 	BOOT_LOGO(__logo1, __logo2);
 	ret = _mm_heap_init();
 	os_assert(ret == 0);

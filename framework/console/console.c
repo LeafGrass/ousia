@@ -26,20 +26,26 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
+#include <port/ousia_cfg.h>
 #include <ulib/string.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/ds.h>
 #include <console/console.h>
+/*
+ * FIXME We should setup a platform framework
+ * but not use specifc platform directly.
+ */
 #include <stm32/libmaple/include/libmaple/libmaple.h>
+#include <stm32/libmaple/include/libmaple/nvic.h>
+#include <stm32/libmaple/include/libmaple/usart.h>
 #include <stm32/stm32utils/stm32utils.h>
 
 /*#define DEBUG_CONSOLE*/
 #define USB_SERIAL
 
 #define CMD_CHAR_BUF_SIZE	32
-#define CMD_FN_ARGS_SIZE	16
 
 struct cmd_handle {
 	char *cmd_word;
@@ -60,9 +66,6 @@ struct cmd_char {
 struct console_cmd {
 	struct cmd_char_stack	ccs;
 	struct cmd_char		cbuf[CMD_CHAR_BUF_SIZE];
-#if 0
-	char			cargs[CMD_FN_ARGS_SIZE];
-#endif
 };
 
 /*
@@ -72,17 +75,23 @@ struct console_cmd {
  */
 static int32 cmd_reboot(void *args)
 {
-	os_printf("reboot command.\n");
+#define DO_SOMETHING()	os_process_sleep(1000)
+	/* TODO Prepare things before reboot */
+	os_printf("Rebooting...\n");
+	DO_SOMETHING();
+	os_printf("Ousia warm down.\n\n");
+	nvic_sys_reset();
 	return 0;
 }
 
 /*
- * @brief   command - reserved
+ * @brief   reserved for debug
  * @param   args -i- arguments for command
  * @return  status code
  */
-static int32 cmd_reserved(void *args)
+static int32 cmd_debug(void *args)
 {
+	os_printf("Customize debug command here.\n");
 	return 0;
 }
 
@@ -96,8 +105,8 @@ static const struct cmd_handle hcmd_arr[] = {
 		.cmd_fn = cmd_reboot,
 	},
 	{
-		.cmd_word = "reserved",
-		.cmd_fn = cmd_reserved,
+		.cmd_word = "debug",
+		.cmd_fn = cmd_debug,
 	},
 	{
 		.cmd_word = NULL,
@@ -165,7 +174,7 @@ static void __cmd_char_stack_flush(struct console_cmd *conc)
 	memset(conc->cbuf, 0, sizeof(conc->cbuf));
 }
 
-static int32 seek_cmd_function(struct console_cmd *conc)
+static int32 parse_cmd(struct console_cmd *conc)
 {
 	int32 index;
 	int32 i;
@@ -187,14 +196,29 @@ static int32 seek_cmd_function(struct console_cmd *conc)
 	return -1;
 }
 
+static int32 parse_args(struct console_cmd *conc)
+{
+	return 0;
+}
+
 static int32 process_enter(struct console_cmd *conc)
 {
 #ifndef DEBUG_CONSOLE
-	int32 cmd_index = -1;
-	cmd_index = seek_cmd_function(conc);
+	int32 cmd_index = 0;
+	int32 backend = 0;
+
+	cmd_index = parse_cmd(conc);
+	backend = parse_args(conc);
 	if (cmd_index >= 0) {
-		os_process_create(&ps_cmdexec_pcb, ps_cmdexec, (void *)cmd_index,
-				  ps_cmdexec_stack, PS_CMDEXEC_STACK_SIZE);
+		if (backend) {
+			/* FIXME Create a process like will still crash */
+			os_process_create(&ps_cmdexec_pcb, ps_cmdexec,
+					  (void *)cmd_index, ps_cmdexec_stack,
+					  PS_CMDEXEC_STACK_SIZE);
+		} else {
+			/* TODO Pass in buffer of args instead of NULL */
+			hcmd_arr[cmd_index].cmd_fn(NULL);
+		}
 	}
 #else
 	struct cmd_char *cc;
@@ -203,34 +227,46 @@ static int32 process_enter(struct console_cmd *conc)
 	}
 	os_printf("\nnc: %d, tot: %d\n", conc->ccs.nc, conc->ccs.nc_tot);
 #endif
+
 	__cmd_char_stack_flush(conc);
 	os_printf("$ ");
 
 	return 0;
 }
 
-static void console_echo(struct console_cmd *conc)
+#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
+static inline void console_echo_usb(struct console_cmd *conc)
 {
 	char ch = 0;
 
-#ifdef USB_SERIAL
 	if (stm32utils_usb_getc(NULL, &ch) == 0) {
 		switch (ch) {
 		case '\r':
-			os_printf("\n");
+			os_putchar('\n');
+			os_putchar('\r');
 			process_enter(conc);
 			break;
 		case '\b':
-			os_printf("\b \b");
-			__cmd_char_pop(conc);
+			if (conc->ccs.nc != 0) {
+				os_putchar('\b');
+				os_putchar(' ');
+				os_putchar('\b');
+				__cmd_char_pop(conc);
+			}
 			break;
 		default:
-			os_printf("%c", ch);
+			os_putchar(ch);
 			__cmd_char_push(conc, ch);
 			break;
 		}
 	}
+}
 #else
+static inline void console_echo_serial(struct console_cmd *conc)
+{
+	char ch = 0;
+	int32 i;
+
 	if (USART_CONSOLE_BANK->flag_trigger) {
 		for (i = 0; i < USART_CONSOLE_BANK->cnt_trigger; i++) {
 			stm32utils_io_getc(USART_CONSOLE_BANK, &ch);
@@ -238,23 +274,37 @@ static void console_echo(struct console_cmd *conc)
 			case 0:
 				break;
 			case '\r':
-				os_printf( "\r\n" );
+				os_putchar('\n');
+				os_putchar('\r');
 				break;
 			case '\b':
-				os_printf( "\b \b" );
+				os_putchar('\b');
+				os_putchar(' ');
+				os_putchar('\b');
 				break;
 			default:
-				os_printf( "%c", ch );
+				os_putchar(ch);
 				break;
 			}
 		}
 	}
+}
+#endif
+
+static void console_echo(struct console_cmd *conc)
+{
+#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
+	console_echo_usb(conc);
+#else
+	console_echo_serial(conc);
 #endif
 }
 
 void ps_console(void *args)
 {
 	INIT_LIST_HEAD(&conc.ccs.s);
+	os_printf("\nWelcome to Ousia console. :)\n");
+	os_printf("Please press ENTER to activate it.\n");
 	for (;;) {
 		console_echo(&conc);
 		os_process_sleep(10);
