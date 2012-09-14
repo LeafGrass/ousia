@@ -34,16 +34,12 @@
 #include <sys/sched.h>
 
 
-static struct _pcb_t *curr_pcb;
-
 /*
  * FIXME Use memory pool here?
  */
-static struct _pqcb_t pqcb = {
-	.n_pcb = 0,
-	.p_head = NULL,
-	.p_tail = NULL
-};
+static struct _pqcb_t pqcb;
+static struct _pcb_t *curr_pcb;
+static struct _sched_class_t sched_class;
 
 /*
  * @brief   process enqueue
@@ -194,21 +190,6 @@ static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
 }
 #endif
 
-static struct _sched_class_t sched_class = {
-	.sched_hook = NULL,
-#if defined(OUSIA_SCHED_STRATEGY_EDFS)
-	.do_schedule = __do_strategy_edfs
-#elif defined(OUSIA_SCHED_STRATEGY_CFS)
-	.do_schedule = __do_strategy_cfs
-#elif defined(OUSIA_SCHED_STRATEGY_HPFS)
-	.do_schedule = __do_strategy_hpfs
-#elif defined(OUSIA_SCHED_STRATEGY_RGHS)
-	.do_schedule = __do_strategy_rghs
-#else
-	.do_schedule = __do_strategy_edfs_optimized
-#endif
-};
-
 /*
  * @brief   hook to porting layer then asm code
  * @param   none
@@ -320,6 +301,8 @@ void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
 const struct _pqcb_t* _sched_init(void)
 {
 	INIT_LIST_HEAD(&pqcb.pq);
+	sched_class.sched_hook = NULL;
+	sched_class.do_schedule = __do_strategy_rghs;
 	_port_hard_fault_attach(__sched_hard_fault_hook);
 	return &pqcb;
 }
