@@ -32,95 +32,27 @@
 #include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/ds.h>
+#include <console/cmd.h>
 #include <console/console.h>
 
-/*#define DEBUG_CONSOLE*/
-#define USB_SERIAL
-
-#define CMD_CHAR_BUF_SIZE	32
-
-struct cmd_handle {
-	char *cmd_word;
-	int32 (*cmd_fn)(void *args);
-};
-
-struct cmd_char_stack {
-	int32 nc;
-	int32 nc_tot;
-	struct list_head s;
-};
-
-struct cmd_char {
-	char c;
-	struct list_head list;
-};
-
-struct console_cmd {
-	struct cmd_char_stack	ccs;
-	struct cmd_char		cbuf[CMD_CHAR_BUF_SIZE];
-};
-
-/*
- * @brief   command - reboot
- * @param   args -i- arguments for command
- * @return  status code
- */
-static int32 cmd_reboot(void *args)
-{
-#define DO_SOMETHING()	os_process_sleep(1000)
-	/* TODO Prepare things before reboot */
-	os_printf("Rebooting...\n");
-	DO_SOMETHING();
-	os_printf("Ousia warm down.\n\n");
-	return 0;
-}
-
-/*
- * @brief   reserved for debug
- * @param   args -i- arguments for command
- * @return  status code
- */
-static int32 cmd_debug(void *args)
-{
-	os_printf("Customize debug command here.\n");
-	return 0;
-}
-
-/*
- * FIXME
- * Should not be placed here, not convenient to update.
- */
-static const struct cmd_handle hcmd_arr[] = {
-	{
-		.cmd_word = "reboot",
-		.cmd_fn = cmd_reboot,
-	},
-	{
-		.cmd_word = "debug",
-		.cmd_fn = cmd_debug,
-	},
-	{
-		.cmd_word = NULL,
-		.cmd_fn = NULL,
-	}
-};
-
-static void ps_cmdexec(void *args)
-{
-	int32 ret = 0;
-	int32 index = (int32)args;
-
-	ret = hcmd_arr[index].cmd_fn(NULL);
-	if (ret != 0)
-		os_printf("exec fail %d\n", index);
-	os_process_delete(0);
-}
 
 static struct console_cmd conc;
 
 #define PS_CMDEXEC_STACK_SIZE	512
 static uint8 ps_cmdexec_stack[PS_CMDEXEC_STACK_SIZE] = {0};
 static struct _pcb_t ps_cmdexec_pcb;
+
+
+static void ps_cmdexec(void *args)
+{
+	int32 ret = 0;
+	int32 index = (int32)args;
+
+	ret = conc.hcmd_arr[index].cmd_fn(NULL);
+	if (ret != 0)
+		os_printf("exec fail %d\n", index);
+	os_process_delete(0);
+}
 
 static void __cmd_char_push(struct console_cmd *conc, char ch)
 {
@@ -177,8 +109,8 @@ static int32 parse_cmd(struct console_cmd *conc)
 			break;
 	}
 
-	for (index = 0; hcmd_arr[index].cmd_word != NULL; index++) {
-		if (strcmp(cw, hcmd_arr[index].cmd_word) == 0)
+	for (index = 0; conc->hcmd_arr[index].cmd_word != NULL; index++) {
+		if (strcmp(cw, conc->hcmd_arr[index].cmd_word) == 0)
 			return index;
 		else
 			continue;
@@ -208,7 +140,7 @@ static int32 process_enter(struct console_cmd *conc)
 					  PS_CMDEXEC_STACK_SIZE);
 		} else {
 			/* TODO Pass in buffer of args instead of NULL */
-			hcmd_arr[cmd_index].cmd_fn(NULL);
+			conc->hcmd_arr[cmd_index].cmd_fn(NULL);
 		}
 	}
 #else
@@ -254,6 +186,7 @@ static void console_echo(struct console_cmd *conc)
 void ps_console(void *args)
 {
 	INIT_LIST_HEAD(&conc.ccs.s);
+	commands_register(&conc);
 	os_printf("\nWelcome to Ousia console. :)\n");
 	os_printf("Please press ENTER to activate it.\n");
 	for (;;) {

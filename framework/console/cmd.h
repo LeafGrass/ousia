@@ -24,31 +24,18 @@
  * @log     2011.11 first revision
  */
 
-#ifndef __CONSOLE_H__
-#define __CONSOLE_H__
+#ifndef __CMD_H__
+#define __CMD_H__
 
 
-/*#define DEBUG_CONSOLE*/
-#define CMD_CHAR_BUF_SIZE	32
+#define CONSOLE_CMD_NUM_MAX	3
 
-struct cmd_char_stack {
-	int32 nc;
-	int32 nc_tot;
-	struct list_head s;
+struct cmd_handle {
+	char *cmd_word;
+	int32 (*cmd_fn)(void *args);
 };
 
-struct cmd_char {
-	char c;
-	struct list_head list;
-};
-
-struct console_cmd {
-	const struct cmd_handle	*hcmd_arr;
-	struct cmd_char_stack	ccs;
-	struct cmd_char		cbuf[CMD_CHAR_BUF_SIZE];
-};
-
-void ps_console(void *args);
-
+struct console_cmd;
+void commands_register(struct console_cmd *conc);
 
 #endif /* __CONSOLE_H__ */

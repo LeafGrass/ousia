@@ -19,7 +19,9 @@ CFLAGS_$(d) = -I$(d) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) -Wall -Werror
 CFLAGS_$(d) += $(LIBMAPLE_INCLUDES)
 
 # Local rules and targets
-cSRCS_$(d) := console/console.c
+cSRCS_$(d) := \
+	console/console.c \
+	console/cmd.c
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 
