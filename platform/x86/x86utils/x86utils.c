@@ -96,6 +96,17 @@ void x86utils_io_putc(void *p, char ch)
 }
 
 /**
+ * @brief   x86 io getchar routine
+ * @param   none
+ * @return  char
+ * @note    none
+ */
+char x86utils_io_getc(void *p)
+{
+	return getchar();
+}
+
+/**
  * @brief   attach usr systick callback function
  * @param   callback_fn -i- address of user callback function
  * @return  none

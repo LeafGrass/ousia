@@ -148,13 +148,15 @@ void port_hard_fault_attach(void (*fn)(void *args))
  * @return  none
  * @note    none
  */
-void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void port_printf_init(void (**stdout_putf)(void *dev, char ch),
+		      char (**stdin_getf)(void *dev))
 {
-	*stdout_putp = NULL;
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
 	*stdout_putf = stm32utils_usb_putc;
+	*stdin_getf = stm32utils_usb_getc;
 #else
 	*stdout_putf = stm32utils_io_putc;
+	*stdin_getf = stm32utils_io_getc;
 #endif
 }
 

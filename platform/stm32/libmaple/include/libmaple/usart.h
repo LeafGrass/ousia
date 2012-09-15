@@ -473,7 +473,7 @@ static inline void usart_putstr(usart_dev *dev, const char* str) {
  * available.
  *
  * @param dev Serial port to read from
- * @return byte read
+ * @return byte read, -1 will be returned if no data available
  * @see usart_data_available()
  */
 static inline int8 usart_getc(usart_dev *dev) {

@@ -127,9 +127,8 @@ static inline void rb_insert(ring_buffer *rb, uint8 element) {
  * @note Add check empty before read buffer.
  */
 static inline int8 rb_remove(ring_buffer *rb) {
-    if (rb_is_empty(rb)) {
+    if (rb_is_empty(rb))
         return -1;
-    }
     uint8 ch = rb->buf[rb->head];
     rb->head = (rb->head == rb->size) ? 0 : rb->head + 1;
     return ch;

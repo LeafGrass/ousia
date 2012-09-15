@@ -53,7 +53,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <sys/print.h>
 
 typedef void (*putcf)(void *dev, char ch);
+typedef char (*getcf)(void *dev);
 static putcf stdout_putf;
+static getcf stdin_getf;
 static void *stdout_putp;
 
 static void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
@@ -185,12 +187,17 @@ abort:
 
 void _init_printf(void)
 {
-	port_printf_init(&stdout_putp, &stdout_putf);
+	port_printf_init(&stdout_putf, &stdin_getf);
 }
 
-void tfp_putchar(char ch)
+inline void tfp_putchar(char ch)
 {
 	stdout_putf(NULL, ch);
+}
+
+inline char tfp_getchar(void)
+{
+	return stdin_getf(NULL);
 }
 
 void tfp_printf(const char *fmt, ...)

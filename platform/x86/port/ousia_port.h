@@ -44,7 +44,8 @@ typedef struct pt_regs pt_regs_t;
 void port_init(void);
 void port_bsp_init(void);
 void port_hard_fault_attach(void (*fn)(void *args));
-void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
+void port_printf_init(void (**stdout_putf)(void *dev, char ch),
+		      char (**stdin_getf)(void *dev));
 void port_systick_init(void (*callback)(void));
 void *port_context_init(void *pentry, void *args, void *stack_base);
 void port_assert_fail(void);

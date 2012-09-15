@@ -44,6 +44,7 @@
 
 #define USB_TIMEOUT 50
 
+extern int32 (*non_busy_wait)(uint32);
 
 /*
  * @brief   stm32 usb putstr routine
@@ -195,6 +196,25 @@ static void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
 static void usb_disable(gpio_dev *disc_dev, uint8 disc_bit)
 {
 	usb_cdcacm_disable(disc_dev, disc_bit);
+}
+
+/*
+ * @brief   usb getchar routine
+ * @param   p -i- device pointer (could be NULL in tfp_printf)
+ *          buf -i/o- pointer to buffer to store received data
+ * @return  0 read data from usb receiving buffer ok
+ *          -1 no data in usb receiving buffer
+ * @note    none
+ */
+static int32 usb_getc(void *p, char *buf)
+{
+	uint32 len = 0;
+	if (!buf)
+		return -1;
+	len = usb_cdcacm_rx((uint8 *)buf, 1);
+	if (len == 0)
+		return -1;
+	return 0;
 }
 
 /*
@@ -409,16 +429,22 @@ void stm32utils_io_putstr(void *p, const void *buf, uint32 len)
 }
 
 /*
- * @brief   stm32 io getchar routine
+ * @brief   stm32 io getchar routine, block here if no data available
  * @param   p -i- device pointer (could be NULL in tfp_printf)
- *          ch -i/o- pointer to variable to store received data
- * @return  return status
+ * @return  char
  * @note    TODO needs to be completed
  */
-int32 stm32utils_io_getc(void *p, char *ch)
+char stm32utils_io_getc(void *p)
 {
-	*ch = usart_getc(p);
-	return 0;
+	char ch;
+	do {
+		ch = usart_getc(p);
+		if (non_busy_wait)
+			non_busy_wait(10);
+		else
+			continue;
+	} while (ch < 0);
+	return ch;
 }
 
 /*
@@ -442,13 +468,14 @@ void stm32utils_usb_putc(void *p, char ch)
  *          -1 no data in usb receiving buffer
  * @note    none
  */
-int32 stm32utils_usb_getc(void *p, char *buf)
+char stm32utils_usb_getc(void *p)
 {
-	uint32 len = 0;
-	if (!buf)
-		return -1;
-	len = usb_cdcacm_rx((uint8 *)buf, 1);
-	if (len == 0)
-		return -1;
-	return 0;
+	char ch;
+	while (usb_getc(p, &ch) != 0) {
+		if (non_busy_wait)
+			non_busy_wait(10);
+		else
+			continue;
+	}
+	return ch;
 }

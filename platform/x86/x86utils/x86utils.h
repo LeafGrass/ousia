@@ -30,6 +30,7 @@
 
 void x86utils_system_init(void);
 void x86utils_io_putc(void *p, char ch);
+char x86utils_io_getc(void *p);
 void x86utils_attach_systick_callback(void (*callback_fn)(void));
 
 

@@ -102,10 +102,11 @@ void port_dump_stack(const pt_regs_t *pt)
  * @return  none
  * @note    none
  */
-void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void port_printf_init(void (**stdout_putf)(void *dev, char ch),
+		      char (**stdin_getf)(void *dev))
 {
-	*stdout_putp = NULL;
 	*stdout_putf = x86utils_io_putc;
+	*stdin_getf = x86utils_io_getc;
 }
 
 /*

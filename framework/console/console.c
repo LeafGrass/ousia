@@ -33,14 +33,6 @@
 #include <sys/print.h>
 #include <sys/ds.h>
 #include <console/console.h>
-/*
- * FIXME We should setup a platform framework
- * but not use specifc platform directly.
- */
-#include <stm32/libmaple/include/libmaple/libmaple.h>
-#include <stm32/libmaple/include/libmaple/nvic.h>
-#include <stm32/libmaple/include/libmaple/usart.h>
-#include <stm32/stm32utils/stm32utils.h>
 
 /*#define DEBUG_CONSOLE*/
 #define USB_SERIAL
@@ -80,7 +72,6 @@ static int32 cmd_reboot(void *args)
 	os_printf("Rebooting...\n");
 	DO_SOMETHING();
 	os_printf("Ousia warm down.\n\n");
-	nvic_sys_reset();
 	return 0;
 }
 
@@ -234,70 +225,30 @@ static int32 process_enter(struct console_cmd *conc)
 	return 0;
 }
 
-#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
-static inline void console_echo_usb(struct console_cmd *conc)
-{
-	char ch = 0;
-
-	if (stm32utils_usb_getc(NULL, &ch) == 0) {
-		switch (ch) {
-		case '\r':
-			os_putchar('\n');
-			os_putchar('\r');
-			process_enter(conc);
-			break;
-		case '\b':
-			if (conc->ccs.nc != 0) {
-				os_putchar('\b');
-				os_putchar(' ');
-				os_putchar('\b');
-				__cmd_char_pop(conc);
-			}
-			break;
-		default:
-			os_putchar(ch);
-			__cmd_char_push(conc, ch);
-			break;
-		}
-	}
-}
-#else
-static inline void console_echo_serial(struct console_cmd *conc)
-{
-	char ch = 0;
-	int32 i;
-
-	if (USART_CONSOLE_BANK->flag_trigger) {
-		for (i = 0; i < USART_CONSOLE_BANK->cnt_trigger; i++) {
-			stm32utils_io_getc(USART_CONSOLE_BANK, &ch);
-			switch (ch) {
-			case 0:
-				break;
-			case '\r':
-				os_putchar('\n');
-				os_putchar('\r');
-				break;
-			case '\b':
-				os_putchar('\b');
-				os_putchar(' ');
-				os_putchar('\b');
-				break;
-			default:
-				os_putchar(ch);
-				break;
-			}
-		}
-	}
-}
-#endif
-
 static void console_echo(struct console_cmd *conc)
 {
-#if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
-	console_echo_usb(conc);
-#else
-	console_echo_serial(conc);
-#endif
+	char ch = 0;
+
+	ch = os_getchar();
+	switch (ch) {
+	case '\r':
+		os_putchar('\n');
+		os_putchar('\r');
+		process_enter(conc);
+		break;
+	case '\b':
+		if (conc->ccs.nc != 0) {
+			os_putchar('\b');
+			os_putchar(' ');
+			os_putchar('\b');
+			__cmd_char_pop(conc);
+		}
+		break;
+	default:
+		os_putchar(ch);
+		__cmd_char_push(conc, ch);
+		break;
+	}
 }
 
 void ps_console(void *args)

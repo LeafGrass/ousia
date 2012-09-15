@@ -473,6 +473,7 @@ int32 os_process_sleep(uint32 tms)
 
 	return ret;
 }
+int32 (*non_busy_wait)(uint32) = os_process_sleep;
 
 /*
  * @brief   suspend a process
