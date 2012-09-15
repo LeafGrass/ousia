@@ -461,11 +461,9 @@ void stm32utils_usb_putc(void *p, char ch)
 }
 
 /*
- * @brief   stm32 usb getchar routine
+ * @brief   stm32 usb getchar routine, block here if no data available
  * @param   p -i- device pointer (could be NULL in tfp_printf)
- *          buf -i/o- pointer to buffer to store received data
- * @return  0 read data from usb receiving buffer ok
- *          -1 no data in usb receiving buffer
+ * @return  char
  * @note    none
  */
 char stm32utils_usb_getc(void *p)
