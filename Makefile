@@ -4,7 +4,7 @@
 VERSION = 0
 SUBLEVEL = 1
 DEVNUM = 0
-VERNAME = Gallinero
+VERNAME = Gaping-Monkshood
 
 ########################################
 # User Customization Items

@@ -1,6 +1,22 @@
 Ousia Release Notes
 ===================
 
+2012-09-15 v0.1.1
+--------------------
+Brief:
+	Mainly added a console module at /framework, along with some
+	refinings such as add the getchar routine rather than use low-level
+	io code directly.
+Bug fixes:
+	None.
+New features:
+	console
+Known issues:
+	A great bunch of issues....
+	See link below for detailed informations.
+	https://github.com/LeafGrass/ousia/issues
+
+
 2012-09-05 v0.1.0
 --------------------
 Brief:

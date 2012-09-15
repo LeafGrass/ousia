@@ -83,5 +83,6 @@ static int32 cmd_reboot(void *args)
 	os_printf("Rebooting...\n");
 	DO_SOMETHING();
 	os_printf("Ousia warm down.\n\n");
+	/* TODO Do real hardware reset here */
 	return 0;
 }

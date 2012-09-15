@@ -21,14 +21,12 @@
 /*
  * @file    framework/console/console.h
  * @brief   console header
- * @log     2011.11 first revision
+ * @log     2012.9 first revision
  */
 
 #ifndef __CMD_H__
 #define __CMD_H__
 
-
-#define CONSOLE_CMD_NUM_MAX	3
 
 struct cmd_handle {
 	char *cmd_word;
@@ -37,5 +35,6 @@ struct cmd_handle {
 
 struct console_cmd;
 void commands_register(struct console_cmd *conc);
+
 
 #endif /* __CONSOLE_H__ */
