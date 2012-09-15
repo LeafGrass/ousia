@@ -30,6 +30,8 @@
 /* user main process entry */
 extern void ps_main(void *args);
 
+void os_enter_critical(void);
+void os_exit_critical(void);
 int32 os_init(void);
 inline void os_kick_off(void);
 

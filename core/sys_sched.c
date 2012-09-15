@@ -303,7 +303,7 @@ const struct _pqcb_t* _sched_init(void)
 	INIT_LIST_HEAD(&pqcb.pq);
 	sched_class.sched_hook = NULL;
 	sched_class.do_schedule = __do_strategy_rghs;
-	_port_hard_fault_attach(__sched_hard_fault_hook);
+	port_hard_fault_attach(__sched_hard_fault_hook);
 	return &pqcb;
 }
 
@@ -328,7 +328,7 @@ void _sched_schedule(void)
 	if (ready != curr_pcb) {
 		curr_pcb = ready;
 		curr_pcb->stat = PSTAT_RUNNING;
-		_port_context_switch((uint32)tmp, (uint32)curr_pcb);
+		port_context_switch((uint32)tmp, (uint32)curr_pcb);
 	}
 }
 
@@ -343,7 +343,7 @@ void _sched_startup(void)
 {
 	curr_pcb = __pq_get_head(&pqcb);
 	curr_pcb->stat = PSTAT_RUNNING;
-	_port_first_switch((uint32)__pq_get_head(&pqcb));
+	port_first_switch((uint32)__pq_get_head(&pqcb));
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
 	os_assert(0);
 }
@@ -369,7 +369,7 @@ void _sched_attach_hook(void (*fn)(const void *args))
 void os_dump_stack(void)
 {
 	_sched_dump_pcb(curr_pcb);
-	_port_dump_stack((pt_regs_t *)curr_pcb->stack_ptr);
+	port_dump_stack((pt_regs_t *)curr_pcb->stack_ptr);
 }
 
 /*
@@ -413,7 +413,7 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 	stk = stk + stack_sz - 4;
 #endif
 
-	new_pcb->stack_ptr = _port_context_init(pentry, args, (void *)stk);
+	new_pcb->stack_ptr = port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
 	new_pcb->name = name;
 	new_pcb->stack_sz = stack_sz;

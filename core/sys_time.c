@@ -27,6 +27,7 @@
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
 #include <sys/print.h>
+#include <sys/sync.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 
@@ -58,7 +59,7 @@ static void __systick_interrupt(void)
 void _sys_time_systick_init(void)
 {
 	__systime = 0UL;
-	_port_systick_init(&__systick_interrupt);
+	port_systick_init(&__systick_interrupt);
 }
 
 /*

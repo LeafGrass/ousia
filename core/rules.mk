@@ -15,8 +15,9 @@ cSRCS_$(d) := \
 	sys_main.c \
 	sys_print.c \
 	sys_mm.c \
-	sys_sched.c \
 	sys_time.c \
+	sys_sched.c \
+	sys_sync.c \
 	sys_utils.c \
 	sys_ictl.c \
 	sys_debug.c \

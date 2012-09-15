@@ -51,9 +51,6 @@
 #define OS_DISABLE_INTERRUPTS() OS_SET_INTERRUPT_MASK()
 #define OS_ENABLE_INTERRUPTS()  OS_CLEAR_INTERRUPT_MASK()
 
-#define os_enter_critical() _os_enter_critical()
-#define os_exit_critical()  _os_exit_critical()
-
 struct pt_regs {
 	uint32 r4;
 	uint32 r5;
@@ -74,18 +71,16 @@ struct pt_regs {
 };
 typedef struct pt_regs pt_regs_t;
 
-void _os_enter_critical(void);
-void _os_exit_critical(void);
-void _os_port_init(void);
-void _os_port_bsp_init(void);
-void _port_hard_fault_attach(void (*fn)(void *args));
-void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
-void _port_systick_init(void (*callback)(void));
-uint32 *_port_context_init(void *pentry, void *args, void *stack_base);
-void _port_assert_fail(void) __attribute__((noreturn));
-void _port_dump_stack(const pt_regs_t *pt);
-void _port_context_switch(uint32 curr_pcb, uint32 target_pcb) __attribute__((naked));
-void _port_first_switch(uint32 target_pcb) __attribute__((naked));
+void port_init(void);
+void port_bsp_init(void);
+void port_hard_fault_attach(void (*fn)(void *args));
+void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch));
+void port_systick_init(void (*callback)(void));
+uint32 *port_context_init(void *pentry, void *args, void *stack_base);
+void port_assert_fail(void) __attribute__((noreturn));
+void port_dump_stack(const pt_regs_t *pt);
+void port_context_switch(uint32 curr_pcb, uint32 target_pcb) __attribute__((naked));
+void port_first_switch(uint32 target_pcb) __attribute__((naked));
 
 
 #endif /* OUSIA_PORT_H */

@@ -101,10 +101,10 @@ static void __cps_idle(void *args)
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
 			/* TODO Collect the statistics and **store** them */
-#if 0
 			os_printk(LOG_DEBUG, "%d sched in the last second, "
 					"cpu usage: %%%d\n",
 					n_sched_one_second, 100-ticks_delta/40);
+#if 0
 			_sched_dump_pq(pqcb_hook);
 #endif
 		}
@@ -170,7 +170,7 @@ int32 os_init(void)
 {
 	int32 ret = OS_OK;
 
-	_os_port_init();
+	port_init();
 	_init_printf();
 	os_putchar(0x0c);
 	BOOT_LOGO(__logo1, __logo2);

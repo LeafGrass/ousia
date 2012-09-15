@@ -34,36 +34,7 @@
 uint8 *__heap_start;
 uint8 *__heap_end;
 
-static unsigned int critical_nest;
 static void (*__hard_fault_call)(void *args);
-
-/*
- * @brief   enter critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_enter_critical(void)
-{
-	OS_DISABLE_INTERRUPTS();
-	critical_nest++;
-}
-
-/*
- * @brief   exit critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_exit_critical(void)
-{
-	critical_nest--;
-	if (critical_nest == 0)
-	{
-		OS_ENABLE_INTERRUPTS();
-	}
-}
-
 
 /*
  * @brief   porting related init
@@ -71,7 +42,7 @@ void _os_exit_critical(void)
  * @return  none
  * @note    none
  */
-void _os_port_init(void)
+void port_init(void)
 {
 	__heap_start = (uint8 *)malloc(OUSIA_MM_HEAP_SIZE);
 	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
@@ -83,7 +54,7 @@ void _os_port_init(void)
  * @return  none
  * @note    none
  */
-void _os_port_bsp_init(void)
+void port_bsp_init(void)
 {
 	x86utils_system_init();
 }
@@ -94,7 +65,7 @@ void _os_port_bsp_init(void)
  * @return  none
  * @note    none
  */
-void _port_hard_fault_attach(void (*fn)(void *args))
+void port_hard_fault_attach(void (*fn)(void *args))
 {
 	__hard_fault_call = fn;
 }
@@ -105,7 +76,7 @@ void _port_hard_fault_attach(void (*fn)(void *args))
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(void)
+void port_assert_fail(void)
 {
 	while (1) {
 		usleep(10*1000*1000);
@@ -118,7 +89,7 @@ void _port_assert_fail(void)
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
  */
-void _port_dump_stack(const pt_regs_t *pt)
+void port_dump_stack(const pt_regs_t *pt)
 {
 	if (pt == NULL)
 		return;
@@ -131,7 +102,7 @@ void _port_dump_stack(const pt_regs_t *pt)
  * @return  none
  * @note    none
  */
-void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
 	*stdout_putp = NULL;
 	*stdout_putf = x86utils_io_putc;
@@ -143,7 +114,7 @@ void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _port_systick_init(void (*callback)(void))
+void port_systick_init(void (*callback)(void))
 {
 	x86utils_attach_systick_callback(callback);
 	/* here call fake systick enable */
@@ -157,7 +128,7 @@ void _port_systick_init(void (*callback)(void))
  * @return  none
  * @note    FIXME needs verification and complete
  */
-void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
+void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 }
 
@@ -167,7 +138,7 @@ void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
  * @return  none
  * @note    none
  */
-void _port_first_switch(uint32 target_pcb)
+void port_first_switch(uint32 target_pcb)
 {
 }
 
@@ -179,7 +150,7 @@ void _port_first_switch(uint32 target_pcb)
  * @return  pointer to initialized stack
  * @note    This is a fake stack init function
  */
-void *_port_context_init(void *pentry, void *args, void *stack_base)
+void *port_context_init(void *pentry, void *args, void *stack_base)
 {
 	void *stack;
 	stack = stack_base;

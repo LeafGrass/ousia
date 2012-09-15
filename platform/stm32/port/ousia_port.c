@@ -84,34 +84,9 @@ static void __hard_fault_handler(uint32 psp, uint32 exc_num)
 	p = (pt_regs_t *)(psp - 32);
 	os_printk(LOG_CRITICAL, "%s - psp: 0x%08X, exception number: %d\n",
 			__func__, psp, exc_num);
-	_port_dump_stack(p);
+	port_dump_stack(p);
 
 	__hard_fault_call((void *)psp);
-}
-
-/*
- * @brief   enter critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_enter_critical(void)
-{
-	OS_DISABLE_INTERRUPTS();
-	critical_nest++;
-}
-
-/*
- * @brief   exit critical
- * @param   none
- * @return  none
- * @note    none
- */
-void _os_exit_critical(void)
-{
-	critical_nest--;
-	if (critical_nest == 0)
-		OS_ENABLE_INTERRUPTS();
 }
 
 /*
@@ -120,7 +95,7 @@ void _os_exit_critical(void)
  * @return  none
  * @note    FIXME Do it later than or before bsp_init?
  */
-void _os_port_init(void)
+void port_init(void)
 {
 	old_pcb = 0;
 	new_pcb = 0;
@@ -138,7 +113,7 @@ void _os_port_init(void)
  * @return  none
  * @note    none
  */
-void _os_port_bsp_init(void)
+void port_bsp_init(void)
 {
 	int i;
 
@@ -161,7 +136,7 @@ void _os_port_bsp_init(void)
  * @return  none
  * @note    none
  */
-void _port_hard_fault_attach(void (*fn)(void *args))
+void port_hard_fault_attach(void (*fn)(void *args))
 {
 	__hard_fault_call = fn;
 }
@@ -173,7 +148,7 @@ void _port_hard_fault_attach(void (*fn)(void *args))
  * @return  none
  * @note    none
  */
-void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
+void port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char ch))
 {
 	*stdout_putp = NULL;
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
@@ -189,7 +164,7 @@ void _port_printf_init(void **stdout_putp, void (**stdout_putf)(void *dev, char 
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void _port_systick_init(void (*callback)(void))
+void port_systick_init(void (*callback)(void))
 {
 	/* api of libmaple */
 	systick_attach_callback(callback);
@@ -205,7 +180,7 @@ void _port_systick_init(void (*callback)(void))
  * @note    TODO we may not need to initialize each reg
  *               init value of lr needs to be confirmed
  */
-uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
+uint32 *port_context_init(void *pentry, void *args, void *stack_base)
 {
 	uint32 *stack = NULL;
 	stack = (uint32 *)stack_base;
@@ -236,7 +211,7 @@ uint32 *_port_context_init(void *pentry, void *args, void *stack_base)
  * @return  none
  * @note    may not needed
  */
-void _port_assert_fail(void)
+void port_assert_fail(void)
 {
 	while (1) {
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
@@ -250,7 +225,7 @@ void _port_assert_fail(void)
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
  */
-void _port_dump_stack(const pt_regs_t *pt)
+void port_dump_stack(const pt_regs_t *pt)
 {
 	if (pt == NULL) {
 		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
@@ -281,7 +256,7 @@ void _port_dump_stack(const pt_regs_t *pt)
  * @return  none
  * @note    none
  */
-void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
+void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 	__asm volatile
 	(
@@ -308,7 +283,7 @@ void _port_context_switch(uint32 curr_pcb, uint32 target_pcb)
  * @return  none
  * @note    none
  */
-void _port_first_switch(uint32 target_pcb)
+void port_first_switch(uint32 target_pcb)
 {
 	__asm volatile
 	(
