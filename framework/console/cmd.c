@@ -26,11 +26,9 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <ulib/string.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 #include <sys/print.h>
-#include <sys/ds.h>
 #include <console/console.h>
 #include <console/cmd.h>
 
