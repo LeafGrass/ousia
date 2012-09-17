@@ -381,9 +381,10 @@ void os_dump_stack(void)
  *          stack_base -i- start address of stack
  *          stack_sz -i- process private stack size
  * @return  pid if create success
- * @note    TODO we'd better use dynamic memory in the future
- *          to allocate a pcb and a stack if for a new process
- *          so, pcb structure should not be opened for user
+ * @note    TODO We'd better use dynamic memory in the future
+ *               to allocate a pcb and a stack if for a new process
+ *               so, pcb structure should not be opened for user,
+ *               as well as stack.
  *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
 int32 __os_process_create(void *pcb, void *pentry, char *name,
