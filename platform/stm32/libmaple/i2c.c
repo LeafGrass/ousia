@@ -23,6 +23,11 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * Modification:
+ *     @date 2012.11
+ *     @reviser Librae
+ *     @brief If error occurs, reset the i2c bus to avoid crash.
  *****************************************************************************/
 
 /**
@@ -200,6 +205,7 @@ void i2c_master_enable(i2c_dev *dev, uint32 flags) {
     i2c_peripheral_enable(dev);
 
     dev->state = I2C_STATE_IDLE;
+    dev->flags = flags;
 }
 
 /**
@@ -236,6 +242,9 @@ int32 i2c_master_xfer(i2c_dev *dev,
 
     rc = wait_for_state_change(dev, I2C_STATE_XFER_DONE, timeout);
     if (rc < 0) {
+        /* reset the bus to avoid crash */
+        i2c_disable(dev);
+        i2c_master_enable(dev, I2C_BUS_RESET | dev->flags);
         goto out;
     }
 

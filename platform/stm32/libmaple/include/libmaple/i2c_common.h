@@ -23,6 +23,11 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * Modification:
+ *     @date 2012.11
+ *     @reviser Librae
+ *     @brief Add a member flags in i2c_dev struct.
  *****************************************************************************/
 
 /**
@@ -88,6 +93,14 @@ typedef struct i2c_dev {
     nvic_irq_num ev_nvic_line;  /**< Event IRQ number */
     nvic_irq_num er_nvic_line;  /**< Error IRQ number */
     volatile i2c_state state;   /**< Device state */
+
+    /*
+     * added by Librae
+     * Used for saving flags set by application last time,
+     * thus, if error occurs, we can reset the i2c bus and
+     * set it with this flag as application did.
+     */
+    uint32 flags;               /**< Device flags set last time */
 } i2c_dev;
 
 #endif
