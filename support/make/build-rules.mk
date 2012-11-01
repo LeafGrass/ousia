@@ -18,7 +18,7 @@ ifndef V
 	SILENT_LD       = @echo '  [LD]       ' $(@F);
 	SILENT_AR       = @echo '  [AR]       ' $(@F);
 	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
-	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).disas;
+	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).lss;
 	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
 endif
 #endef
