@@ -464,8 +464,8 @@ void stm32utils_board_init(void)
 	usart_setup(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
 	usb_disable(USB_DISC_DEV, USB_DISC_BIT);
 	usb_enable(USB_DISC_DEV, USB_DISC_BIT);
-	usb_putstr("", 0);
 
+	usb_putstr("", 0);
 	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 	gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
 }
