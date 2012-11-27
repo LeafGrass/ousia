@@ -1,0 +1,18 @@
+NOTE!
+Bootloader source code is removed. We only retained the prebuilt binary.
+Here record the binaries' version.
+For source code, please refer to LeafLabs source tree:
+    https://github.com/leaflabs/maple-bootloader.git
+
+maple-boot
+----------
+commit 1deec3939d13888526d4483f077f8d54997913ef
+Merge: 3f42431 92fcbef
+Author: Marti Bolivar <mbolivar@leaflabs.com>
+Date:   Thu Nov 1 18:10:42 2012 -0400
+
+mini-boot
+---------
+commit 6a47cf0c4f722702ede3eb19a93f803d08e06859
+Author: Marti Bolivar <mbolivar@leaflabs.com>
+Date:   Tue May 15 14:26:28 2012 -0400

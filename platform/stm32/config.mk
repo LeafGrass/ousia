@@ -1,7 +1,7 @@
 ########################################
 # User Customization Items
 ########################################
-BOARD = leach
+BOARD = mini
 MEMORY_TARGET = flash
 
 ########################################
@@ -13,6 +13,7 @@ MEMORY_TARGET = flash
 # These are specialized for stm32.
 
 ifeq ($(BOARD), mini)
+BOOT_BIN := bootloader/prebuilt/mini_boot.bin
 MCU := STM32F103CB
 MCU_SERIES := stm32f1
 MCU_F1_LINE := performance
@@ -29,6 +30,7 @@ USB_DISC_DEV := GPIOB
 USB_DISC_BIT := 9
 endif
 ifeq ($(BOARD), leach)
+BOOT_BIN := bootloader/prebuilt/maple_boot.bin
 MCU = STM32F103RB
 MCU_SERIES := stm32f1
 MCU_F1_LINE := performance
@@ -45,6 +47,7 @@ USB_DISC_DEV = GPIOC
 USB_DISC_BIT = 12
 endif
 ifeq ($(BOARD), leach_h)
+BOOT_BIN := bootloader/prebuilt/maple_boot.bin
 MCU = STM32F103VC
 MCU_SERIES := stm32f1
 MCU_F1_LINE := performance
