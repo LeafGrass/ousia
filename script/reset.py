@@ -47,8 +47,11 @@ def windows_get_maple_path():
     i = 0
     while True:
         try:
-            possible_paths.append(reg.EnumValue(k, i)[1])
-            i += 1
+            if reg.EnumValue(k, i)[0].count('USBSER')>=1:
+                possible_paths.append(reg.EnumValue(k, i)[1])
+                i += 1
+            else:
+                i += 1
         except WindowsError:
             break
     return choose_path(possible_paths)
@@ -142,4 +145,3 @@ try:
 except Exception as e:
     print('Failed to open serial port %s for reset' % maple_path)
     sys.exit()
-
