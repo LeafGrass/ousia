@@ -217,7 +217,7 @@ static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
 void __sched_hard_fault_hook(void *args)
 {
 	_sched_dump_pcb(curr_pcb);
-	_sched_dump_pq(&pqcb);
+	_sched_dump_pq();
 }
 
 /*
@@ -285,15 +285,13 @@ void _sched_dump_pcb(const struct _pcb_t *p_pcb)
  * @brief   dump process queue
  * @param   p_pqcb -i- pointer of pqcb
  * @return  nothing
- * @note    none
+ * @note    currently, only one process queue, so dump it!
  */
-void _sched_dump_pq(const struct _pqcb_t *p_pqcb)
+void _sched_dump_pq(void)
 {
 	struct _pcb_t *pcb;
-	if (p_pqcb == NULL) {
-		os_printk(LOG_ERROR, "%s - pqcb is NULL\n", __func__);
-		return;
-	}
+	const struct _pqcb_t *p_pqcb = &pqcb;
+
 	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
 	os_printk(LOG_INFO, "   pid   pcb      state  prio      "
 			    "run      sleep   name\n");
@@ -381,8 +379,6 @@ void _sched_attach_hook(void (*fn)(const void *args))
  * @brief   dump stack api for user
  * @param   none
  * @return  none
- * @note    FIXME Temporarily used for debug.
- *                We need to dump **really** stack.
  */
 void os_dump_stack(void)
 {

@@ -72,7 +72,7 @@ static int32 cmd_help(void *args)
 
 static int32 cmd_debug(void *args)
 {
-	os_printf("Customize debug command here.\n");
+	_sched_dump_pq();
 	return 0;
 }
 
