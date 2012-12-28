@@ -88,6 +88,24 @@ static inline struct _pcb_t *__pcb_get_next(const struct _pcb_t *p)
 }
 
 /*
+ * @brief   iterate the pcb list to find the pid match one
+ * @param   pid -i- pid of target pcb
+ * @return  pointer of the target pcb if successfully find
+ *          return NULL if no one match
+ *          FIXME normal list would not be efficient
+ *                but for a small system, isn't it enough?
+ */
+static struct _pcb_t *__pcb_from_pid(uint32 pid)
+{
+	struct _pcb_t *pcb;
+	list_for_each_entry(pcb, &pqcb.pq, list) {
+		if (pcb->pid == pid)
+			return pcb;
+	}
+	return NULL;
+}
+
+/*
  * @brief   __pq_get_head
  * @param   p_pqcb -i- pointer of pqcb
  * @return  pcb at the queue head
@@ -181,7 +199,7 @@ static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
 
 	do {
 		__pcb_dequeue(pcb);
-		if (pcb->stat != PSTAT_KILLING)
+		if (pcb->stat != PSTAT_KILLED)
 			__pcb_enqueue(pcb);
 		pcb = __pq_get_head(pqcb);
 	} while (pcb->stat != PSTAT_READY);
@@ -213,7 +231,7 @@ void _sched_systick_call(void)
 	struct _pcb_t *pcb;
 	list_for_each_entry(pcb, &pqcb.pq, list) {
 		switch (pcb->stat) {
-		case PSTAT_BLOCKING:
+		case PSTAT_BLOCKED:
 			pcb->tcb.ticks_running = 0;
 			break;
 		case PSTAT_RUNNING:
@@ -435,7 +453,7 @@ int32 os_process_delete(uint32 pid)
 	 * 1. remove the process from pqcb
 	 * 2. reschedule
 	 */
-	curr_pcb->stat = PSTAT_KILLING;
+	curr_pcb->stat = PSTAT_KILLED;
 	_sched_schedule();
 
 	return ret;
@@ -472,30 +490,36 @@ int32 (*non_busy_wait)(uint32) = os_process_sleep;
  * @brief   suspend a process
  * @param   pid -i- pid of target process
  * @return  int32
- * @note    none
+ * @note    TODO only support intiative suspend for now
  */
-int32 os_process_suspend(uint32 pid)
+int32 os_process_suspend(void)
 {
-	int32 ret = OS_OK;
-
-	curr_pcb->stat = PSTAT_BLOCKING;
-
-	os_printk(LOG_INFO, "%s, pid: %d\n", __func__, pid);
+	curr_pcb->stat = PSTAT_BLOCKED;
+	os_printk(LOG_INFO, "%s, pid: %d %s\n",
+			    __func__, curr_pcb->pid, curr_pcb->name);
 	_sched_schedule();
-
-	return ret;
+	return OS_OK;
 }
 
 /*
  * @brief   resume a process
  * @param   pid -i- pid of target process
  * @return  int32
- * @note    none
+ * @note    FIXME should only resume those who went to PSTAT_BLOCKED
+ *                by calling os_process_suspend
  */
 int32 os_process_resume(uint32 pid)
 {
-	int32 ret = OS_OK;
-	return ret;
+	struct _pcb_t *pcb;
+	pcb = __pcb_from_pid(pid);
+	if (pcb == NULL) {
+		os_printk(LOG_ERROR, "%s failed.\n", __func__);
+		return -OS_EFAIL;
+	}
+	if (pcb->stat == PSTAT_BLOCKED)
+		pcb->stat = PSTAT_READY;
+	os_printk(LOG_INFO, "%s, pid: %d %s\n", __func__, pcb->pid, pcb->name);
+	return OS_OK;
 }
 
 /*

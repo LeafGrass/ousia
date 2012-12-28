@@ -34,11 +34,11 @@
  * FIXME need an exact requirement for each state
  */
 enum _pstate {
-	PSTAT_KILLING  = -2,
-	PSTAT_BLOCKING = -1,
-	PSTAT_RUNNING  = 0,
-	PSTAT_SLEEPING = 1,
-	PSTAT_READY    = 2
+	PSTAT_KILLED    = -2,
+	PSTAT_BLOCKED   = -1,
+	PSTAT_RUNNING   = 0,
+	PSTAT_SLEEPING  = 1,
+	PSTAT_READY     = 2,
 };
 
 /*
@@ -91,7 +91,7 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 	} while (0)
 int32 os_process_delete(uint32 pid);
 int32 os_process_sleep(uint32 tms);
-int32 os_process_suspend(uint32 pid);
+int32 os_process_suspend(void);
 int32 os_process_resume(uint32 pid);
 int32 os_process_yield(void);
 

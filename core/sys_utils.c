@@ -104,9 +104,6 @@ static void __cps_idle(void *args)
 			os_printk(LOG_DEBUG, "%d sched in the last second, "
 					"cpu usage: %%%d\n",
 					n_sched_one_second, 100-ticks_delta/40);
-#if 0
-			_sched_dump_pq(pqcb_hook);
-#endif
 		}
 
 		/*
@@ -139,7 +136,7 @@ static void __cps_init(void *args)
 	os_process_create(&ps_main_pcb, ps_main, NULL,
 			  ps_main_stack, PS_MAIN_STACK_SIZE);
 
-	os_process_suspend(__cps_init_pcb.pid);
+	os_process_suspend();
 }
 
 /*
