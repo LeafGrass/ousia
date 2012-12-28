@@ -392,17 +392,7 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 {
 	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
 	uint8 *stk = (uint8 *)stack_base;
-
-	os_printk(LOG_INFO, "===> new process: %s\n", name);
-	os_printk(LOG_DEBUG, "\t\t+-------------------\n"
-			     "\t\t| pcb: 0x%08p\n"
-			     "\t\t| stack_base: 0x%08p\n"
-			     "\t\t| stack_sz: %d\n"
-			     "\t\t| entry: 0x%08p\n"
-			     "\t\t| prio: %d\n"
-			     "\t\t+-------------------\n",
-			     new_pcb, stack_base, stack_sz,
-			     pentry, new_pcb->prio);
+	static unsigned int cnt = 0;
 
 	/* TODO here to allocate resources to a process */
 
@@ -417,6 +407,7 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 	new_pcb->stack_ptr = port_context_init(pentry, args, (void *)stk);
 	new_pcb->pentry = pentry;
 	new_pcb->name = name;
+	new_pcb->pid = ++cnt;
 	new_pcb->stack_sz = stack_sz;
 	new_pcb->tcb.deadline = 0;
 	new_pcb->tcb.ticks_sleeping = 0;
@@ -425,6 +416,7 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 
 	__pcb_enqueue(new_pcb);
 
+	os_printk(LOG_INFO, "==> new: %s (%u)\n", name, new_pcb->pid);
 	return new_pcb->pid;
 }
 

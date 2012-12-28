@@ -45,7 +45,7 @@ static const char __logo1[] =
 static const char __logo2[] =
 	"\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
 
-#define CPS_INIT_STACK_SIZE	256
+#define CPS_INIT_STACK_SIZE	512
 #define CPS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	1024
 
@@ -151,11 +151,8 @@ static void __cps_init(void *args)
 static int32 __process_init(void)
 {
 	int32 ret = OS_OK;
-
-	/* TODO create two processes at init */
 	os_process_create(&__cps_init_pcb, __cps_init, NULL,
 			  __cps_init_stack, CPS_INIT_STACK_SIZE);
-
 	return ret;
 }
 
