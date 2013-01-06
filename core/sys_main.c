@@ -39,7 +39,7 @@
  * @param   none
  * @return  none
  */
-void os_main(void)
+void __os_main(void)
 {
 	int32 ret;
 

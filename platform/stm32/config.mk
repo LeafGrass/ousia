@@ -106,21 +106,19 @@ GLOBAL_FLAGS := \
 GLOBAL_CFLAGS := \
 	-g3 -gdwarf-2 -mcpu=cortex-m3 -mthumb -march=armv7-m -O2 \
 	-nostdlib -nostdinc -ffunction-sections -fdata-sections \
-	-Wl,--gc-sections -Wno-unused-function $(GLOBAL_FLAGS) \
+	-Wno-unused-function $(GLOBAL_FLAGS) \
 
 GLOBAL_ASFLAGS := \
 	-mcpu=cortex-m3 -march=armv7-m -mthumb \
 	-x assembler-with-cpp $(GLOBAL_FLAGS)
 
 LDFLAGS := \
-	-Xlinker \
-	-T$(LD_SCRIPT_PATH) \
+	-L$(LDDIR) \
 	-L$(LD_SERIES_PATH) \
 	-L$(LD_MEM_PATH) \
 	-L$(LD_SERIES_LINE_PATH) \
-	-L$(LDDIR) \
-	-mcpu=cortex-m3 -mthumb \
-	--gc-sections --print-gc-sections --march=armv7-m -Wall
+	-T$(LD_SCRIPT_PATH) \
+	--gc-sections -nostartfiles
 
 # Build Environment
 SHELL	:= /bin/bash

@@ -1,7 +1,7 @@
 # Useful tools
 CC      := $(CROSS)gcc
 CXX     := $(CROSS)g++
-LD      := $(CROSS)ld -v
+LD      := $(CROSS)ld
 AR      := $(CROSS)ar
 AS      := $(CROSS)gcc
 OBJCOPY := $(CROSS)objcopy

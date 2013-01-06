@@ -44,14 +44,8 @@
 
 #include <ulib/stddef.h>
 
-extern void __libc_init_array(void);
-
 /* The main function is customized for ousia. */
-#if 0
-extern int os_main(int, char**, char**);
-#else
-void os_main(void);
-#endif
+void __os_main(void);
 
 extern void exit(int) __attribute__((noreturn, weak));
 
@@ -84,16 +78,9 @@ void __attribute__((noreturn)) start_c(void) {
         *dst++ = 0;
     }
 
-    /* Run initializers. */
-    __libc_init_array();
-
     /* Jump to main. */
-#if 0
-    /* no exit_code provided */
-    exit_code = os_main(0, 0, 0);
-#else
-    os_main();
-#endif
+    __os_main();
+
     if (exit) {
         exit(exit_code);
     }
