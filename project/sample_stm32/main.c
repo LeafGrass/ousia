@@ -35,9 +35,9 @@ static void ps_child(void *args)
 {
 	for (;;) {
 		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
-		os_process_sleep(99);
+		os_process_sleep(25);
 		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
-		os_process_sleep(4900);
+		os_process_sleep(4974);
 	}
 }
 
