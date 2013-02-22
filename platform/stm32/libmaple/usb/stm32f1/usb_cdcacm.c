@@ -22,6 +22,11 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * Modification:
+ *     @date 2012
+ *     @reviser Librae
+ *     @brief Add boards definitions for Ousia.
  *****************************************************************************/
 
 /**
@@ -82,27 +87,6 @@ static uint8* usbGetConfigDescriptor(uint16 length);
 static uint8* usbGetStringDescriptor(uint16 length);
 static void usbSetConfiguration(void);
 static void usbSetDeviceAddress(void);
-
-/*
- * Endpoint configuration
- */
-
-#define USB_CDCACM_CTRL_ENDP            0
-#define USB_CDCACM_CTRL_RX_ADDR         0x40
-#define USB_CDCACM_CTRL_TX_ADDR         0x80
-#define USB_CDCACM_CTRL_EPSIZE          0x40
-
-#define USB_CDCACM_TX_ENDP              1
-#define USB_CDCACM_TX_ADDR              0xC0
-#define USB_CDCACM_TX_EPSIZE            0x40
-
-#define USB_CDCACM_MANAGEMENT_ENDP      2
-#define USB_CDCACM_MANAGEMENT_ADDR      0x100
-#define USB_CDCACM_MANAGEMENT_EPSIZE    0x40
-
-#define USB_CDCACM_RX_ENDP              3
-#define USB_CDCACM_RX_ADDR              0x110
-#define USB_CDCACM_RX_EPSIZE            0x40
 
 /*
  * Descriptors
@@ -290,6 +274,8 @@ static volatile uint8 vcomBufferRx[USB_CDCACM_RX_EPSIZE];
 static volatile uint32 rx_offset = 0;
 /* Number of bytes left to transmit */
 static volatile uint32 n_unsent_bytes = 0;
+/* Are we currently sending an IN packet? */
+static volatile uint8 transmitting = 0;
 /* Number of unread bytes */
 static volatile uint32 n_unread_bytes = 0;
 
@@ -330,16 +316,19 @@ static void (*ep_int_out[7])(void) =
 
 /*
  * Globals required by usb_lib/
+ *
+ * Mark these weak so they can be overriden to implement other USB
+ * functionality.
  */
 
 #define NUM_ENDPTS                0x04
-DEVICE Device_Table = {
+__weak DEVICE Device_Table = {
     .Total_Endpoint      = NUM_ENDPTS,
     .Total_Configuration = 1
 };
 
 #define MAX_PACKET_SIZE            0x40  /* 64B, maximum for USB FS Devices */
-DEVICE_PROP Device_Property = {
+__weak DEVICE_PROP Device_Property = {
     .Init                        = usbInit,
     .Reset                       = usbReset,
     .Process_Status_IN           = NOP_Process,
@@ -354,7 +343,7 @@ DEVICE_PROP Device_Property = {
     .MaxPacketSize               = MAX_PACKET_SIZE
 };
 
-USER_STANDARD_REQUESTS User_Standard_Requests = {
+__weak USER_STANDARD_REQUESTS User_Standard_Requests = {
     .User_GetConfiguration   = NOP_Process,
     .User_SetConfiguration   = usbSetConfiguration,
     .User_GetInterface       = NOP_Process,
@@ -415,7 +404,7 @@ void usb_cdcacm_putc(char ch) {
  * buffer, and returns the number of bytes copied. */
 uint32 usb_cdcacm_tx(const uint8* buf, uint32 len) {
     /* Last transmission hasn't finished, so abort. */
-    if (n_unsent_bytes) {
+    if (usb_cdcacm_is_transmitting()) {
         return 0;
     }
 
@@ -427,10 +416,14 @@ uint32 usb_cdcacm_tx(const uint8* buf, uint32 len) {
     /* Queue bytes for sending. */
     if (len) {
         usb_copy_to_pma(buf, len, USB_CDCACM_TX_ADDR);
-        usb_set_ep_tx_count(USB_CDCACM_TX_ENDP, len);
-        n_unsent_bytes = len;
-        usb_set_ep_tx_stat(USB_CDCACM_TX_ENDP, USB_EP_STAT_TX_VALID);
     }
+    // We still need to wait for the interrupt, even if we're sending
+    // zero bytes. (Sending zero-size packets is useful for flushing
+    // host-side buffers.)
+    usb_set_ep_tx_count(USB_CDCACM_TX_ENDP, len);
+    n_unsent_bytes = len;
+    transmitting = 1;
+    usb_set_ep_tx_stat(USB_CDCACM_TX_ENDP, USB_EP_STAT_TX_VALID);
 
     return len;
 }
@@ -439,7 +432,11 @@ uint32 usb_cdcacm_data_available(void) {
     return n_unread_bytes;
 }
 
-uint16 usb_cdcacm_get_pending() {
+uint8 usb_cdcacm_is_transmitting(void) {
+    return transmitting;
+}
+
+uint16 usb_cdcacm_get_pending(void) {
     return n_unsent_bytes;
 }
 
@@ -520,12 +517,8 @@ int usb_cdcacm_get_n_data_bits(void) {
  */
 
 static void vcomDataTxCb(void) {
-    /* The following assumes that all of the bytes we copied during
-     * the last call to usb_cdcacm_tx were sent during the IN
-     * transaction (this seems to be the case). */
-    /* TODO find out why this is broken:
-     * n_unsent_bytes = usb_get_ep_tx_count(USB_CDCACM_TX_ENDP); */
     n_unsent_bytes = 0;
+    transmitting = 0;
 }
 
 static void vcomDataRxCb(void) {
