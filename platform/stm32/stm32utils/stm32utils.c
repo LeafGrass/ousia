@@ -496,7 +496,6 @@ void stm32utils_io_putc(void *p, char ch)
  * @brief   stm32 io getchar routine, block here if no data available
  * @param   p -i- device pointer (could be NULL in tfp_printf)
  * @return  char
- * @note    TODO needs to be completed
  */
 char stm32utils_io_getc(void *p)
 {

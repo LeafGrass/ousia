@@ -241,7 +241,6 @@ void _sched_systick_call(void)
 			pcb->tcb.ticks_sleeping--;
 			if (pcb->tcb.ticks_sleeping == 0)
 				pcb->stat = PSTAT_READY;
-			/* TODO Do _sched_schedule */
 			break;
 		case PSTAT_READY:
 			/*
@@ -444,11 +443,6 @@ int32 os_process_delete(uint32 pid)
 {
 	int32 ret = OS_OK;
 
-	/*
-	 * TODO
-	 * 1. remove the process from pqcb
-	 * 2. reschedule
-	 */
 	curr_pcb->stat = PSTAT_KILLED;
 	_sched_schedule();
 
@@ -486,7 +480,7 @@ int32 (*non_busy_wait)(uint32) = os_process_sleep;
  * @brief   suspend a process
  * @param   pid -i- pid of target process
  * @return  int32
- * @note    TODO only support intiative suspend for now
+ * @note    FIXME only support intiative suspend for now
  */
 int32 os_process_suspend(void)
 {
