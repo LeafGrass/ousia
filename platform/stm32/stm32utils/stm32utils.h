@@ -53,7 +53,6 @@
 
 void stm32utils_board_init(void);
 void stm32utils_io_putc(void *p, char ch);
-void stm32utils_io_putstr(void *p, const void *buf, uint32 len);
 char stm32utils_io_getc(void *p);
 void stm32utils_usb_putc(void *p, char ch);
 char stm32utils_usb_getc(void *p);

@@ -493,20 +493,6 @@ void stm32utils_io_putc(void *p, char ch)
 }
 
 /*
- * @brief   stm32 io putstr routine
- * @param   p -i- device pointer (could be NULL in tfp_printf)
- *          ch -i- data to be transmited
- * @return  none
- * @note    device is USART_CONSOLE_BANK by default
- */
-void stm32utils_io_putstr(void *p, const void *buf, uint32 len)
-{
-	uint32 i;
-	for (i = 0; i < len; i++)
-		stm32utils_usb_putc(p, *((char *)buf + i));
-}
-
-/*
  * @brief   stm32 io getchar routine, block here if no data available
  * @param   p -i- device pointer (could be NULL in tfp_printf)
  * @return  char
