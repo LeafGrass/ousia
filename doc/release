@@ -85,17 +85,17 @@ Known issues:
 2011-09-27 v0.0.4rc1
 --------------------
 Brief:
-    Add usb feature as maple does.
-    Update documents and some other miscellaneous stuffs.
+	Add usb feature as maple does.
+	Update documents and some other miscellaneous stuffs.
 Bug fixes:
-    None.
+	None.
 New features:
-    Now is able to download code and output as serial via usb on stm32.
+	Now is able to download code and output as serial via usb on stm32.
 Known issues:
-    Each time to 'make' need to copy porting files to core from
-    specific platform directory, that's trivial.
-    Should not use stm32utils_usb_putstr() to support stm32utils_usb_putc().
-    Coding style and developing details documentation needs to be published.
+	Each time to 'make' need to copy porting files to core from
+	specific platform directory, that's trivial.
+	Should not use stm32utils_usb_putstr() to support stm32utils_usb_putc().
+	Coding style and developing details documentation needs to be published.
 
 
 2011-08-22 v0.0.3
@@ -106,21 +106,21 @@ Brief:
 Bug fixes:
 	None.
 New features:
-    support mutiple platforms porting framework.
-    Add x86 pseudo port.
+	support mutiple platforms porting framework.
+	Add x86 pseudo port.
 	Support build of different user projects.
 Known issues:
-    None.
+	None.
 
 
 2011-08-14 v0.0.3a
 ------------------
 Brief:
-    Update system architecture, support static library.
+	Update system architecture, support static library.
 Bug fixes:
-    None.
+	None.
 New features:
-    Build static library is now supported.
+	Build static library is now supported.
 Known issues:
 	Portable issues. To build the ousia code with specific user projects.
 
@@ -128,14 +128,14 @@ Known issues:
 2011-08-09 v0.0.2
 -----------------
 Brief:
-    Improve build system and system architecture.
+	Improve build system and system architecture.
 Bug fixes:
-    None.
+	None.
 New features:
-    Can build submodules by include different rules.mk in main modules.
+	Can build submodules by include different rules.mk in main modules.
 Known issues:
-    In root Makefile, there should be more wrappers of specific hardware.
-    And there also need a explicit architecture of modules in framework.
+	In root Makefile, there should be more wrappers of specific hardware.
+	And there also need a explicit architecture of modules in framework.
 
 
 2011-08-02 v0.0.1
