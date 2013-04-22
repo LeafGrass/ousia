@@ -18,7 +18,7 @@ CFLAGS_$(d) += $(LIBMAPLE_INCLUDES)
 
 # Local rules and targets
 # libmaple
-cSRCS_$(d) := main.c
+cSRCS_$(d) := main.c eeprom.c
 sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
