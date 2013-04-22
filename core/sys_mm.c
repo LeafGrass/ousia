@@ -54,3 +54,26 @@ int32 _mm_heap_init(void)
 	memset(__heap_start, 0, heap_size);
 	return 0;
 }
+
+/*
+ * @brief   dump memory
+ * @param   addr -i- memory address
+ *          nb -i- number of bytes to dump
+ *          type -i- byte, half-word or word
+ * @return  none
+ * @note    TODO Only supports nb that can be divide by 8.
+ *          TODO Need to complete type implementation.
+ */
+void _mm_dump(void *addr, int32 nb, int32 type)
+{
+	uint8 *m = (uint8 *)addr;
+	int32 i, row;
+	row = nb/8;
+	for (i = 0; i < row; i++) {
+		m = (uint8 *)addr + i*8;
+		os_printk(LOG_INFO,
+			  "%08x: %02x %02x %02x %02x %02x %02x %02x %02x\n",
+			  m, *m, *(m+1), *(m+2), *(m+3),
+			  *(m+4), *(m+5), *(m+6), *(m+7));
+	}
+}

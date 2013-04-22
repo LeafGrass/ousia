@@ -28,5 +28,6 @@
 #define __SYS_MM_H__
 
 int32 _mm_heap_init(void);
+void _mm_dump(void *addr, int32 nb, int32 type);
 
 #endif /* __SYS_MM_H__ */
