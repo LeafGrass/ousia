@@ -52,10 +52,9 @@ void i2c_test_read(void)
 	int ret;
 	i2c_msg msgs[2];
 	uint8 tmp = 0;
-	int i;
 
 	os_log(LOG_INFO, "%s start...\n", __func__);
-#if 1
+
 	msgs[0].addr = I2C_ADDR_AT24;
 	msgs[0].flags = 0;
 	msgs[0].length = 1;
@@ -70,13 +69,6 @@ void i2c_test_read(void)
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
 	else
 		_mm_dump(buffer_r, sizeof(buffer_r), 0);
-#else
-	for (i = 0; i < BUFFER_SIZE; i++) {
-		i2c_send_byte(I2C_ADDR_AT24, i);
-		i2c_recv_byte(I2C_ADDR_AT24, &buffer_r[i]);
-	}
-	_mm_dump(buffer_r, sizeof(buffer_r), 0);
-#endif
 	os_log(LOG_INFO, "%s done...\n", __func__);
 }
 
