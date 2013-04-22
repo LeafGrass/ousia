@@ -28,6 +28,7 @@
 #define __ULIB_STRING_H__
 
 void *memset(void *, int, size_t);
+int memcmp(const void *s1, const void *s2, size_t n);
 int strcmp(const char *, const char *);
 
 #endif /* __ULIB_STRING_H__ */
