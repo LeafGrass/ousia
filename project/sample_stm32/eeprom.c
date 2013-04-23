@@ -13,11 +13,24 @@
 #include <stm32/libmaple/include/libmaple/i2c.h>
 #include <stm32/stm32utils/stm32utils.h>
 
-#define I2C_ADDR_AT24	0x50
-#define BUFFER_SIZE	16
+#include "eeprom.h"
 
-static uint8 buffer_w[BUFFER_SIZE+1] = {0};
-static uint8 buffer_r[BUFFER_SIZE] = {0};
+#define I2C_ADDR_AT24	0x50
+#define PAGE_SIZE	16
+#define REGADDR_SIZE	1
+
+static inline i2c_dev* i2c_bus_to_dev(int id)
+{
+	switch (id) {
+	case 1:
+		return I2C1;
+	case 2:
+		return I2C2;
+	default:
+		os_log(LOG_INFO, "Undefined bus id, use default I2C1.\n");
+		return I2C1;
+	}
+}
 
 static void i2c_send_byte(uint8 slave, uint8 data)
 {
@@ -47,67 +60,85 @@ static void i2c_recv_byte(uint8 slave, uint8 *pdata)
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
 }
 
-void i2c_test_read(void)
+int eeprom_byte_write(struct eeprom_priv_s *ee, uint8 data, uint32 offset, uint32 nb)
+{
+	return 0;
+}
+
+/* page read */
+int eeprom_read(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
 {
 	int ret;
 	i2c_msg msgs[2];
-	uint8 tmp = 0;
 
 	os_log(LOG_INFO, "%s start...\n", __func__);
 
-	msgs[0].addr = I2C_ADDR_AT24;
+	/* XXX 16 bit addr? */
+	msgs[0].addr = ee->dev_addr;
 	msgs[0].flags = 0;
 	msgs[0].length = 1;
-	msgs[0].data = &tmp;
+	offset &= 0xFF;
+	msgs[0].data = (uint8 *)&offset;
 
-	msgs[1].addr = I2C_ADDR_AT24;
+	msgs[1].addr = ee->dev_addr;
 	msgs[1].flags = I2C_MSG_READ;
-	msgs[1].length = BUFFER_SIZE;
-	msgs[1].data = buffer_r;
+	msgs[1].length = nb;
+	msgs[1].data = buf;
+
 	ret = i2c_master_xfer(I2C1, msgs, 2, 0);
 	if (ret != 0)
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
-	else
-		_mm_dump(buffer_r, sizeof(buffer_r), 0);
-	os_log(LOG_INFO, "%s done...\n", __func__);
+	else {
+		_mm_dump(buf, nb, 0);
+		os_log(LOG_INFO, "%s done...\n", __func__);
+	}
+
+	return ret;
 }
 
-void i2c_test_write(void)
+/* page write */
+int eeprom_write(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
 {
 	int ret;
-	i2c_msg msgs[2];
-	uint8 tmp = 0;
+	i2c_msg msg;
+
+	if (nb > ee->page_size) {
+		os_log(LOG_ERROR, "%s too large.\n", __func__);
+		return -1;
+	}
 
 	os_log(LOG_INFO, "%s start...\n", __func__);
-	_mm_dump(buffer_w+1, sizeof(buffer_w)-1, 0);
+	_mm_dump(buf + ee->regaddr_size, nb, 0);
 
-	msgs[0].addr = I2C_ADDR_AT24;
-	msgs[0].flags = 0;
-	msgs[0].length = 1;
-	msgs[0].data = &tmp;
-
-	msgs[1].addr = I2C_ADDR_AT24;
-	msgs[1].flags = 0;
-	msgs[1].length = BUFFER_SIZE + 1;
-	msgs[1].data = buffer_w;
-	ret = i2c_master_xfer(I2C1, &msgs[1], 1, 0);
-	if (ret != 0)
+	msg.addr = ee->dev_addr;
+	msg.flags = 0;
+	msg.length = nb + ee->regaddr_size;
+	msg.data = buf;
+	ret = i2c_master_xfer(I2C1, &msg, 1, 0);
+	if (ret != 0) {
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
+		return ret;
+	}
+
 	os_log(LOG_INFO, "%s done...\n", __func__);
+	return 0;
 }
 
-void eeprom_init(void)
+/* page erase */
+int eeprom_erase(struct eeprom_priv_s *ee, uint32 offset, uint32 nb)
 {
-	int i;
-	i2c_master_enable(I2C1, I2C_BUS_RESET);
+	uint8 buf[17];
+	memset(buf, 0xFF, sizeof(buf));
+	buf[0] = offset;
+	return eeprom_write(ee, buf, offset, nb);
+}
 
-	memset(buffer_r, 0, sizeof(buffer_r));
+/* FIXME malloc them! */
+static uint8 buf_r[64];
 
-	buffer_w[0] = 0x0;
-	for (i = 1; i < BUFFER_SIZE+1; i++)
-		buffer_w[i] = i-1;
-
-	_mm_dump(buffer_r, sizeof(buffer_r), 0);
-	_mm_dump(buffer_w, sizeof(buffer_w), 0);
-	os_log(LOG_INFO, "buffers are ready: r: 0x%x, w: 0x%x\n", buffer_r, buffer_w);
+int eeprom_verify(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
+{
+	memset(buf_r, 0, sizeof(buf_r));
+	eeprom_read(ee, buf_r, offset, nb);
+	return memcmp(buf_r, buf, nb);
 }
