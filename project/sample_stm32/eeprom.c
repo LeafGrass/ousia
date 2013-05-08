@@ -15,10 +15,6 @@
 
 #include "eeprom.h"
 
-#define I2C_ADDR_AT24	0x50
-#define PAGE_SIZE	16
-#define REGADDR_SIZE	1
-
 static inline i2c_dev* i2c_bus_to_dev(int id)
 {
 	switch (id) {
