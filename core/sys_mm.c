@@ -36,23 +36,23 @@ extern uint8 *__heap_start;
 extern uint8 *__heap_end;
 
 /*
- * @brief   initialze memory heap
+ * @brief   memory heap initialization entry
  * @param   none
  * @return  status code
  */
 int32 _mm_heap_init(void)
 {
-	uint32 heap_size = 0;
+	mmsize_t heap_size = 0;
 	if (__heap_start == NULL || __heap_end == NULL ||
 			__heap_end < __heap_start) {
 		os_printk(LOG_ERROR, "%s - failed.\n", __func__);
 		return OS_EFAIL;
 	}
-	heap_size = (uint32)(__heap_end - __heap_start);
+	heap_size = (mmsize_t)(__heap_end - __heap_start);
 	os_printk(LOG_INFO, "%s - 0x%08p ~ 0x%08p (%dKB)\n",
 			__func__, __heap_start, __heap_end, heap_size/1024);
 	memset(__heap_start, 0, heap_size);
-	return 0;
+	return _mm_init(__heap_start, heap_size);
 }
 
 /*
@@ -76,4 +76,34 @@ void _mm_dump(void *addr, int32 nb, int32 type)
 			  m, *m, *(m+1), *(m+2), *(m+3),
 			  *(m+4), *(m+5), *(m+6), *(m+7));
 	}
+}
+
+/*
+ * @brief   Allocate "size" of memory.
+ * @param   size -i- size to be allocated
+ * @return  Return the pointer to that chunk of memory if success.
+ */
+inline void *mm_malloc(mmsize_t size)
+{
+	return _mm_malloc(size);
+}
+
+/*
+ * @brief   Allocate "size" of aligned memory.
+ * @param   size -i- size to be allocated
+ * @return  Return the pointer to that chunk of memory if success.
+ */
+inline void *mm_memalign(mmsize_t alignment, mmsize_t size)
+{
+	return _mm_memalign(alignment, size);
+}
+
+/*
+ * @brief   Free allocated memory.
+ * @param   size -i- size to be allocated
+ * @return  none
+ */
+inline void mm_free(void *mem)
+{
+	_mm_free(mem);
 }

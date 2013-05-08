@@ -52,8 +52,6 @@ static void ps_debug(void *args)
 {
 	int ret;
 
-	eeprom_erase(gee, 0, 16);
-
 	for (;;) {
 		if (!signal) {
 			os_process_sleep(50);
@@ -61,6 +59,7 @@ static void ps_debug(void *args)
 		} else
 			signal = 0;
 
+		eeprom_erase(gee, 0, 16);
 		eeprom_read(gee, buffer_r, 0, 16);
 		eeprom_write(gee, buffer_w, 0, 16);
 		ret = eeprom_verify(gee, buffer_w + gee->regaddr_size, 0, 16);
@@ -103,10 +102,11 @@ static void eeprom_test_setup(void)
 	buffer_w[0] = 0x0;
 	for (i = 1; i < BUFFER_SIZE + 1; i++)
 		buffer_w[i] = i - 1;
-
+#if 0
 	_mm_dump(buffer_r, sizeof(buffer_r), 0);
 	_mm_dump(buffer_w, sizeof(buffer_w), 0);
 	os_log(LOG_INFO, "buffers are ready: r: 0x%x, w: 0x%x\n", buffer_r, buffer_w);
+#endif
 }
 
 void ps_main(void *args)

@@ -34,7 +34,7 @@
 #define LOG_WARN	3
 #define LOG_ERROR	4
 #define LOG_CRITICAL	5
-#define LOG_LEVEL	LOG_INFO
+#define LOG_LEVEL	LOG_ALL
 
 #ifdef OUSIA_DEBUG_PRINT
 #define __dec		(os_systime_get()/1000)

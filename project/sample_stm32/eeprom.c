@@ -127,10 +127,16 @@ int eeprom_write(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
 /* page erase */
 int eeprom_erase(struct eeprom_priv_s *ee, uint32 offset, uint32 nb)
 {
-	uint8 buf[17];
-	memset(buf, 0xFF, sizeof(buf));
+	uint8 *buf = NULL;
+	int32 ret;
+
+	buf = (uint8 *)malloc(17);
+	os_assert(buf != NULL);
+	memset(buf, 0xFF, 17);
 	buf[0] = offset;
-	return eeprom_write(ee, buf, offset, nb);
+	ret = eeprom_write(ee, buf, offset, nb);
+	free(buf);
+	return ret;
 }
 
 /* FIXME malloc them! */

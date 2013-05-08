@@ -27,7 +27,22 @@
 #ifndef __SYS_MM_H__
 #define __SYS_MM_H__
 
+typedef uint32	mmsize_t;
+
 int32 _mm_heap_init(void);
 void _mm_dump(void *addr, int32 nb, int32 type);
+
+void *mm_malloc(mmsize_t size);
+void *mm_memalign(mmsize_t alignment, mmsize_t size);
+void mm_free(void *mem);
+
+int32 _mm_init(void *heap_start, mmsize_t size);
+void *_mm_malloc(mmsize_t size);
+void *_mm_memalign(mmsize_t alignment, mmsize_t size);
+void _mm_free(void *mem);
+
+#define malloc(_size)		_mm_malloc(_size)
+#define memalign(align, size)	_mm_memalign(align, size)
+#define free(_m)		_mm_free(_m)
 
 #endif /* __SYS_MM_H__ */
