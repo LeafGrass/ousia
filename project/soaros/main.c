@@ -23,7 +23,7 @@ static void ps_button(void *args)
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN))
 			os_log(LOG_INFO, "%s - pressed.\n", __func__);
-		os_process_sleep(10);
+		os_process_sleep(100);
 	}
 }
 
@@ -253,6 +253,10 @@ static void ps_imu(void *args)
 	}
 }
 
+/*
+ * Here assumes the process will always
+ * be created successfully.
+ */
 void ps_main(void *args)
 {
 	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
@@ -260,5 +264,5 @@ void ps_main(void *args)
 	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
 	os_process_create(ps_imu, NULL, PS_IMU_STACK_SIZE);
 	for (;;)
-		os_process_sleep(10);
+		os_process_sleep(1000);
 }
