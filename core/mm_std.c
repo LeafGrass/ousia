@@ -167,7 +167,7 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
 	heapsize = heapend - heapbase;
 
 	os_printk(LOG_DEBUG, "%s - region %d: base: 0x%p size: %u\n",
-			__func__, IDX + 1, heapstart, heapsize);
+			__func__, IDX, heapstart, heapsize);
 
 	/* Add the size of this region to the total size of the heap */
 	heap->mm_heapsize += heapsize;
