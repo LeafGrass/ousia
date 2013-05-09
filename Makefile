@@ -15,7 +15,7 @@ VERNAME = Himalayan-Monkshood
 #      @DOWNLOAD_MODE jtag, serial or dfu
 OUSIA_TARGET = ousia
 TARGET_PLATFORM = stm32
-PROJECT_NAME = sample_$(TARGET_PLATFORM)
+PROJECT_NAME = soaros
 DOWNLOAD_MODE = dfu
 
 ########################################
