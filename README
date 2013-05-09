@@ -127,3 +127,5 @@ Acknowledgments
 ---------------
 Parts of make system and libmaple stm32 low-level code are borrowed from libmaple.
 Thanks to their excellent works! - http://leaflabs.com
+Many code are originally come or inspired from Nuttx, a perfect and stable operating system.
+Also great appreciations to the contributors! - http://nuttx.org
