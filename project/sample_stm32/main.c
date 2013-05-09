@@ -34,24 +34,26 @@ static struct eeprom_priv_s ee24c08 = {
 
 static struct eeprom_priv_s *gee = &ee24c08;
 
-/* FIXME malloc them! */
 #define BUFFER_SIZE	64
-static uint8 buffer_r[BUFFER_SIZE];
-static uint8 buffer_w[BUFFER_SIZE + 1];
+static uint8 *buffer_r;
+static uint8 *buffer_w;
 
 static void eeprom_test_setup(void)
 {
 	int i;
 
 	i2c_master_enable(I2C1, I2C_BUS_RESET);
-	memset(buffer_r, 0, sizeof(buffer_r));
+
+	buffer_r = (uint8 *)zalloc(BUFFER_SIZE);
+	os_assert(buffer_r != NULL);
+	buffer_w = (uint8 *)zalloc(BUFFER_SIZE + 1);
+	os_assert(buffer_w != NULL);
 
 	buffer_w[0] = 0x0;
 	for (i = 1; i < BUFFER_SIZE + 1; i++)
 		buffer_w[i] = i - 1;
-	_mm_dump(buffer_r, sizeof(buffer_r), 0);
-	_mm_dump(buffer_w, sizeof(buffer_w), 0);
-	os_log(LOG_DEBUG, "buffers are ready: r: 0x%x, w: 0x%x\n", buffer_r, buffer_w);
+	os_log(LOG_DEBUG, "buffers are ready: r: 0x%x, w: 0x%x\n",
+			  buffer_r, buffer_w);
 }
 
 static void ps_debug(void *args)

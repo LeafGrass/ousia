@@ -51,8 +51,8 @@ int32 _mm_heap_init(void)
 		return OS_EFAIL;
 	}
 	heap_size = (mmsize_t)(__heap_end - __heap_start);
-	os_printk(LOG_INFO, "%s - 0x%08p ~ 0x%08p (%dKB)\n",
-			__func__, __heap_start, __heap_end, heap_size/1024);
+	os_printk(LOG_DEBUG, "%s - 0x%08p ~ 0x%08p (%dKB)\n", __func__,
+		  __heap_start, __heap_end, heap_size/1024);
 	memset(__heap_start, 0, heap_size);
 	return _mm_init(__heap_start, heap_size);
 }

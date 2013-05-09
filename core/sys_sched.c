@@ -501,8 +501,8 @@ int32 (*non_busy_wait)(uint32) = os_process_sleep;
 int32 os_process_suspend(void)
 {
 	curr_pcb->stat = PSTAT_BLOCKED;
-	os_printk(LOG_INFO, "%s, pid: %d %s\n",
-			    __func__, curr_pcb->pid, curr_pcb->name);
+	os_printk(LOG_DEBUG, "%s, pid: %d %s\n",
+			     __func__, curr_pcb->pid, curr_pcb->name);
 	_sched_schedule();
 	return OS_OK;
 }
