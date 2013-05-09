@@ -103,21 +103,16 @@ static void ps_child(void *args)
 	}
 }
 
+/*
+ * Here assumes the process will always
+ * be created successfully.
+ */
 void ps_main(void *args)
 {
-	int32 ret;
-	ret = os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
-	if (ret < 0)
-		os_printf("create process failed, ret: %d\n", ret);
-	ret = os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
-	if (ret < 0)
-		os_printf("create process failed, ret: %d\n", ret);
-	ret = os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
-	if (ret < 0)
-		os_printf("create process failed, ret: %d\n", ret);
-	ret = os_process_create(ps_debug, NULL, PS_DEBUG_STACK_SIZE);
-	if (ret < 0)
-		os_printf("create process failed, ret: %d\n", ret);
+	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
+	os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
+	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
+	os_process_create(ps_debug, NULL, PS_DEBUG_STACK_SIZE);
 	for (;;)
 		os_process_sleep(1000);
 }
