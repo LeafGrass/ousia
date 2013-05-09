@@ -36,12 +36,9 @@
 #include <console/console.h>
 
 
-static struct console_cmd conc;
-
 #define PS_CMDEXEC_STACK_SIZE	512
-static uint8 ps_cmdexec_stack[PS_CMDEXEC_STACK_SIZE] = {0};
-static struct _pcb_t ps_cmdexec_pcb;
 
+static struct console_cmd conc;
 
 static void ps_cmdexec(void *args)
 {
@@ -135,8 +132,7 @@ static int32 process_enter(struct console_cmd *conc)
 	if (cmd_index >= 0) {
 		if (backend) {
 			/* FIXME Create a process like will still crash */
-			os_process_create(&ps_cmdexec_pcb, ps_cmdexec,
-					  (void *)cmd_index, ps_cmdexec_stack,
+			os_process_create(ps_cmdexec, (void *)cmd_index,
 					  PS_CMDEXEC_STACK_SIZE);
 		} else {
 			/* TODO Pass in buffer of args instead of NULL */

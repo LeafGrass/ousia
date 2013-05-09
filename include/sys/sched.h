@@ -82,12 +82,12 @@ void _sched_startup(void);
 void _sched_attach_hook(void (*fn)(const void *args));
 void _sched_systick_call(void);
 void os_dump_stack(void);
-int32 __os_process_create(void *pcb, void *pentry, char *name,
-			  void *args, void *stack_base, uint32 stack_size);
-#define os_process_create(_pcb, _pentry, _args, _stack_base, _stack_size) \
+int32 __os_process_create(void *pentry, char *name,
+			  void *args, uint32 stack_sz);
+#define os_process_create(_pentry, _args, _stack_size) \
 	do { \
-		__os_process_create(_pcb, _pentry, __stringify(_pentry), \
-				_args, _stack_base, _stack_size); \
+		__os_process_create(_pentry, __stringify(_pentry), \
+				    _args, _stack_size); \
 	} while (0)
 int32 os_process_delete(uint32 pid);
 int32 os_process_sleep(uint32 tms);

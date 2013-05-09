@@ -21,15 +21,6 @@
 #define PS_CONSOLE_STACK_SIZE	2048
 #define PS_DEBUG_STACK_SIZE	2048
 
-static uint8 ps_child_stack[PS_CHILD_STACK_SIZE] = {0};
-static uint8 ps_button_stack[PS_BUTTON_STACK_SIZE] = {0};
-static uint8 ps_console_stack[PS_CONSOLE_STACK_SIZE] = {0};
-static uint8 ps_debug_stack[PS_DEBUG_STACK_SIZE] = {0};
-static struct _pcb_t ps_child_pcb;
-static struct _pcb_t ps_button_pcb;
-static struct _pcb_t ps_console_pcb;
-static struct _pcb_t ps_debug_pcb;
-
 static int signal;
 
 /* eeprom test */
@@ -112,15 +103,10 @@ static void eeprom_test_setup(void)
 void ps_main(void *args)
 {
 	eeprom_test_setup();
-	os_process_create(&ps_child_pcb, ps_child, NULL,
-			  ps_child_stack, PS_CHILD_STACK_SIZE);
-	os_process_create(&ps_button_pcb, ps_button, NULL,
-			  ps_button_stack, PS_BUTTON_STACK_SIZE);
-	os_process_create(&ps_console_pcb, ps_console, NULL,
-			  ps_console_stack, PS_CONSOLE_STACK_SIZE);
-	os_process_create(&ps_debug_pcb, ps_debug, NULL,
-			  ps_debug_stack, PS_DEBUG_STACK_SIZE);
-	for (;;) {
+	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
+	os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
+	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
+	os_process_create(ps_debug, NULL, PS_DEBUG_STACK_SIZE);
+	for (;;)
 		os_process_sleep(10);
-	}
 }

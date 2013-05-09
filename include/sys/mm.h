@@ -27,7 +27,29 @@
 #ifndef __SYS_MM_H__
 #define __SYS_MM_H__
 
+/*
+ * TODO
+ * We may need mutiple regions management further...
+ * And put these configs to system config.
+ */
+#define CONFIG_MM_REGIONS	1
+#define CONFIG_DEBUG_MM
+
+typedef uint32	uintptr_t;
 typedef uint32	mmsize_t;
+
+#ifdef CONFIG_MM_SMALL
+#  define MM_MIN_SIZE_SHIFT	2	/* 4 bytes */
+#  define MM_MAX_SIZE_SHIFT	15	/* 32 Kb */
+#else
+#  define MM_MIN_SIZE_SHIFT	2	/* 4 bytes, orig: 16 bytes */
+#  define MM_MAX_SIZE_SHIFT	22	/* 4 Mb */
+#endif
+
+#define MM_MIN_SIZE		(1<<MM_MIN_SIZE_SHIFT)
+#define MM_MAX_SIZE		(1<<MM_MAX_SIZE_SHIFT)
+
+#define VALIDATE_SIZE(_sz)	((_sz > 0)&&(_sz < MM_MAX_SIZE))
 
 int32 _mm_heap_init(void);
 void _mm_dump(void *addr, int32 nb, int32 type);

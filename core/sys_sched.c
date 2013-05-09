@@ -31,6 +31,7 @@
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/debug.h>
+#include <sys/mm.h>
 #include <sys/sched.h>
 
 
@@ -400,17 +401,22 @@ void os_dump_stack(void)
  *               as well as stack.
  *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
-int32 __os_process_create(void *pcb, void *pentry, char *name,
-			  void *args, void *stack_base, uint32 stack_sz)
+int32 __os_process_create(void *pentry, char *name, void *args, uint32 stack_sz)
 {
-	struct _pcb_t *new_pcb = (struct _pcb_t *)pcb;
-	uint8 *stk = (uint8 *)stack_base;
+	struct _pcb_t *new_pcb = NULL;
+	uint8 *stk = NULL;
 	static unsigned int cnt = 0;
 
-	/* TODO here to allocate resources to a process */
-
-	if (pcb == NULL || pentry == NULL || stack_base == NULL)
+	if (pentry == NULL || !VALIDATE_SIZE(stack_sz))
 		return -OS_EFAIL;
+
+	new_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
+	if (new_pcb == NULL)
+		goto err_pcb;
+
+	stk = (uint8 *)czalloc(stack_sz);
+	if (stk == NULL)
+		goto err_stk;
 
 #if (OUSIA_PORT_STACK_TYPE == OUSIA_PORT_STACK_DEC)
 	/* FIXME ARCH_BIT can only be 32, hard code here :( */
@@ -429,8 +435,14 @@ int32 __os_process_create(void *pcb, void *pentry, char *name,
 
 	__pcb_enqueue(new_pcb);
 
-	os_printk(LOG_INFO, "==> new: %s (%u)\n", name, new_pcb->pid);
+	os_printk(LOG_DEBUG, "==> new: %s (%u)\n", name, new_pcb->pid);
+
 	return new_pcb->pid;
+
+err_stk:
+	cfree(new_pcb);
+err_pcb:
+	return -OS_EFAIL;
 }
 
 /*

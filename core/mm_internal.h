@@ -27,15 +27,6 @@
 #ifndef __MM_INTERNAL_H__
 #define __MM_INTERNAL_H__
 
-/*
- * TODO
- * We may need mutiple regions management further...
- * And put these configs to system config.
- */
-#define CONFIG_MM_REGIONS	1
-#define CONFIG_DEBUG_MM
-typedef uint32	uintptr_t;
-
 int32 _mm_init(void *heap_start, mmsize_t size);
 void *_mm_malloc(mmsize_t size);
 void *_mm_memalign(mmsize_t alignment, mmsize_t size);

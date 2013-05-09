@@ -83,13 +83,8 @@
  *   losses.
  */
 
-#ifdef CONFIG_MM_SMALL
-#  define MM_MIN_SHIFT	4	/* 16 bytes */
-#  define MM_MAX_SHIFT	15	/* 32 Kb */
-#else
-#  define MM_MIN_SHIFT	4	/* 16 bytes */
-#  define MM_MAX_SHIFT	22	/*  4 Mb */
-#endif
+#define MM_MIN_SHIFT	MM_MIN_SIZE_SHIFT
+#define MM_MAX_SHIFT	MM_MAX_SIZE_SHIFT
 
 /* All other definitions derive from these two */
 
