@@ -1,6 +1,23 @@
 Ousia Release Notes
 ===================
 
+2013-05-09 v0.2.0
+--------------------
+Brief:
+	Borrow memory management mechanism from nuttx (nuttx.org).
+	Great appreciation to his excellent work!
+	Refine code, such as change process creation interfaces.
+	Save many dead memory.
+Bug fixes:
+	A bunch of fix.
+New features:
+	Memory Management
+Known issues:
+	A lesser bunch of issues....
+	See link below for detailed informations.
+	https://github.com/LeafGrass/ousia/issues
+
+
 2012-09-15 v0.1.1
 --------------------
 Brief:

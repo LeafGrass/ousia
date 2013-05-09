@@ -28,6 +28,7 @@
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
 #include <ulib/string.h>
+#include <ulib/stdlib.h>
 #include <sys/mm.h>
 #include <sys/time.h>
 #include <sys/sched.h>

@@ -64,6 +64,7 @@
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
 #include <ulib/string.h>
+#include <ulib/stdlib.h>
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/debug.h>
@@ -113,9 +114,9 @@ static int32 __mm_addfreechunk(struct mm_heap *heap, struct mm_freenode_s *node)
 
 	/* Now put the new node int the next */
 	for (prev = &heap->mm_nodelist[ndx],
-	     next = heap->mm_nodelist[ndx].flink;
-	     next && next->size && next->size < node->size;
-	     prev = next, next = next->flink);
+			next = heap->mm_nodelist[ndx].flink;
+			next && next->size && next->size < node->size;
+			prev = next, next = next->flink);
 
 	/* Does it go in mid next or at the end? */
 	prev->flink = node;
@@ -137,7 +138,7 @@ static int32 __mm_addfreechunk(struct mm_heap *heap, struct mm_freenode_s *node)
  * @return  status code
  */
 static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
-			    mmsize_t heapsize)
+		mmsize_t heapsize)
 {
 	struct mm_freenode_s *node;
 	uintptr_t heapbase;
@@ -166,7 +167,7 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
 	heapsize = heapend - heapbase;
 
 	os_printk(LOG_DEBUG, "%s - region %d: base: 0x%p size: %u\n",
-		  __func__, IDX + 1, heapstart, heapsize);
+			__func__, IDX + 1, heapstart, heapsize);
 
 	/* Add the size of this region to the total size of the heap */
 	heap->mm_heapsize += heapsize;
@@ -390,11 +391,11 @@ void *_mm_malloc(mmsize_t size)
 		if (remaining >= SIZEOF_MM_FREENODE) {
 			/* Get a pointer to the next node in physical memory */
 			next = (struct mm_freenode_s *)
-			       (((char *)node) + node->size);
+				(((char *)node) + node->size);
 
 			/* Create the remainder node */
 			remainder = (struct mm_freenode_s *)
-				    (((char *)node) + size);
+				(((char *)node) + size);
 			remainder->size = remaining;
 			remainder->preceding = size;
 
@@ -427,7 +428,7 @@ void *_mm_malloc(mmsize_t size)
 	if (!ret)
 		os_printk(LOG_DEBUG, "Allocation failed, size %d\n", size);
 	else
-		os_printk(LOG_DEBUG, "Allocated %p, size %d\n", ret, size);
+		os_printk(LOG_DEBUG, "Allocated 0x%p, size %d\n", ret, size);
 #endif
 
 	return ret;
@@ -515,7 +516,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 		os_assert(alignedchunk >= rawchunk + 8);
 
 		newnode = (struct mm_allocnode_s *)
-			  (alignedchunk - SIZEOF_MM_ALLOCNODE);
+			(alignedchunk - SIZEOF_MM_ALLOCNODE);
 
 		/*
 		 * Preceding size is full size of the new 'node,' including
@@ -536,7 +537,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 		{
 			alignedchunk += alignment;
 			newnode       = (struct mm_allocnode_s *)
-					(alignedchunk - SIZEOF_MM_ALLOCNODE);
+				(alignedchunk - SIZEOF_MM_ALLOCNODE);
 			precedingsize = (mmsize_t)newnode - (mmsize_t)node;
 		}
 
@@ -553,7 +554,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 
 		/* Fix the preceding size of the next node */
 		next->preceding = newnode->size |
-				  (next->preceding & MM_ALLOC_BIT);
+			(next->preceding & MM_ALLOC_BIT);
 
 		/*
 		 * Convert the newnode chunk size back into malloc-compatible
@@ -597,7 +598,7 @@ void _mm_free(void *mem)
 	struct mm_freenode_s *prev;
 	struct mm_freenode_s *next;
 
-	os_printk(LOG_DEBUG, "Freeing %p\n", mem);
+	os_printk(LOG_DEBUG, "Freeing 0x%p\n", mem);
 
 	/* Protect against attempts to free a NULL reference */
 	if (!mem)
@@ -624,7 +625,7 @@ void _mm_free(void *mem)
 		 * index past the tail chunk because it is always allocated.
 		 */
 		andbeyond = (struct mm_allocnode_s *)
-			    ((char *)next + next->size);
+			((char *)next + next->size);
 
 		/*
 		 * Remove the next node.  There must be a predecessor,
@@ -638,7 +639,7 @@ void _mm_free(void *mem)
 		/* Then merge the two chunks */
 		node->size          += next->size;
 		andbeyond->preceding = node->size |
-				       (andbeyond->preceding & MM_ALLOC_BIT);
+			(andbeyond->preceding & MM_ALLOC_BIT);
 		next                 = (struct mm_freenode_s *)andbeyond;
 	}
 
@@ -679,4 +680,73 @@ void *_mm_zalloc(mmsize_t size)
 	if (alloc)
 		memset(alloc, 0, size);
 	return alloc;
+}
+
+/*
+ * @brief   mallinfo rough implementation
+ * @param   info -i/o- a copy of updated current heap information.
+ * @return  status code
+ */
+int32 _mm_mallinfo(struct mallinfo *info)
+{
+	struct mm_heap *heap = &__mm_heap_priv;
+	struct mm_allocnode_s *node;
+	size_t mxordblk = 0;
+	int    ordblks  = 0;  /* Number of non-inuse chunks */
+	size_t uordblks = 0;  /* Total allocated space */
+	size_t fordblks = 0;  /* Total non-inuse space */
+#if CONFIG_MM_REGIONS > 1
+	int region;
+#else
+# define region 0
+#endif
+
+	os_assert(info);
+
+	/* Visit each region */
+#if CONFIG_MM_REGIONS > 1
+	for (region = 0; region < heap->mm_nregions; region++)
+#endif
+	{
+		/*
+		 * Visit each node in the region
+		 * Retake the semaphore for each region to reduce latencies
+		 */
+		mm_sem_take(heap);
+
+		for (node = heap->mm_heapstart[region];
+		     node < heap->mm_heapend[region];
+		     node = (struct mm_allocnode_s *)
+			    ((char*)node + node->size)) {
+			os_printk(LOG_DEBUG, "region: %d node: 0x%p size: 0x%p "
+					     "preceding: 0x%p\n",
+					     region, node, node->size,
+					     node->preceding);
+			if (node->preceding & MM_ALLOC_BIT) {
+				uordblks += node->size;
+			} else {
+				ordblks++;
+				fordblks += node->size;
+				if (node->size > mxordblk)
+					mxordblk = node->size;
+			}
+		}
+
+		mm_sem_give(heap);
+
+		os_printk(LOG_DEBUG, "region: %d node: 0x%p heapend: 0x%p\n",
+				     region, node, heap->mm_heapend[region]);
+		os_assert(node == heap->mm_heapend[region]);
+		uordblks += SIZEOF_MM_ALLOCNODE; /* account for the tail node */
+	}
+#undef region
+
+	os_assert(uordblks + fordblks == heap->mm_heapsize);
+
+	info->arena    = heap->mm_heapsize;
+	info->ordblks  = ordblks;
+	info->mxordblk = mxordblk;
+	info->uordblks = uordblks;
+	info->fordblks = fordblks;
+	return 0;
 }

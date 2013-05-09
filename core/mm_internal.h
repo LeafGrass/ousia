@@ -32,6 +32,7 @@ void *_mm_malloc(mmsize_t size);
 void *_mm_memalign(mmsize_t alignment, mmsize_t size);
 void _mm_free(void *mem);
 void *_mm_zalloc(mmsize_t size);
+int32 _mm_mallinfo(struct mallinfo *info);
 
 #define mm_sem_init(_s)
 #define mm_sem_take(_s)

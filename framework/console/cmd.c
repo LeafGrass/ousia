@@ -26,9 +26,11 @@
 
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
+#include <ulib/stdlib.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 #include <sys/print.h>
+#include <sys/mm.h>
 #include <console/console.h>
 #include <console/cmd.h>
 
@@ -36,19 +38,24 @@
 static int32 cmd_help(void *args);
 static int32 cmd_debug(void *args);
 static int32 cmd_reboot(void *args);
+static int32 cmd_free(void *args);
 
 const struct cmd_handle hcmd_arr[] = {
-	{
-		.cmd_word = "debug",
-		.cmd_fn = cmd_debug,
-	},
 	{
 		.cmd_word = "help",
 		.cmd_fn = cmd_help,
 	},
 	{
+		.cmd_word = "debug",
+		.cmd_fn = cmd_debug,
+	},
+	{
 		.cmd_word = "reboot",
 		.cmd_fn = cmd_reboot,
+	},
+	{
+		.cmd_word = "free",
+		.cmd_fn = cmd_free,
 	},
 	{
 		.cmd_word = NULL,
@@ -84,5 +91,16 @@ static int32 cmd_reboot(void *args)
 	DO_SOMETHING();
 	os_printf("Ousia warm down.\n\n");
 	/* TODO Do real hardware reset here */
+	return 0;
+}
+
+static int32 cmd_free(void *args)
+{
+	struct mallinfo data;
+	mallinfo(&data);
+	os_printf("              total       used       free    largest\n");
+	os_printf("Mem:    %11d%11d%11d%11d\n",
+			   data.arena, data.uordblks,
+			   data.fordblks, data.mxordblk);
 	return 0;
 }

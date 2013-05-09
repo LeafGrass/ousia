@@ -2,6 +2,7 @@
 #include <ousia/ousia_type.h>
 
 #include <ulib/string.h>
+#include <ulib/stdlib.h>
 #include <sys/time.h>
 #include <sys/mm.h>
 #include <sys/sched.h> /* FIXME This bull shit expose the _pcb_t... */

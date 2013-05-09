@@ -58,20 +58,14 @@ void *mm_malloc(mmsize_t size);
 void *mm_memalign(mmsize_t alignment, mmsize_t size);
 void mm_free(void *mem);
 void *mm_zalloc(mmsize_t size);
+inline int32 mm_mallinfo(struct mallinfo *info);
 
-int32 _mm_init(void *heap_start, mmsize_t size);
-void *_mm_malloc(mmsize_t size);
-void *_mm_memalign(mmsize_t alignment, mmsize_t size);
-void _mm_free(void *mem);
-void *_mm_zalloc(mmsize_t size);
-
-/*
- * Memory management interface wrap.
- */
+/* FIXME should be put in stdlib.h */
 #define malloc(_size)		mm_malloc(_size)
 #define memalign(align, size)	mm_memalign(align, size)
 #define free(_m)		mm_free(_m)
 #define zalloc(_size)		mm_zalloc(_size)
+#define mallinfo(_info)		mm_mallinfo(_info)
 
 /*
  * TODO

@@ -28,6 +28,7 @@
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
 #include <ulib/string.h>
+#include <ulib/stdlib.h>
 #include <sys/print.h>
 #include <sys/time.h>
 #include <sys/mm.h>
@@ -118,4 +119,14 @@ inline void mm_free(void *mem)
 inline void *mm_zalloc(mmsize_t size)
 {
 	return _mm_zalloc(size);
+}
+
+/*
+ * @brief   mallinfo rough implementation
+ * @param   info -i/o- a copy of updated current heap information.
+ * @return  status code
+ */
+inline int32 mm_mallinfo(struct mallinfo *info)
+{
+	return _mm_mallinfo(info);
 }

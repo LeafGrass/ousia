@@ -2,9 +2,9 @@
 # Contact - leafgrass.g@gmail.com
 
 VERSION = 0
-SUBLEVEL = 1
-DEVNUM = 1
-VERNAME = Gaping-Monkshood
+SUBLEVEL = 2
+DEVNUM = 0
+VERNAME = Himalayan-Monkshood
 
 ########################################
 # User Customization Items

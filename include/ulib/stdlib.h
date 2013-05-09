@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2012 LeafGrass <leafgrass.g@gmail.com>
+ * Copyright (c) 2011-2013 LeafGrass <leafgrass.g@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -19,24 +19,24 @@
  */
 
 /*
- * @file    include/ulib/stddef.h
- * @brief   micro implementation of stddef.h of libc
- * @log     2011.8 initial revision
+ * @file    include/ulib/stdlib.h
+ * @brief   micro implementation of stdlib.h of libc
+ * @log     2013.5 initial revision
  */
 
-#ifndef __ULIB_STDDEF_H__
-#define __ULIB_STDDEF_H__
+#ifndef __ULIB_STDLIB_H__
+#define __ULIB_STDLIB_H__
 
-typedef unsigned int	size_t;
+struct mallinfo
+{
+	int arena;    /* This is the total size of memory allocated
+		       * for use by malloc in bytes. */
+	int ordblks;  /* This is the number of free (not in use) chunks */
+	int mxordblk; /* Size of the largest free (not in use) chunk */
+	int uordblks; /* This is the total size of memory occupied by
+		       * chunks handed out by malloc. */
+	int fordblks; /* This is the total size of memory occupied
+		       * by free (not in use) chunks.*/
+};
 
-#undef NULL
-#if defined(__cplusplus)
-#define NULL 0
-#else
-#define NULL ((void *)0)
-#endif
-
-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-
-
-#endif /* __ULIB_STDDEF_H__ */
+#endif /* __ULIB_STDLIB_H__ */
