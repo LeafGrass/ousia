@@ -32,6 +32,8 @@
 #include <sys/time.h>
 #include <sys/mm.h>
 
+#include "mm_internal.h"
+
 extern uint8 *__heap_start;
 extern uint8 *__heap_end;
 
@@ -106,4 +108,14 @@ inline void *mm_memalign(mmsize_t alignment, mmsize_t size)
 inline void mm_free(void *mem)
 {
 	_mm_free(mem);
+}
+
+/*
+ * @brief   Allocate "size" of aligned memory then zeroes it.
+ * @param   size -i- size to be allocated
+ * @return  Return the pointer to that chunk of memory if success.
+ */
+inline void *mm_zalloc(mmsize_t size)
+{
+	return _mm_zalloc(size);
 }

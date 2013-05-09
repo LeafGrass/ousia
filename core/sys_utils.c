@@ -49,19 +49,18 @@ static const char __logo2[] =
 #define CPS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	1024
 
-/* FIXME memory of init process should be recycled */
-static uint8 __cps_init_stack[CPS_INIT_STACK_SIZE] = {0};
-static uint8 __cps_idle_stack[CPS_IDLE_STACK_SIZE] = {0};
-static uint8 ps_main_stack[PS_MAIN_STACK_SIZE] = {0};
-static struct _pcb_t __cps_init_pcb;
-static struct _pcb_t __cps_idle_pcb;
-static struct _pcb_t ps_main_pcb;
+static uint8 *__cps_init_stack;
+static uint8 *__cps_idle_stack;
+static uint8 *ps_main_stack;
+static struct _pcb_t *__cps_init_pcb;
+static struct _pcb_t *__cps_idle_pcb;
+static struct _pcb_t *ps_main_pcb;
 
 static uint32 n_sched_per_stat = 0;
 static const struct _pqcb_t *pqcb_hook = NULL;
 static const struct _pcb_t *pcb_curr_hook = NULL;
 
-#define STATISTICS_TIME		(60*1000)
+#define STATISTICS_TIME		(10*1000)
 
 static void __sched_hook(const void *args)
 {
@@ -133,11 +132,21 @@ static void __cps_init(void *args)
 {
 	os_printk(LOG_DEBUG, "process %s is here!\n", __func__);
 
-	os_process_create(&__cps_idle_pcb, __cps_idle, &__cps_idle_pcb,
+	__cps_idle_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
+	os_assert(__cps_idle_pcb != NULL);
+	__cps_idle_stack = (uint8 *)czalloc(CPS_IDLE_STACK_SIZE);
+	os_assert(__cps_idle_stack != NULL);
+
+	os_process_create(__cps_idle_pcb, __cps_idle, __cps_idle_pcb,
 			  __cps_idle_stack, CPS_IDLE_STACK_SIZE);
 
 	/* Now we can start the user main entry, the commonly known main() */
-	os_process_create(&ps_main_pcb, ps_main, NULL,
+	ps_main_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
+	os_assert(ps_main_pcb != NULL);
+	ps_main_stack = (uint8 *)czalloc(PS_MAIN_STACK_SIZE);
+	os_assert(ps_main_stack != NULL);
+
+	os_process_create(ps_main_pcb, ps_main, NULL,
 			  ps_main_stack, PS_MAIN_STACK_SIZE);
 
 	os_process_suspend();
@@ -152,7 +161,13 @@ static void __cps_init(void *args)
 static int32 __process_init(void)
 {
 	int32 ret = OS_OK;
-	os_process_create(&__cps_init_pcb, __cps_init, NULL,
+
+	__cps_init_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
+	os_assert(__cps_init_pcb != NULL);
+	__cps_init_stack = (uint8 *)czalloc(CPS_IDLE_STACK_SIZE);
+	os_assert(__cps_init_stack != NULL);
+
+	os_process_create(__cps_init_pcb, __cps_init, NULL,
 			  __cps_init_stack, CPS_INIT_STACK_SIZE);
 	return ret;
 }

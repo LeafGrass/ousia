@@ -69,139 +69,8 @@
 #include <sys/debug.h>
 #include <sys/mm.h>
 
-/*
- * TODO
- * We may need mutiple regions management further...
- * And put these configs to system config.
- */
-#define CONFIG_MM_REGIONS	1
-#define CONFIG_DEBUG_MM
-typedef uint32	uintptr_t;
-
-#define mm_sem_init(_s)
-#define mm_sem_take(_s)
-#define mm_sem_give(_s)
-
-/*
- * Chunk Header Definitions
- *
- * These definitions define the characteristics of allocator
- *
- * MM_MIN_SHIFT is used to define MM_MIN_CHUNK.
- * MM_MIN_CHUNK - is the smallest physical chunk that can
- *   be allocated.  It must be at least a large as
- *   sizeof(struct mm_freenode_s).  Larger values may
- *   improve performance slightly, but will waste memory
- *   due to quantization losses.
- *
- * MM_MAX_SHIFT is used to define MM_MAX_CHUNK
- * MM_MAX_CHUNK is the largest, contiguous chunk of memory
- *   that can be allocated.  It can range from 16-bytes to
- *   4Gb.  Larger values of MM_MAX_SHIFT can cause larger
- *   data structure sizes and, perhaps, minor performance
- *   losses.
- */
-
-#ifdef CONFIG_MM_SMALL
-#  define MM_MIN_SHIFT	4	/* 16 bytes */
-#  define MM_MAX_SHIFT	15	/* 32 Kb */
-#else
-#  define MM_MIN_SHIFT	4	/* 16 bytes */
-#  define MM_MAX_SHIFT	22	/*  4 Mb */
-#endif
-
-/* All other definitions derive from these two */
-
-#define MM_MIN_CHUNK		(1 << MM_MIN_SHIFT)
-#define MM_MAX_CHUNK		(1 << MM_MAX_SHIFT)
-#define MM_NNODES		(MM_MAX_SHIFT - MM_MIN_SHIFT + 1)
-
-#define MM_GRAN_MASK		(MM_MIN_CHUNK-1)
-#define MM_ALIGN_UP(a)		(((a) + MM_GRAN_MASK) & ~MM_GRAN_MASK)
-#define MM_ALIGN_DOWN(a)	((a) & ~MM_GRAN_MASK)
-
-/* An allocated chunk is distinguished from a free chunk by bit 31 (or 15)
- * of the 'preceding' chunk size.  If set, then this is an allocated chunk.
- */
-
-#ifdef CONFIG_MM_SMALL
-#  define MM_ALLOC_BIT	0x8000
-#else
-#  define MM_ALLOC_BIT	0x80000000
-#endif
-
-/* Determines the size of the chunk size/offset type */
-#ifdef CONFIG_MM_SMALL
-#  define MMSIZE_MAX	0xffff
-#else
-#  define MMSIZE_MAX	0xffffffff
-#endif
-
-/*
- * This describes an allocated chunk.  An allocated chunk is
- * distinguished from a free chunk by bit 15/31 of the 'preceding' chunk
- * size.  If set, then this is an allocated chunk.
- */
-struct mm_allocnode_s
-{
-	/* Size of this chunk */
-	mmsize_t size;
-
-	/* Size of the preceding chunk */
-	mmsize_t preceding;
-};
-#ifdef CONFIG_MM_SMALL
-#  define SIZEOF_MM_ALLOCNODE	4
-#else
-#  define SIZEOF_MM_ALLOCNODE	8
-#endif
-
-/*
- * This describes a free chunk
- */
-struct mm_freenode_s
-{
-	/* Size of this chunk */
-	mmsize_t size;
-
-	/* Size of the preceding chunk */
-	mmsize_t preceding;
-
-	/* Supports a doubly linked list */
-	struct mm_freenode_s *flink;
-	struct mm_freenode_s *blink;
-};
-#ifdef CONFIG_MM_SMALL
-#  ifdef CONFIG_SMALL_MEMORY
-#    define SIZEOF_MM_FREENODE	8
-#  else
-#    define SIZEOF_MM_FREENODE	12
-#  endif
-#else
-#  define SIZEOF_MM_FREENODE	16
-#endif
-
-struct mm_heap {
-	/* This is the size of the heap provided to mm */
-
-	mmsize_t mm_heapsize;
-
-	/* This is the first and last nodes of the heap */
-
-	struct mm_allocnode_s *mm_heapstart[CONFIG_MM_REGIONS];
-	struct mm_allocnode_s *mm_heapend[CONFIG_MM_REGIONS];
-
-#if CONFIG_MM_REGIONS > 1
-	int mm_nregions;
-#endif
-
-	/* All free nodes are maintained in a doubly linked list.  This
-	 * array provides some hooks into the list at various points to
-	 * speed searches for free nodes.
-	 */
-
-	struct mm_freenode_s mm_nodelist[MM_NNODES];
-};
+#include "mm_internal.h"
+#include "mm_std.h"
 
 struct mm_heap __mm_heap_priv;
 
@@ -294,8 +163,8 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart, mmsize_t heap
 	heapend  = MM_ALIGN_DOWN((uintptr_t)heapstart + (uintptr_t)heapsize);
 	heapsize = heapend - heapbase;
 
-	os_printk(LOG_INFO, "Region %d: base: %p size: %u\n",
-		  IDX + 1, heapstart, heapsize);
+	os_printk(LOG_INFO, "%s - region %d: base: %p size: %u\n",
+		  __func__, IDX + 1, heapstart, heapsize);
 
 	/* Add the size of this region to the total size of the heap */
 
@@ -793,4 +662,17 @@ void _mm_free(void *mem)
 	/* Add the merged node to the nodelist */
 	__mm_addfreechunk(heap, node);
 	mm_sem_give(heap);
+}
+
+/*
+ * @brief   mm_zalloc calls mm_malloc, then zeroes out the allocated chunk.
+ * @param   size -i- size to be allocated
+ * @return  Return the pointer to that chunk of memory if success.
+ */
+void *_mm_zalloc(mmsize_t size)
+{
+	void *alloc = _mm_malloc(size);
+	if (alloc)
+		memset(alloc, 0, size);
+	return alloc;
 }
