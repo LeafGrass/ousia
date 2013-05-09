@@ -41,7 +41,7 @@
  * @return  none
  * @note    may call porting assert service or implemented solely
  */
-void _os_assert_fail(const char *p_file, int line, const char *p_exp)
+inline void _os_assert_fail(const char *p_file, int line, const char *p_exp)
 {
 	os_printk(LOG_ERROR, "line %d in %s, %s fail!\n", line, p_file, p_exp);
 

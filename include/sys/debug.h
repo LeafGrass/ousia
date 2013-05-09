@@ -60,7 +60,7 @@
 #define ASSERT_ALL	1
 #define ASSERT_LEVEL	ASSERT_ALL
 
-void _os_assert_fail(const char *p_file, int line, const char *p_exp);
+inline void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 
 #if defined(OUSIA_DEBUG_ASSERT) && (ASSERT_LEVEL >= ASSERT_ALL)
 #define _OS_ASSERT(exp) \

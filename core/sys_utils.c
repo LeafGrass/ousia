@@ -27,6 +27,7 @@
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <port/ousia_port.h>
+#include <ulib/string.h>
 #include <sys/mm.h>
 #include <sys/time.h>
 #include <sys/sched.h>
@@ -49,9 +50,13 @@ static const char __logo2[] =
 #define CPS_IDLE_STACK_SIZE	1024
 #define PS_MAIN_STACK_SIZE	1024
 
-static uint32 n_sched_per_stat = 0;
-static const struct _pqcb_t *pqcb_hook = NULL;
-static const struct _pcb_t *pcb_curr_hook = NULL;
+struct idle_statistics {
+	uint32 n_sched_per_stat;
+	const struct _pqcb_t *pqcb_hook;
+	const struct _pcb_t *pcb_curr_hook;
+};
+
+static struct idle_statistics stat = {0, NULL, NULL};
 
 #define STATISTICS_TIME		(10*1000)
 
@@ -59,11 +64,11 @@ static void __sched_hook(const void *args)
 {
 	static uint32 curr = 0, last = 0;
 	static uint32 n_sched = 0;
-	pcb_curr_hook = (const struct _pcb_t *)args;
+	stat.pcb_curr_hook = (const struct _pcb_t *)args;
 	curr = os_systime_get();
 	n_sched++;
 	if (curr - last > STATISTICS_TIME - 1) {
-		n_sched_per_stat = n_sched;
+		stat.n_sched_per_stat = n_sched;
 		n_sched = 0;
 		last = curr;
 	}
@@ -79,7 +84,7 @@ static void __cps_idle(void *args)
 {
 	static uint32 last = 0, curr = 0;
 	static uint32 last_ticks = 0;
-	struct _pcb_t *idle = (struct _pcb_t *)args;
+	struct _pcb_t *idle = _sched_get_curr_pcb();
 	struct _pcb_t *pcb;
 
 	uint32 ticks_delta = 0;
@@ -97,7 +102,7 @@ static void __cps_idle(void *args)
 			/* TODO Collect the statistics and **store** them */
 			os_printk(LOG_DEBUG, "%d sched in last %ds, "
 					"cpu usage: %%%d\n",
-					n_sched_per_stat,
+					stat.n_sched_per_stat,
 					STATISTICS_TIME/1000,
 					100 - 100*ticks_delta/STATISTICS_TIME);
 		}
@@ -107,7 +112,7 @@ static void __cps_idle(void *args)
 		 * or leave in the idle loop of itself.
 		 * TODO Preemption.
 		 */
-		list_for_each_entry(pcb, &pqcb_hook->pq, list) {
+		list_for_each_entry(pcb, &stat.pqcb_hook->pq, list) {
 			if (pcb == idle)
 				continue;
 			if (pcb->stat == PSTAT_READY)
@@ -120,26 +125,17 @@ static void __cps_idle(void *args)
  * @brief   core process - init
  * @param   args -i/o- reserved
  * @return  void
+ * @note    Now we can start the user main entry: ps_main.
+ *          The commonly known main().
  */
 static void __cps_init(void *args)
 {
-	os_printk(LOG_DEBUG, "process %s is here!\n", __func__);
+	int32 ret;
 
-//	__cps_idle_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
-//	os_assert(__cps_idle_pcb != NULL);
-//	__cps_idle_stack = (uint8 *)czalloc(CPS_IDLE_STACK_SIZE);
-//	os_assert(__cps_idle_stack != NULL);
-
-	os_process_create(__cps_idle, "__cps_idle", CPS_IDLE_STACK_SIZE);
-
-//	ps_main_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
-//	os_assert(ps_main_pcb != NULL);
-//	ps_main_stack = (uint8 *)czalloc(PS_MAIN_STACK_SIZE);
-//	os_assert(ps_main_stack != NULL);
-
-	/* Now we can start the user main entry, the commonly known main() */
-	os_process_create(ps_main, NULL, PS_MAIN_STACK_SIZE);
-
+	ret = os_process_create(__cps_idle, NULL, CPS_IDLE_STACK_SIZE);
+	os_assert(ret > 0);
+	ret = os_process_create(ps_main, NULL, PS_MAIN_STACK_SIZE);
+	os_assert(ret > 0);
 	os_process_suspend();
 }
 
@@ -149,43 +145,38 @@ static void __cps_init(void *args)
  * @return  pid if create success
  * @note    none
  */
-static int32 __process_init(void)
+static inline int32 __process_init(void)
 {
-	int32 ret = OS_OK;
-
-//	__cps_init_pcb = (struct _pcb_t *)czalloc(sizeof(struct _pcb_t));
-//	os_assert(__cps_init_pcb != NULL);
-//	__cps_init_stack = (uint8 *)czalloc(CPS_IDLE_STACK_SIZE);
-//	os_assert(__cps_init_stack != NULL);
-
-	os_process_create(__cps_init, NULL, CPS_INIT_STACK_SIZE);
-	return ret;
+	return os_process_create(__cps_init, NULL, CPS_INIT_STACK_SIZE);
 }
 
 /*
  * @brief   the very first init of ousia
  * @param   none
- * @return  os status code
+ * @return  none
  * @note    this function should be called before all other syscalls
  *          interrupts should better no be enabled before os init finished
  */
-int32 os_init(void)
+void os_init(void)
 {
 	int32 ret = OS_OK;
 
 	port_init();
 	_init_printf();
+
 	os_putchar(0x0c);
 	BOOT_LOGO(__logo1, __logo2);
+
 	ret = _mm_heap_init();
 	os_assert(ret == 0);
-	pqcb_hook = _sched_init();
-	os_assert(pqcb_hook != NULL);
-	_sys_time_systick_init();
-	ret = __process_init();
-	os_assert(ret == 0);
 
-	return ret;
+	stat.pqcb_hook = _sched_init();
+	os_assert(stat.pqcb_hook != NULL);
+
+	_sys_time_systick_init();
+
+	ret = __process_init();
+	os_assert(ret > 0);
 }
 
 /*

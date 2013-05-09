@@ -126,14 +126,17 @@ static int32 process_enter(struct console_cmd *conc)
 #ifndef DEBUG_CONSOLE
 	int32 cmd_index = 0;
 	int32 backend = 0;
+	int32 ret;
 
 	cmd_index = parse_cmd(conc);
 	backend = parse_args(conc);
 	if (cmd_index >= 0) {
 		if (backend) {
 			/* FIXME Create a process like will still crash */
-			os_process_create(ps_cmdexec, (void *)cmd_index,
-					  PS_CMDEXEC_STACK_SIZE);
+			ret = os_process_create(ps_cmdexec, (void *)cmd_index,
+						PS_CMDEXEC_STACK_SIZE);
+			if (ret < 0)
+				os_printf("command exec failed %d\n", ret);
 		} else {
 			/* TODO Pass in buffer of args instead of NULL */
 			conc->hcmd_arr[cmd_index].cmd_fn(NULL);

@@ -41,10 +41,7 @@
  */
 void __os_main(void)
 {
-	int32 ret;
-
 	port_bsp_init();
-	ret = os_init();
-	os_assert(ret == OS_OK);
+	os_init();
 	os_kick_off();
 }

@@ -365,6 +365,17 @@ void _sched_startup(void)
 }
 
 /*
+ * @brief   get current process control block
+ * @param   none
+ * @return  current pcb
+ * @note    none
+ */
+inline struct _pcb_t *_sched_get_curr_pcb(void)
+{
+	return curr_pcb;
+}
+
+/*
  * @brief   register a scheduler hook, called in every scheduling
  * @param   args is often a const value which cannot be modified externally
  * @return  none
@@ -395,11 +406,6 @@ void os_dump_stack(void)
  *          stack_base -i- start address of stack
  *          stack_sz -i- process private stack size
  * @return  pid if create success
- * @note    TODO We'd better use dynamic memory in the future
- *               to allocate a pcb and a stack if for a new process
- *               so, pcb structure should not be opened for user,
- *               as well as stack.
- *          FIXME if pcb is a pointer holder, it should be **p_pcb
  */
 int32 __os_process_create(void *pentry, char *name, void *args, uint32 stack_sz)
 {
@@ -434,9 +440,7 @@ int32 __os_process_create(void *pentry, char *name, void *args, uint32 stack_sz)
 	new_pcb->stat = PSTAT_READY;
 
 	__pcb_enqueue(new_pcb);
-
 	os_printk(LOG_DEBUG, "==> new: %s (%u)\n", name, new_pcb->pid);
-
 	return new_pcb->pid;
 
 err_stk:

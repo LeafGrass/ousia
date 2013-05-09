@@ -39,9 +39,26 @@ static struct eeprom_priv_s *gee = &ee24c08;
 static uint8 buffer_r[BUFFER_SIZE];
 static uint8 buffer_w[BUFFER_SIZE + 1];
 
+static void eeprom_test_setup(void)
+{
+	int i;
+
+	i2c_master_enable(I2C1, I2C_BUS_RESET);
+	memset(buffer_r, 0, sizeof(buffer_r));
+
+	buffer_w[0] = 0x0;
+	for (i = 1; i < BUFFER_SIZE + 1; i++)
+		buffer_w[i] = i - 1;
+	_mm_dump(buffer_r, sizeof(buffer_r), 0);
+	_mm_dump(buffer_w, sizeof(buffer_w), 0);
+	os_log(LOG_DEBUG, "buffers are ready: r: 0x%x, w: 0x%x\n", buffer_r, buffer_w);
+}
+
 static void ps_debug(void *args)
 {
 	int ret;
+
+	eeprom_test_setup();
 
 	for (;;) {
 		if (!signal) {
@@ -83,30 +100,21 @@ static void ps_child(void *args)
 	}
 }
 
-static void eeprom_test_setup(void)
-{
-	int i;
-
-	i2c_master_enable(I2C1, I2C_BUS_RESET);
-	memset(buffer_r, 0, sizeof(buffer_r));
-
-	buffer_w[0] = 0x0;
-	for (i = 1; i < BUFFER_SIZE + 1; i++)
-		buffer_w[i] = i - 1;
-#if 0
-	_mm_dump(buffer_r, sizeof(buffer_r), 0);
-	_mm_dump(buffer_w, sizeof(buffer_w), 0);
-	os_log(LOG_INFO, "buffers are ready: r: 0x%x, w: 0x%x\n", buffer_r, buffer_w);
-#endif
-}
-
 void ps_main(void *args)
 {
-	eeprom_test_setup();
-	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
-	os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
-	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
-	os_process_create(ps_debug, NULL, PS_DEBUG_STACK_SIZE);
+	int32 ret;
+	ret = os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
+	if (ret < 0)
+		os_printf("create process failed, ret: %d\n", ret);
+	ret = os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
+	if (ret < 0)
+		os_printf("create process failed, ret: %d\n", ret);
+	ret = os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
+	if (ret < 0)
+		os_printf("create process failed, ret: %d\n", ret);
+	ret = os_process_create(ps_debug, NULL, PS_DEBUG_STACK_SIZE);
+	if (ret < 0)
+		os_printf("create process failed, ret: %d\n", ret);
 	for (;;)
-		os_process_sleep(10);
+		os_process_sleep(1000);
 }
