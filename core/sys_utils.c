@@ -57,9 +57,11 @@ static struct _pcb_t __cps_init_pcb;
 static struct _pcb_t __cps_idle_pcb;
 static struct _pcb_t ps_main_pcb;
 
-static uint32 n_sched_one_second = 0;
+static uint32 n_sched_per_stat = 0;
 static const struct _pqcb_t *pqcb_hook = NULL;
 static const struct _pcb_t *pcb_curr_hook = NULL;
+
+#define STATISTICS_TIME		(60*1000)
 
 static void __sched_hook(const void *args)
 {
@@ -68,8 +70,8 @@ static void __sched_hook(const void *args)
 	pcb_curr_hook = (const struct _pcb_t *)args;
 	curr = os_systime_get();
 	n_sched++;
-	if (curr - last > 999) {
-		n_sched_one_second = n_sched;
+	if (curr - last > STATISTICS_TIME - 1) {
+		n_sched_per_stat = n_sched;
 		n_sched = 0;
 		last = curr;
 	}
@@ -95,15 +97,17 @@ static void __cps_idle(void *args)
 	while (1) {
 		curr = os_systime_get();
 
-		if (curr - last > 3999) {
+		if (curr - last > STATISTICS_TIME - 1) {
 			/*os_putchar(0x0c);*/
 			last = os_systime_get();
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
 			/* TODO Collect the statistics and **store** them */
-			os_printk(LOG_DEBUG, "%d sched in the last second, "
+			os_printk(LOG_DEBUG, "%d sched in last %ds, "
 					"cpu usage: %%%d\n",
-					n_sched_one_second, 100-ticks_delta/40);
+					n_sched_per_stat,
+					STATISTICS_TIME/1000,
+					100 - 100*ticks_delta/STATISTICS_TIME);
 		}
 
 		/*
