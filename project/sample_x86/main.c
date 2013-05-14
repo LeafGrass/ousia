@@ -9,17 +9,19 @@
 #include <sys/time.h>
 #include <sys/utils.h>
 
+void __os_main(void);
+
 void ps_main(void *args)
 {
 }
 
 int main(void)
 {
-	x86utils_system_init();
-	os_init();
+	__os_main();
 
-	while (1)
-		usleep(10000);
+	while (1) {
+		sleep(1);
+	}
 
 	return 0;
 }

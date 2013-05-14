@@ -24,7 +24,11 @@
  * @log     2011.8 initial revision
  */
 
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
+#include <sys/debug.h>
+#include <sys/print.h>
+#include <sys/time.h>
 #include <x86/x86utils/x86utils.h>
 #include <port/ousia_port.h>
 #include <stdlib.h>
@@ -78,8 +82,9 @@ void port_hard_fault_attach(void (*fn)(void *args))
  */
 void port_assert_fail(void)
 {
+	os_printk(LOG_CRITICAL, "fatal error, die here...\n");
 	while (1) {
-		usleep(10*1000*1000);
+		sleep(10);
 	}
 }
 
