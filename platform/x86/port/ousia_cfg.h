@@ -14,7 +14,7 @@
 #define OUSIA_PORT_STACK_DEC	0
 #define OUSIA_PORT_STACK_TYPE	OUSIA_PORT_STACK_INC
 
-#define OUSIA_MM_HEAP_SIZE	8192
+#define OUSIA_MM_HEAP_SIZE	(1024*1024)
 
 /*
  * scheduler strategy
