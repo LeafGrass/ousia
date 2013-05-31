@@ -116,6 +116,14 @@ static void apb_init(void)
 {
 }
 
+static void disable_soc(void)
+{
+	uint32 tmp;
+	tmp = __raw_read(0x1000D008);
+	tmp &= ~0x1;
+	__raw_write(0x1000D008, tmp);
+}
+
 void bsp_init(void)
 {
 	disable_fiq();
@@ -124,4 +132,5 @@ void bsp_init(void)
 	dtcm_clear();
 	apb_init();
 	enable_irq();
+	disable_soc();
 }

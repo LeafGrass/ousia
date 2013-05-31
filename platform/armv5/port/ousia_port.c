@@ -170,9 +170,8 @@ uint32 *port_context_init(void *pentry, void *args, void *stack_base)
  */
 void port_assert_fail(void)
 {
-	while (1) {
+	while (1)
 		__busy_wait(250);
-	}
 }
 
 /*
