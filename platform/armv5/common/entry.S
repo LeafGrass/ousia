@@ -182,8 +182,8 @@ zero_bss:
 	/*
 	 * Jump to RAM code
 	 */
-	ldr	pc, __os_main
-__os_main:
+	ldr	pc, __entry
+__entry:
 	.word __os_main
 
 /*
