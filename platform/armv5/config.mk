@@ -25,13 +25,13 @@ GLOBAL_FLAGS := \
 GLOBAL_CFLAGS := \
 	-fno-optimize-sibling-calls -nostdinc -mlittle-endian -march=armv5te \
 	-mapcs -mabi=aapcs-linux -mthumb-interwork -msoft-float -g -ggdb \
-	-fno-strict-aliasing -fsigned-char -fsigned-bitfields -O2 \
+	-fno-strict-aliasing -fsigned-char -fsigned-bitfields -O0 \
 	$(GLOBAL_FLAGS)
 
 GLOBAL_ASFLAGS := \
 	-fno-optimize-sibling-calls -nostdinc -mlittle-endian -march=armv5te \
 	-mapcs -mabi=aapcs-linux -mthumb-interwork -msoft-float -g -ggdb \
-	-fno-strict-aliasing -fsigned-char -fsigned-bitfields -O2 \
+	-fno-strict-aliasing -fsigned-char -fsigned-bitfields -O0 \
 	$(GLOBAL_FLAGS)
 
 LDFLAGS := \
