@@ -13,7 +13,7 @@ Developed following K-I-S-S principle.
 Source Tree Architecture
 ------------------------
 * core/
-    Ousia core routines. Ousia porting code are also placed here.
+    Ousia core routines.
 
 * doc/
     Complete documentation of Ousia.
@@ -31,6 +31,7 @@ Source Tree Architecture
 
 * platform/
     Chip and board specific code, e.g. low-level library.
+    Ousia porting code are also placed here.
 
 * project/
     Project source code. Include several sample project instances.
