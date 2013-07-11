@@ -19,7 +19,7 @@
  */
 
 /*
- * @file    platform/stm32/stm32utils/stm32utils.h
+ * @file    platform/stm32/utils/utils.h
  * @brief   stm32 library utilities
  * @log     2011.8 initial revision
  */
