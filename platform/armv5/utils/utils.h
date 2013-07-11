@@ -1,5 +1,5 @@
-#ifndef __UTILS_H__
-#define __UTILS_H__
+#ifndef __ARMV5_UTILS_H__
+#define __ARMV5_UTILS_H__
 
 #define ITCM_BASE		0x00000000
 #define ITCM_SIZE		0x00010000
@@ -23,4 +23,4 @@ inline void __io_putc(void *dev, char ch);
 inline char __io_getc(void *dev);
 void bsp_init(void);
 
-#endif /* __UTILS_H__ */
+#endif /* __ARMV5_UTILS_H__ */
