@@ -19,27 +19,27 @@
  */
 
 /*
- * @file    platform/stm32/stm32utils/stm32utils.c
+ * @file    platform/stm32/utils/utils.c
  * @brief   stm32 library utilities
  * @log     2011.8 initial revision
  */
 
-#include <libmaple/libmaple.h>
-#include <libmaple/libmaple_types.h>
-#include <libmaple/flash.h>
-#include <libmaple/rcc.h>
-#include <series/rcc.h>
-#include <libmaple/nvic.h>
-#include <libmaple/systick.h>
-#include <libmaple/gpio.h>
-#include <libmaple/adc.h>
-#include <libmaple/timer.h>
-#include <libmaple/usart.h>
-#include <libmaple/util.h>
-#include <libmaple/usb.h>
-#include <libmaple/usb_cdcacm.h>
+#include "libmaple/libmaple.h"
+#include "libmaple/libmaple_types.h"
+#include "libmaple/flash.h"
+#include "libmaple/rcc.h"
+#include "series/rcc.h"
+#include "libmaple/nvic.h"
+#include "libmaple/systick.h"
+#include "libmaple/gpio.h"
+#include "libmaple/adc.h"
+#include "libmaple/timer.h"
+#include "libmaple/usart.h"
+#include "libmaple/util.h"
+#include "libmaple/usb.h"
+#include "libmaple/usb_cdcacm.h"
 
-#include <stm32/stm32utils/stm32utils.h>
+#include "utils/utils.h"
 
 
 #define USB_TIMEOUT 50
@@ -455,7 +455,7 @@ static void usart_setup(usart_dev *dev, uint32 baud)
  * @return  none
  * @note    none
  */
-void stm32utils_board_init(void)
+void utils_board_init(void)
 {
 	flash_setup();
 	clocks_setup();
@@ -487,7 +487,7 @@ void stm32utils_board_init(void)
  * @return  none
  * @note    device is USART_CONSOLE_BANK by default
  */
-void stm32utils_io_putc(void *p, char ch)
+void utils_io_putc(void *p, char ch)
 {
 	usart_putc(USART_CONSOLE_BANK, ch);
 }
@@ -497,7 +497,7 @@ void stm32utils_io_putc(void *p, char ch)
  * @param   p -i- device pointer (could be NULL in tfp_printf)
  * @return  char
  */
-char stm32utils_io_getc(void *p)
+char utils_io_getc(void *p)
 {
 	char ch;
 	do {
@@ -517,7 +517,7 @@ char stm32utils_io_getc(void *p)
  * @return  none
  * @note    FIXME here use putstr to support putc, bad logic
  */
-void stm32utils_usb_putc(void *p, char ch)
+void utils_usb_putc(void *p, char ch)
 {
 	const uint8 buf[] = {ch};
 	usb_putstr(buf, 1);
@@ -529,7 +529,7 @@ void stm32utils_usb_putc(void *p, char ch)
  * @return  char
  * @note    none
  */
-char stm32utils_usb_getc(void *p)
+char utils_usb_getc(void *p)
 {
 	char ch;
 	while (usb_getc(p, &ch) != 0) {

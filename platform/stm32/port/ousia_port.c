@@ -29,12 +29,14 @@
 #include <sys/debug.h>
 #include <sys/print.h>
 #include <sys/time.h>
-#include <libmaple/systick.h>
-#include <libmaple/util.h>
-#include <libmaple/delay.h>
-#include <libmaple/gpio.h>
-#include <stm32utils/stm32utils.h>
-#include <port/ousia_port.h>
+
+#include "libmaple/systick.h"
+#include "libmaple/util.h"
+#include "libmaple/delay.h"
+#include "libmaple/gpio.h"
+
+#include "utils/utils.h"
+#include "port/ousia_port.h"
 
 
 #define PSR_INIT_VALUE	0x01000000L
@@ -117,7 +119,7 @@ void port_bsp_init(void)
 {
 	int i;
 
-	stm32utils_board_init();
+	utils_board_init();
 
 	/*
 	 * led flashes, sign of system starts to run
@@ -152,11 +154,11 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
 		      char (**stdin_getf)(void *dev))
 {
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
-	*stdout_putf = stm32utils_usb_putc;
-	*stdin_getf = stm32utils_usb_getc;
+	*stdout_putf = utils_usb_putc;
+	*stdin_getf = utils_usb_getc;
 #else
-	*stdout_putf = stm32utils_io_putc;
-	*stdin_getf = stm32utils_io_getc;
+	*stdout_putf = utils_io_putc;
+	*stdin_getf = utils_io_getc;
 #endif
 }
 
