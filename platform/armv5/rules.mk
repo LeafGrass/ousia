@@ -3,6 +3,7 @@ sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
 BUILDDIRS       += $(BUILD_PATH)/$(d)/$(TARGET_PLATFORM)/common
+BUILDDIRS       += $(BUILD_PATH)/$(d)/$(TARGET_PLATFORM)/utils
 BUILDDIRS       += $(BUILD_PATH)/$(d)/$(TARGET_PLATFORM)/port
 
 COMMON_INCLUDE := \
@@ -15,7 +16,7 @@ CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) $(COMMON_INCLUD
 # libmaple
 cSRCS_$(d) := \
 	$(TARGET_PLATFORM)/common/exc.c \
-	$(TARGET_PLATFORM)/common/utils.c
+	$(TARGET_PLATFORM)/utils/utils.c
 sSRCS_$(d) += \
 	$(TARGET_PLATFORM)/common/entry.S
 

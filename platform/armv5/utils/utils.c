@@ -3,9 +3,10 @@
 #include <sys/debug.h>
 #include <sys/print.h>
 #include <sys/time.h>
-#include <port/ousia_port.h>
-#include <common/apb_uart_defs.h>
-#include <common/utils.h>
+
+#include "port/ousia_port.h"
+#include "common/apb_uart_defs.h"
+#include "utils/utils.h"
 
 #define UART_LSR_THRE   0x20	/* Transmit holding bit */
 #define UART_LSR_RBS    0x01	/* Receive buffer status */

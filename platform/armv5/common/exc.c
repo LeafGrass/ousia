@@ -3,7 +3,7 @@
 #include <sys/debug.h>
 #include <sys/print.h>
 #include <sys/time.h>
-#include <port/ousia_port.h>
+#include "port/ousia_port.h"
 
 #if 0
 typedef struct pt_regs {

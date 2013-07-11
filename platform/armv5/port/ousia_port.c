@@ -29,8 +29,9 @@
 #include <sys/debug.h>
 #include <sys/print.h>
 #include <sys/time.h>
-#include <common/utils.h>
-#include <port/ousia_port.h>
+
+#include "utils/utils.h"
+#include "port/ousia_port.h"
 
 
 /*

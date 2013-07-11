@@ -7,8 +7,9 @@
 #include <sys/mm.h>
 #include <sys/sched.h> /* FIXME This bull shit expose the _pcb_t... */
 #include <sys/print.h>
-#include <console/console.h>
-#include <common/utils.h>
+
+#include "console/console.h"
+#include "utils/utils.h"
 
 
 void ps_main(void)
