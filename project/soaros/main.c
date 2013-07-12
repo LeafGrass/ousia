@@ -4,14 +4,15 @@
 #include <sys/time.h>
 #include <sys/sched.h> /* FIXME This bull shit expose the _pcb_t... */
 #include <sys/print.h>
-#include <console/console.h>
+
+#include "console/console.h"
 
 /* FIXME for temporary debug only */
-#include <stm32/libmaple/include/libmaple/libmaple.h>
-#include <stm32/libmaple/include/libmaple/gpio.h>
-#include <stm32/libmaple/include/libmaple/i2c.h>
-#include <stm32/libmaple/include/libmaple/exti.h>
-#include <stm32/stm32utils/stm32utils.h>
+#include "stm32/libmaple/include/libmaple/libmaple.h"
+#include "stm32/libmaple/include/libmaple/gpio.h"
+#include "stm32/libmaple/include/libmaple/i2c.h"
+#include "stm32/libmaple/include/libmaple/exti.h"
+#include "stm32/utils/utils.h"
 
 #define PS_CHILD_STACK_SIZE	512
 #define PS_BUTTON_STACK_SIZE	256
