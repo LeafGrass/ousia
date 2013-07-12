@@ -2,19 +2,15 @@
 sp              := $(sp).x
 dirstack_$(sp)  := $(d)
 d               := $(dir)
-#BUILDDIRS       += $(BUILD_PATH)/$(d)
-BUILDDIRS       += $(BUILD_PATH)/$(d)/x86
-BUILDDIRS       += $(BUILD_PATH)/$(d)/x86/utils
-BUILDDIRS       += $(BUILD_PATH)/$(d)/x86/port
+USR_BUILDDIRS   += $(BUILD_PATH)/$(d)
 
 # Local flags
-CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) -Wall -Werror
+CFLAGS_$(d) = -I$(d) $(PROJECT_INCLUDES) $(PLATFORM_INCLUDES) $(CORE_INCLUDES) $(DRIVER_INCLUDES) $(FRAMEWORK_INCLUDES) -Wall
 
 # Local rules and targets
-# x86utils
-cSRCS_$(d) := x86/utils/utils.c
-# porting
-cSRCS_$(d) += x86/port/ousia_port.c
+# libmaple
+cSRCS_$(d) := main.c
+sSRCS_$(d) :=
 
 cFILES_$(d) := $(cSRCS_$(d):%=$(d)/%)
 sFILES_$(d) := $(sSRCS_$(d):%=$(d)/%)
@@ -25,9 +21,10 @@ DEPS_$(d) := $(OBJS_$(d):%.o=%.d)
 $(OBJS_$(d)): TGT_CFLAGS := $(CFLAGS_$(d))
 $(OBJS_$(d)): TGT_ASFLAGS :=
 
-TGT_BIN += $(OBJS_$(d))
+USR_TGT_BIN += $(OBJS_$(d))
 
 # Standard things
 -include $(DEPS_$(d))
 d := $(dirstack_$(sp))
 sp := $(basename $(sp))
+

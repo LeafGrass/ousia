@@ -9,10 +9,9 @@
 #include <sys/print.h>
 
 /* FIXME for temporary debug only */
-#include <stm32/libmaple/include/libmaple/libmaple.h>
-#include <stm32/libmaple/include/libmaple/gpio.h>
-#include <stm32/libmaple/include/libmaple/i2c.h>
-#include <stm32/stm32utils/stm32utils.h>
+#include "stm32/libmaple/include/libmaple/libmaple.h"
+#include "stm32/libmaple/include/libmaple/i2c.h"
+#include "stm32/utils/utils.h"
 
 #include "eeprom.h"
 

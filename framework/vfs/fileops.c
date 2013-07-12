@@ -24,7 +24,7 @@
  * @log     2011.8 first revision
  */
 
-#include <vfs/fileops.h>
+#include "vfs/fileops.h"
 
 /*
  * @brief   sample function

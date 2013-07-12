@@ -361,7 +361,7 @@ void _sched_startup(void)
 	curr_pcb = __pq_get_head(&pqcb);
 	curr_pcb->stat = PSTAT_RUNNING;
 	port_first_switch((uint32)__pq_get_head(&pqcb));
-	os_printk(LOG_ERROR, "%s, shoud never be here!\n");
+	os_printk(LOG_ERROR, "%s, shoud never be here!\n", __func__);
 	os_assert(0);
 }
 

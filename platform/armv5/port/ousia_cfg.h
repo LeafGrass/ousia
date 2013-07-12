@@ -1,4 +1,4 @@
-/* x86 port */
+/* stm32 port */
 #ifndef __OUSIA_CFG_H__
 #define __OUSIA_CFG_H__
 
@@ -12,9 +12,13 @@
 
 #define OUSIA_PORT_STACK_INC	1
 #define OUSIA_PORT_STACK_DEC	0
-#define OUSIA_PORT_STACK_TYPE	OUSIA_PORT_STACK_INC
+#define OUSIA_PORT_STACK_TYPE	OUSIA_PORT_STACK_DEC
 
-#define OUSIA_MM_HEAP_SIZE	(1024*1024)
+#define OUSIA_PRINT_TYPE_SERIAL	0
+#define OUSIA_PRINT_TYPE_USB	1
+#define OUSIA_PRINT_TYPE	OUSIA_PRINT_TYPE_SERIAL
+
+#define OUSIA_MM_HEAP_SIZE	(1024*12)
 
 /*
  * scheduler strategy

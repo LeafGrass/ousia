@@ -31,8 +31,9 @@
 #include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/mm.h>
-#include <console/console.h>
-#include <console/cmd.h>
+
+#include "console/console.h"
+#include "console/cmd.h"
 
 
 static int32 cmd_help(void *args);

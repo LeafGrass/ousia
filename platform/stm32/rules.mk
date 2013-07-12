@@ -8,7 +8,7 @@ BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/$(MCU_SERIES)/$(MCU_F1_LINE
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/usb_lib
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/libmaple/usb/$(MCU_SERIES)
-BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/stm32utils
+BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/utils
 BUILDDIRS       += $(BUILD_PATH)/$(d)/stm32/port
 
 LIBMAPLE_INCLUDES := \
@@ -85,7 +85,7 @@ sSRCS_$(d) += \
 
 ifeq ($(MCU_SERIES), stm32f1)
 # stm32utils
-cSRCS_$(d) += stm32/stm32utils/stm32utils.c
+cSRCS_$(d) += stm32/utils/utils.c
 endif
 
 # porting

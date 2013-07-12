@@ -19,13 +19,13 @@
  */
 
 /*
- * @file    platform/stm32/stm32utils/stm32utils.h
+ * @file    platform/stm32/utils/utils.h
  * @brief   stm32 library utilities
  * @log     2011.8 initial revision
  */
 
-#ifndef __STM32UTILS_H__
-#define __STM32UTILS_H__
+#ifndef __STM32_UTILS_H__
+#define __STM32_UTILS_H__
 
 
 #define SYSTICK_RELOAD_VAL	71999 /* takes a cycle to reload */
@@ -51,11 +51,11 @@
 #define RESET_DELAY		(100000)
 #define USB_CONFIG_MAX_POWER	(100 >> 1)
 
-void stm32utils_board_init(void);
-void stm32utils_io_putc(void *p, char ch);
-char stm32utils_io_getc(void *p);
-void stm32utils_usb_putc(void *p, char ch);
-char stm32utils_usb_getc(void *p);
+void utils_board_init(void);
+void utils_io_putc(void *p, char ch);
+char utils_io_getc(void *p);
+void utils_usb_putc(void *p, char ch);
+char utils_usb_getc(void *p);
 
 
-#endif /* __STM32UTILS_H__ */
+#endif /* __STM32_UTILS_H__ */

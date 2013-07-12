@@ -19,19 +19,19 @@
  */
 
 /*
- * @file    platform/x86/x86utils/x86utils.h
+ * @file    platform/x86/utils/utils.h
  * @brief   x86 utilities
  * @log     2011.8 initial revision
  */
 
-#ifndef __X86UTILS_H__
-#define __X86UTILS_H__
+#ifndef __X86_UTILS_H__
+#define __X86_UTILS_H__
 
 
-void x86utils_system_init(void);
-void x86utils_io_putc(void *p, char ch);
-char x86utils_io_getc(void *p);
-void x86utils_attach_systick_callback(void (*callback_fn)(void));
+void utils_system_init(void);
+void utils_io_putc(void *p, char ch);
+char utils_io_getc(void *p);
+void utils_attach_systick_callback(void (*callback_fn)(void));
 
 
-#endif /* __X86UTILS_H__ */
+#endif /* __X86_UTILS_H__ */

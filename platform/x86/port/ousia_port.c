@@ -24,12 +24,18 @@
  * @log     2011.8 initial revision
  */
 
+#include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
-#include <x86/x86utils/x86utils.h>
-#include <port/ousia_port.h>
+#include <sys/debug.h>
+#include <sys/print.h>
+#include <sys/time.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+
+#include "x86/utils/utils.h"
+#include "port/ousia_port.h"
 
 uint8 *__heap_start;
 uint8 *__heap_end;
@@ -56,7 +62,7 @@ void port_init(void)
  */
 void port_bsp_init(void)
 {
-	x86utils_system_init();
+	utils_system_init();
 }
 
 /*
@@ -78,8 +84,9 @@ void port_hard_fault_attach(void (*fn)(void *args))
  */
 void port_assert_fail(void)
 {
+	os_printk(LOG_CRITICAL, "fatal error, die here...\n");
 	while (1) {
-		usleep(10*1000*1000);
+		sleep(10);
 	}
 }
 
@@ -105,8 +112,8 @@ void port_dump_stack(const pt_regs_t *pt)
 void port_printf_init(void (**stdout_putf)(void *dev, char ch),
 		      char (**stdin_getf)(void *dev))
 {
-	*stdout_putf = x86utils_io_putc;
-	*stdin_getf = x86utils_io_getc;
+	*stdout_putf = utils_io_putc;
+	*stdin_getf = utils_io_getc;
 }
 
 /*
@@ -117,7 +124,7 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
  */
 void port_systick_init(void (*callback)(void))
 {
-	x86utils_attach_systick_callback(callback);
+	utils_attach_systick_callback(callback);
 	/* here call fake systick enable */
 	return;
 }
