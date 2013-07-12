@@ -32,8 +32,9 @@
 #include <sys/sched.h>
 #include <sys/print.h>
 #include <sys/ds.h>
-#include <console/cmd.h>
-#include <console/console.h>
+
+#include "console/cmd.h"
+#include "console/console.h"
 
 
 #define PS_CMDEXEC_STACK_SIZE	512
