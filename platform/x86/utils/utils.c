@@ -19,7 +19,7 @@
  */
 
 /*
- * @file    platform/x86/x86utils/x86utils.c
+ * @file    platform/x86/utils/utils.c
  * @brief   x86 utilities
  * @log     2011.8 initial revision
  */
@@ -30,7 +30,8 @@
 #include </usr/include/sys/time.h>
 #include <stdlib.h>
 #include <signal.h>
-#include <x86/x86utils/x86utils.h>
+
+#include "utils/utils.h"
 
 #define OS_THROB_RATE		1000
 #define X86_MILLISEC_PER_SEC	1000000
@@ -77,7 +78,7 @@ static void __pseudo_systick(int sig)
  * @return  none
  * @note    none
  */
-void x86utils_system_init(void)
+void utils_system_init(void)
 {
 	signal(SIGALRM, __pseudo_systick);
 	__timer_init();
@@ -90,7 +91,7 @@ void x86utils_system_init(void)
  * @return  none
  * @note    none
  */
-void x86utils_io_putc(void *p, char ch)
+void utils_io_putc(void *p, char ch)
 {
 	putchar(ch);
 }
@@ -101,7 +102,7 @@ void x86utils_io_putc(void *p, char ch)
  * @return  char
  * @note    none
  */
-char x86utils_io_getc(void *p)
+char utils_io_getc(void *p)
 {
 	return getchar();
 }
@@ -112,7 +113,7 @@ char x86utils_io_getc(void *p)
  * @return  none
  * @note    none
  */
-void x86utils_attach_systick_callback(void (*callback_fn)(void))
+void utils_attach_systick_callback(void (*callback_fn)(void))
 {
 	systick_user_callback = callback_fn;
 }
