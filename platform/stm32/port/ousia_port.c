@@ -95,7 +95,7 @@ static void __hard_fault_handler(uint32 psp, uint32 exc_num)
  * @brief   porting related init
  * @param   none
  * @return  none
- * @note    FIXME Do it later than or before bsp_init?
+ * @note    Do it later than bsp_init.
  */
 void port_init(void)
 {

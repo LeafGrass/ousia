@@ -69,7 +69,7 @@ static void __busy_wait(uint32 ms)
  * @brief   porting related init
  * @param   none
  * @return  none
- * @note    FIXME Do it later than or before bsp_init?
+ * @note    Do it later than bsp_init.
  */
 void port_init(void)
 {
