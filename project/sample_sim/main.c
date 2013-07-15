@@ -9,19 +9,6 @@
 
 #include "sim/utils/utils.h"
 
-void __os_main(void);
-
 void ps_main(void *args)
 {
-}
-
-int main(void)
-{
-	__os_main();
-
-	while (1) {
-		sleep(1);
-	}
-
-	return 0;
 }

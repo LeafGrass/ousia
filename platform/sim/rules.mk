@@ -12,7 +12,9 @@ CFLAGS_$(d) = -I$(d) -I$(d)/$(TARGET_PLATFORM) -I$(INCLUDE_PATH) -Wall -Werror
 
 # Local rules and targets
 # simutils
-cSRCS_$(d) := sim/utils/utils.c
+cSRCS_$(d) := \
+	sim/utils/utils.c \
+	sim/utils/entry.c
 # porting
 cSRCS_$(d) += sim/port/ousia_port.c
 
