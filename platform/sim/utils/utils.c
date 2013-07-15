@@ -19,8 +19,8 @@
  */
 
 /*
- * @file    platform/x86/utils/utils.c
- * @brief   x86 utilities
+ * @file    platform/sim/utils/utils.c
+ * @brief   sim utilities
  * @log     2011.8 initial revision
  */
 
@@ -41,7 +41,7 @@ static void (*systick_user_callback)(void);
 static unsigned long long _uptime;
 
 /**
- * @brief   x86 timer init
+ * @brief   sim timer init
  * @param   none
  * @return  none
  * @note    temporarily only support linux
@@ -73,7 +73,7 @@ static void __pseudo_systick(int sig)
 }
 
 /*
- * @brief   x86 specific init
+ * @brief   sim specific init
  * @param   none
  * @return  none
  * @note    none
@@ -85,7 +85,7 @@ void utils_system_init(void)
 }
 
 /**
- * @brief   x86 io putchar routine
+ * @brief   sim io putchar routine
  * @param   p -i- device pointer
  *          ch -i- data to transmit
  * @return  none
@@ -97,7 +97,7 @@ void utils_io_putc(void *p, char ch)
 }
 
 /**
- * @brief   x86 io getchar routine
+ * @brief   sim io getchar routine
  * @param   none
  * @return  char
  * @note    none

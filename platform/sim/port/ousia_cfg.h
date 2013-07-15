@@ -1,4 +1,4 @@
-/* x86 port */
+/* sim port */
 #ifndef __OUSIA_CFG_H__
 #define __OUSIA_CFG_H__
 

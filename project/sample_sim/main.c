@@ -7,7 +7,7 @@
 #include <sys/time.h>
 #include <sys/utils.h>
 
-#include "x86/utils/utils.h"
+#include "sim/utils/utils.h"
 
 void __os_main(void);
 

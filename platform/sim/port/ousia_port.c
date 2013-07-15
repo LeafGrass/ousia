@@ -19,8 +19,8 @@
  */
 
 /*
- * @file    platform/x86/port/ousia_port.c
- * @brief   x86 virtual port
+ * @file    platform/sim/port/ousia_port.c
+ * @brief   sim virtual port
  * @log     2011.8 initial revision
  */
 
@@ -34,7 +34,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "x86/utils/utils.h"
+#include "sim/utils/utils.h"
 #include "port/ousia_port.h"
 
 uint8 *__heap_start;
