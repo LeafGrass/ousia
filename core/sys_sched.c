@@ -460,6 +460,8 @@ int32 os_process_delete(uint32 pid)
 {
 	int32 ret = OS_OK;
 
+	/* TODO Reclaim process resources. */
+
 	curr_pcb->stat = PSTAT_KILLED;
 	_sched_schedule();
 
