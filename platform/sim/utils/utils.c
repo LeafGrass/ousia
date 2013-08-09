@@ -25,7 +25,6 @@
  */
 
 #include <ousia/ousia_type.h>
-#include <stdio.h>
 #include </usr/include/time.h>
 #include </usr/include/sys/time.h>
 #include <stdlib.h>
@@ -84,6 +83,7 @@ void utils_system_init(void)
 	__timer_init();
 }
 
+extern int putchar (int __c);
 /**
  * @brief   sim io putchar routine
  * @param   p -i- device pointer
@@ -96,6 +96,7 @@ void utils_io_putc(void *p, char ch)
 	putchar(ch);
 }
 
+extern int getchar (void);
 /**
  * @brief   sim io getchar routine
  * @param   none
