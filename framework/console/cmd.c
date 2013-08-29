@@ -47,6 +47,10 @@ const struct cmd_handle hcmd_arr[] = {
 		.cmd_fn = cmd_help,
 	},
 	{
+		.cmd_word = "?",
+		.cmd_fn = cmd_help,
+	},
+	{
 		.cmd_word = "debug",
 		.cmd_fn = cmd_debug,
 	},
