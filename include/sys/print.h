@@ -121,16 +121,21 @@ regs Kusti, 23.10.2004
 #include <sys/debug.h>
 
 void _init_printf(void);
-inline void tfp_putchar(char ch);
-inline char tfp_getchar(void);
+void _init_lldbg(void);
+inline void tfp_putc(char ch);
+inline void tfp_llputc(char ch);
+inline char tfp_getc(void);
 void tfp_printf(const char *fmt, ...);
+void tfp_lldbg(const char *fmt, ...);
 void tfp_sprintf(char *s, const char *fmt, ...);
 
 #define os_init_printf	init_printf
-#define os_putchar	tfp_putchar
-#define os_getchar	tfp_getchar
+#define os_putchar	tfp_putc
+#define os_getchar	tfp_getc
 #define os_printf	tfp_printf
 #define os_sprintf	tfp_sprintf
+#define os_lldbg	tfp_lldbg
+#define os_llputc	tfp_llputc
 
 
 #endif /* __SYS_PRINT_H__ */

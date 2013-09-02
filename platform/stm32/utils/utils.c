@@ -476,6 +476,7 @@ void utils_board_init(void)
 	usb_enable(USB_DISC_DEV, USB_DISC_BIT);
 
 	usb_putstr("", 0);
+	usart_putc(USART_CONSOLE_BANK, 0x0c);
 	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 	gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
 }

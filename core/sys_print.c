@@ -55,6 +55,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 typedef void (*putcf)(void *dev, char ch);
 typedef char (*getcf)(void *dev);
 static putcf stdout_putf;
+static putcf lldbg_putf;
 static getcf stdin_getf;
 static void *stdout_putp;
 
@@ -190,12 +191,22 @@ void _init_printf(void)
 	port_printf_init(&stdout_putf, &stdin_getf);
 }
 
-inline void tfp_putchar(char ch)
+void _init_lldbg(void)
+{
+	port_lldbg_init(&lldbg_putf);
+}
+
+inline void tfp_putc(char ch)
 {
 	stdout_putf(NULL, ch);
 }
 
-inline char tfp_getchar(void)
+inline void tfp_llputc(char ch)
+{
+	lldbg_putf(NULL, ch);
+}
+
+inline char tfp_getc(void)
 {
 	return stdin_getf(NULL);
 }
@@ -205,6 +216,14 @@ void tfp_printf(const char *fmt, ...)
 	va_list va;
 	va_start(va, fmt);
 	tfp_format(stdout_putp, stdout_putf, fmt, va);
+	va_end(va);
+}
+
+void tfp_lldbg(const char *fmt, ...)
+{
+	va_list va;
+	va_start(va, fmt);
+	tfp_format(NULL, lldbg_putf, fmt, va);
 	va_end(va);
 }
 

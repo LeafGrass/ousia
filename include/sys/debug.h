@@ -36,7 +36,6 @@
 #define LOG_CRITICAL	5
 #define LOG_LEVEL	LOG_INFO
 
-#ifdef OUSIA_DEBUG_PRINT
 #define __dec		(os_systime_get()/1000)
 #define __frac		(os_systime_get()%1000)
 #define _OS_PRINTF(level, msg, args...) \
@@ -51,10 +50,6 @@
 			os_printf("[%6u.%03u] " msg, __dec, __frac, ##args); \
 		} \
 	} while (0)
-#else
-#define _OS_PRINTF(level, msg, args...)
-#define _OS_PRINTK(level, msg, args...)
-#endif
 
 #define ASSERT_NONE	0
 #define ASSERT_ALL	1
@@ -77,6 +72,11 @@ inline void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 #define os_assert(exp)			_OS_ASSERT(exp)
 #define os_log(level, msg, args...)	_OS_PRINTF(level, msg, ##args)
 #define os_printk(level, msg, args...)	_OS_PRINTK(level, msg, ##args)
+#ifdef OUSIA_DEBUG_LOW_LEVEL
+#define lldbg(msg, args...)		os_lldbg(msg, ##args)
+#else
+#define lldbg(msg, args...)
+#endif
 
 
 #endif /* __SYS_DEBUG_H__ */

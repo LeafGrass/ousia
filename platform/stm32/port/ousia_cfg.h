@@ -6,7 +6,7 @@
  * FIXME the macro'name should not be like this
  * better to be something like CFG_XXX_XXX
  */
-#define OUSIA_DEBUG_PRINT
+#define OUSIA_DEBUG_LOW_LEVEL
 #define OUSIA_DEBUG_ASSERT
 #define OUSIA_USE_LIBMAPLE
 #define OUSIA_DS_ADVANCED

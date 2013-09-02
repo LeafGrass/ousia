@@ -120,6 +120,7 @@ void port_bsp_init(void)
 	int i;
 
 	utils_board_init();
+	lldbg("low level init done.\n");
 
 	/*
 	 * led flashes, sign of system starts to run
@@ -144,9 +145,9 @@ void port_hard_fault_attach(void (*fn)(void *args))
 }
 
 /*
- * @brief   band printf callback to low-level io control
- * @param   stdout_putp -i/o- generally none
- *          stdout_putf -i/o- low-level printf specific io implementation
+ * @brief   band printf callback to standard io
+ * @param   stdout_putf -i/o- standard output specific io implementation
+ *          stdout_getf -i/o- standard input specific io implementation
  * @return  none
  * @note    none
  */
@@ -160,6 +161,17 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
 	*stdout_putf = utils_io_putc;
 	*stdin_getf = utils_io_getc;
 #endif
+}
+
+/*
+ * @brief   band printf callback to low level debug io
+ * @param   lldbg_putf -i/o- low level output specific io implementation
+ * @return  none
+ * @note    none
+ */
+void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
+{
+	*lldbg_putf = utils_io_putc;
 }
 
 /*

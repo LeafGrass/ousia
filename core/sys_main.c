@@ -41,6 +41,7 @@
  */
 void __os_main(void)
 {
+	_init_lldbg();
 	port_bsp_init();
 	os_init();
 	os_kick_off();

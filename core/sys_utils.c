@@ -161,21 +161,28 @@ static inline int32 __process_init(void)
 void os_init(void)
 {
 	int32 ret = OS_OK;
-
+	lldbg("starting os...\n");
 	port_init();
+
+	lldbg("init stdio...\n");
 	_init_printf();
 
+	lldbg("show start logo...\n");
 	os_putchar(0x0c);
 	BOOT_LOGO(__logo1, __logo2);
 
+	lldbg("init memory heap...\n");
 	ret = _mm_heap_init();
 	os_assert(ret == 0);
 
+	lldbg("init scheduler...\n");
 	stat.pqcb_hook = _sched_init();
 	os_assert(stat.pqcb_hook != NULL);
 
+	lldbg("init system timer...\n");
 	_sys_time_systick_init();
 
+	lldbg("prepare system process...\n");
 	ret = __process_init();
 	os_assert(ret > 0);
 }
@@ -188,5 +195,6 @@ void os_init(void)
  */
 inline void os_kick_off(void)
 {
+	lldbg("kick off os...\n");
 	_sched_startup();
 }
