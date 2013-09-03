@@ -1,6 +1,23 @@
 Ousia Release Notes
 ===================
 
+2013-09-03 v0.2.1
+--------------------
+Brief:
+	Some miscellaneous fixes, cleanups and updates.
+	1. Add bsp code for armv5.
+	2. Clean up platform directory names.
+	3. Merge libmaple updates.
+	4. Add low level debug routine.
+	5. Others, etc.
+Bug fixes:
+	None.
+New features:
+	None.
+Known issues:
+	Remained not changed.
+
+
 2013-05-09 v0.2.0
 --------------------
 Brief:
