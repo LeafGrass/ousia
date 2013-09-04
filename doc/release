@@ -1,6 +1,19 @@
 Ousia Release Notes
 ===================
 
+2013-09-04 v0.2.2
+--------------------
+Brief:
+	Two important fixes.
+Bug fixes:
+	1. Fix systick_uptime_millis always being 0 which would cause block.
+	2. Enable usb printing things only after systick enabled.
+New features:
+	None.
+Known issues:
+	Bootflow needs to be carefully written and also needs cleanups.
+
+
 2013-09-03 v0.2.1
 --------------------
 Brief:
