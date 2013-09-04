@@ -42,7 +42,7 @@
 #include "utils/utils.h"
 
 
-#define USB_TIMEOUT 50
+#define USB_TIMEOUT 2
 
 extern int32 (*non_busy_wait)(uint32);
 
@@ -51,7 +51,9 @@ extern int32 (*non_busy_wait)(uint32);
  * @param   buf -i/o- data buffer to be transmited
  *          len -i- length of data to be transmited
  * @return  none
- * @note    none
+ * @note    FIXME This will eventually affect performance because
+ *                it has a USB_TIMEOUT long busy wait if we don't
+ *                open tty cdc/acm device on host side.
  */
 static void usb_putstr(const void *buf, uint32 len)
 {
@@ -81,10 +83,10 @@ static void usb_putstr(const void *buf, uint32 len)
 }
 
 enum reset_state_t {
-    DTR_UNSET,
-    DTR_HIGH,
-    DTR_NEGEDGE,
-    DTR_LOW
+	DTR_UNSET,
+	DTR_HIGH,
+	DTR_NEGEDGE,
+	DTR_LOW
 };
 
 static enum reset_state_t reset_state = DTR_UNSET;

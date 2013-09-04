@@ -40,6 +40,7 @@
 
 #define SYSTICK_USE_CALLBACK /* improve efficiency in __exc_systick */
 
+/* System elapsed time, in milliseconds */
 static volatile uint32 systick_uptime_millis;
 #ifdef SYSTICK_USE_CALLBACK
 static void (*systick_user_callback)(void);
@@ -90,6 +91,10 @@ void systick_attach_callback(void (*callback)(void)) {
 #ifdef SYSTICK_USE_CALLBACK
     systick_user_callback = callback;
 #endif
+}
+
+inline uint32 systick_uptime(void) {
+    return systick_uptime_millis;
 }
 
 /*

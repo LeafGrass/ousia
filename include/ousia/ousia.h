@@ -36,7 +36,7 @@
 
 #define BOOT_LOGO(str1, str2) \
 { \
-	os_putchar(0x0C); \
+	os_putchar('\n'); \
 	os_printf(str1, NULL); \
 	os_printf("\tOusia v%d.%d.%d %s\n", VERSION, SUBLEVEL, DEVNUM, VERNAME); \
 	os_printf(str2, NULL); \

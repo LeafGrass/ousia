@@ -78,15 +78,10 @@ typedef struct systick_reg_map {
 #define SYSTICK_CVR_SKEW                BIT(30)
 #define SYSTICK_CVR_TENMS               0xFFFFFF
 
-/* System elapsed time, in milliseconds */
-static volatile uint32 systick_uptime_millis;
-
 /**
  * @brief Returns the system uptime, in milliseconds.
  */
-static inline uint32 systick_uptime(void) {
-    return systick_uptime_millis;
-}
+inline uint32 systick_uptime(void);
 
 
 void systick_init(uint32 reload_val);
