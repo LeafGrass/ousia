@@ -44,7 +44,7 @@
 
 #define USB_TIMEOUT 2
 
-extern int32 (*non_busy_wait)(uint32);
+extern int32 os_process_sleep(uint32 tms);
 
 /*
  * @brief   stm32 usb putstr routine
@@ -429,26 +429,19 @@ static void timers_setup(void)
 /*
  * @brief   initialize usart on chip
  * @param   dev -i- usart device pointer
- *          baud -i- baudrate
+ *          baud -i- baudrate (must <= dev->max_baud)
  * @return  none
  * @note    none
  */
 static void usart_setup(usart_dev *dev, uint32 baud)
 {
-	uint32 i = USART_RX_BUF_SIZE;
-
-	gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_TX, GPIO_AF_OUTPUT_PP);
-	gpio_set_mode(USART_CONSOLE_PORT, USART_CONSOLE_RX, GPIO_INPUT_FLOATING);
-
+	usart_config_gpios_async(dev,
+				 USART_CONSOLE_PORT, USART_CONSOLE_RX,
+				 USART_CONSOLE_PORT, USART_CONSOLE_TX,
+				 0);
 	usart_init(dev);
-	usart_set_baud_rate(dev, 72000000UL, baud);
-	usart_disable(dev);
+	usart_set_baud_rate(dev, USART_USE_PCLK, baud);
 	usart_enable(dev);
-
-	/* flush buffer */
-	while (i--) {
-		usart_putc(dev, '\r');
-	}
 }
 
 /*
@@ -502,15 +495,10 @@ void utils_io_putc(void *p, char ch)
  */
 char utils_io_getc(void *p)
 {
-	char ch;
-	do {
-		ch = usart_getc(p);
-		if (non_busy_wait)
-			non_busy_wait(10);
-		else
-			continue;
-	} while (ch < 0);
-	return ch;
+	while (!usart_data_available(USART_CONSOLE_BANK)) {
+		os_process_sleep(10);
+	}
+	return usart_getc(USART_CONSOLE_BANK);
 }
 
 /*
@@ -535,11 +523,7 @@ void utils_usb_putc(void *p, char ch)
 char utils_usb_getc(void *p)
 {
 	char ch;
-	while (usb_getc(p, &ch) != 0) {
-		if (non_busy_wait)
-			non_busy_wait(10);
-		else
-			continue;
-	}
+	while (usb_getc(p, &ch) != 0)
+		os_process_sleep(10);
 	return ch;
 }
