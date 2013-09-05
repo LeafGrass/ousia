@@ -3,7 +3,7 @@
 
 VERSION = 0
 SUBLEVEL = 2
-DEVNUM = 0
+DEVNUM = 2
 VERNAME = Himalayan-Monkshood
 
 ########################################
