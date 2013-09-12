@@ -27,8 +27,7 @@
 #ifndef __STM32_UTILS_H__
 #define __STM32_UTILS_H__
 
-
-#define SYSTICK_RELOAD_VAL	71999 /* takes a cycle to reload */
+#define SYSTICK_RELOAD_VAL	71999	/* takes a cycle to reload */
 #define SERIAL_BAUDRATE		9600
 
 #if (USART_CONSOLE_BANK == USART1)
@@ -56,6 +55,5 @@ void utils_io_putc(void *p, char ch);
 char utils_io_getc(void *p);
 void utils_usb_putc(void *p, char ch);
 char utils_usb_getc(void *p);
-
 
 #endif /* __STM32_UTILS_H__ */

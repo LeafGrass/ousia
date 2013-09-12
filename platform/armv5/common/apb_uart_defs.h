@@ -91,4 +91,4 @@
 #define UART_MSR(x)                          (APB_UART_BASE(x) + UART_ModemStatusReg_Offset              )
 #define UART_SCR(x)                          (APB_UART_BASE(x) + UART_ScratchpadReg_Offset               )
 
-#endif	/* __APB_UART_DEFS_H__ */
+#endif /* __APB_UART_DEFS_H__ */

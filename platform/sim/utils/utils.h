@@ -27,11 +27,9 @@
 #ifndef __X86_UTILS_H__
 #define __X86_UTILS_H__
 
-
 void utils_system_init(void);
 void utils_io_putc(void *p, char ch);
 char utils_io_getc(void *p);
-void utils_attach_systick_callback(void (*callback_fn)(void));
-
+void utils_attach_systick_callback(void (*callback_fn) (void));
 
 #endif /* __X86_UTILS_H__ */

@@ -16,31 +16,27 @@ static void cpu_init(void)
 	uint32 cp15_r1;
 
 	/* Change to low exception vectos */
-	asm volatile (
-			"mrc p15, 0, %0, c1, c0, 0\n"
-			/* disable thumb state */
-			/*"orr %0, #0x8000\n"*/
-			/* exception vectors=0x00000000 */
-			"bic %0, #0x2000\n"
-			/* alignment fault check enabled */
-			"orr %0, #0x0002\n"
-			"mcr p15, 0, %0, c1, c0, 0\n"
-			: "=r" (cp15_r1)
-			:
-			:"memory", "cc"
-		     );
+	asm volatile ("mrc p15, 0, %0, c1, c0, 0\n"
+		      /* disable thumb state */
+		      /*"orr %0, #0x8000\n" */
+		      /* exception vectors=0x00000000 */
+		      "bic %0, #0x2000\n"
+		      /* alignment fault check enabled */
+		      "orr %0, #0x0002\n"
+		      "mcr p15, 0, %0, c1, c0, 0\n":"=r" (cp15_r1)
+		      ::"memory", "cc");
 }
 
 static int dtcm_clear(void)
 {
 	uint32 *pdtcm, dtcm_size, i;
 
-	pdtcm = (uint32 *)DTCM_BASE;
+	pdtcm = (uint32 *) DTCM_BASE;
 	dtcm_size = DTCM_SIZE;
 
-	pdtcm = (uint32 *)(DTCM_BASE + 0x3800);
+	pdtcm = (uint32 *) (DTCM_BASE + 0x3800);
 	for (i = 0x3800; i < dtcm_size; i += 4)
-		*pdtcm ++ = 0;
+		*pdtcm++ = 0;
 
 	return 0;
 }
@@ -49,42 +45,27 @@ static void enable_irq(void)
 {
 	unsigned long cpsr;
 
-	asm volatile (
-			"mrs %0, cpsr\n"
-			"bic %0, #128\n"
-			"msr cpsr, %0\n"
-			: "=r" (cpsr)
-			:
-			: "memory","cc"
-		     );
+	asm volatile ("mrs %0, cpsr\n"
+		      "bic %0, #128\n" "msr cpsr, %0\n":"=r" (cpsr)
+		      ::"memory", "cc");
 }
 
 static void disable_irq(void)
 {
 	unsigned long cpsr;
 
-	asm volatile (
-			"mrs %0, cpsr\n"
-			"orr %0, #128\n"
-			"msr cpsr, %0\n"
-			: "=r" (cpsr)
-			:
-			: "memory","cc"
-		     );
+	asm volatile ("mrs %0, cpsr\n"
+		      "orr %0, #128\n" "msr cpsr, %0\n":"=r" (cpsr)
+		      ::"memory", "cc");
 }
 
 static void disable_fiq(void)
 {
 	unsigned long cpsr;
 
-	asm volatile (
-			"mrs %0, cpsr\n"
-			"orr %0, #64\n"
-			"msr cpsr, %0\n"
-			: "=r" (cpsr)
-			:
-			: "memory","cc"
-		     );
+	asm volatile ("mrs %0, cpsr\n"
+		      "orr %0, #64\n" "msr cpsr, %0\n":"=r" (cpsr)
+		      ::"memory", "cc");
 }
 
 static void uart_putc(char c)

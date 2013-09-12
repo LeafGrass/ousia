@@ -38,15 +38,15 @@
  *           max_node_num -i- number of node entities user wants to alloc
  * @return   return a pointer to the memory head if success, else a NULL
  */
-struct mp_mem_head_t *mp_alloc(mp_i32 **pp_mem_base, mp_u32 max_node_num)
+struct mp_mem_head_t *mp_alloc(mp_i32 ** pp_mem_base, mp_u32 max_node_num)
 {
 	struct mp_mem_head_t *p_mem_head = NULL;
 	mp_u32 size = 0;
 
 	size = max_node_num * sizeof(struct mp_node_t) +
-		sizeof(struct mp_mem_head_t);
+	    sizeof(struct mp_mem_head_t);
 	/* FIXME check this size? */
-	*pp_mem_base = (mp_i32 *)mp_malloc(size);
+	*pp_mem_base = (mp_i32 *) mp_malloc(size);
 	if (*pp_mem_base == NULL)
 		return NULL;
 
@@ -61,16 +61,15 @@ struct mp_mem_head_t *mp_alloc(mp_i32 **pp_mem_base, mp_u32 max_node_num)
 	printf("memory pool info\n");
 	printf("------------------------\n");
 	printf("p_mem_base: %p\np_node_first: %p\np_node_tail: %p\n"
-			"total size: %d\nsize of head: %u\nsize of node: %u\n"
-			"max node number: %u\nused node number: %u\n",
-			*pp_mem_base,
-			p_mem_head->p_node_first,
-			p_mem_head->p_node_tail,
-			p_mem_head->size,
-			(mp_u32)sizeof(struct mp_mem_head_t),
-			(mp_u32)sizeof(struct mp_node_t),
-			p_mem_head->max_node_num,
-			p_mem_head->used_node_num);
+	       "total size: %d\nsize of head: %u\nsize of node: %u\n"
+	       "max node number: %u\nused node number: %u\n",
+	       *pp_mem_base,
+	       p_mem_head->p_node_first,
+	       p_mem_head->p_node_tail,
+	       p_mem_head->size,
+	       (mp_u32) sizeof(struct mp_mem_head_t),
+	       (mp_u32) sizeof(struct mp_node_t),
+	       p_mem_head->max_node_num, p_mem_head->used_node_num);
 	printf("------------------------\n");
 #endif
 	return p_mem_head;
@@ -82,7 +81,7 @@ struct mp_mem_head_t *mp_alloc(mp_i32 **pp_mem_base, mp_u32 max_node_num)
  * @return   status code
  * @note     this function will not check if this memory has been allocated
  */
-status_t mp_clean(mp_i32 **pp_mem_base)
+status_t mp_clean(mp_i32 ** pp_mem_base)
 {
 	mp_free(*pp_mem_base);
 	*pp_mem_base = NULL;
@@ -94,7 +93,7 @@ status_t mp_clean(mp_i32 **pp_mem_base)
  * @param    p_mem_base -i- address of memory base
  * @return   pointer to new node if success, else return a NULL
  */
-struct mp_node_t *mp_new_node(mp_i32 *p_mem_base)
+struct mp_node_t *mp_new_node(mp_i32 * p_mem_base)
 {
 	struct mp_mem_head_t *p_mem_head = NULL;
 	struct mp_node_t *p_mem_it = NULL;
@@ -104,7 +103,7 @@ struct mp_node_t *mp_new_node(mp_i32 *p_mem_base)
 	p_mem_head = (struct mp_mem_head_t *)p_mem_base;
 	/* ensure at least one node has been allocated */
 	if (p_mem_head->size < sizeof(struct mp_mem_head_t)
-			+ sizeof(struct mp_node_t))
+	    + sizeof(struct mp_node_t))
 		return NULL;
 
 	if (p_mem_head->used_node_num == 0) {
@@ -145,7 +144,7 @@ struct mp_node_t *mp_new_node(mp_i32 *p_mem_base)
  * @param    p_node -i- pointer to specific node
  * @return   status code
  */
-status_t mp_del_node(mp_i32 *p_mem_base, struct mp_node_t *p_node)
+status_t mp_del_node(mp_i32 * p_mem_base, struct mp_node_t * p_node)
 {
 	struct mp_mem_head_t *p_mem_head = NULL;
 
@@ -169,12 +168,12 @@ status_t mp_del_node(mp_i32 *p_mem_base, struct mp_node_t *p_node)
 		p_node->p_next->p_prev = p_node->p_prev;
 	}
 	p_mem_head->used_node_num--;
-	memset(p_node, 0, sizeof(struct mp_node_t)); /* FIXME redundant? */
+	memset(p_node, 0, sizeof(struct mp_node_t));	/* FIXME redundant? */
 	p_node->p_prev = NULL;
 	p_node->p_next = NULL;
 	p_node->used = 0;
 	p_node->node_id = 0;
-	p_node = NULL; /* FIXME is this necessary? */
+	p_node = NULL;		/* FIXME is this necessary? */
 	return 0;
 }
 
@@ -183,7 +182,7 @@ status_t mp_del_node(mp_i32 *p_mem_base, struct mp_node_t *p_node)
  * @param    p_mem_base -i- address of memory base
  * @return   none
  */
-void mp_dump_pool(mp_i32 *p_mem_base)
+void mp_dump_pool(mp_i32 * p_mem_base)
 {
 	struct mp_mem_head_t *p_mem_head = NULL;
 	struct mp_node_t *p_node = NULL;
@@ -195,22 +194,21 @@ void mp_dump_pool(mp_i32 *p_mem_base)
 	printf("memory pool info dump\n");
 	printf("--------- head ---------\n");
 	printf("p_mem_base: %p\np_node_first: %p\np_node_tail: %p\n"
-			"total size: %d\nsize of head: %u\nsize of node: %u\n"
-			"max node number: %u\nused node number: %u\n",
-			p_mem_base,
-			p_mem_head->p_node_first,
-			p_mem_head->p_node_tail,
-			p_mem_head->size,
-			(mp_u32)sizeof(struct mp_mem_head_t),
-			(mp_u32)sizeof(struct mp_node_t),
-			p_mem_head->max_node_num,
-			p_mem_head->used_node_num);
+	       "total size: %d\nsize of head: %u\nsize of node: %u\n"
+	       "max node number: %u\nused node number: %u\n",
+	       p_mem_base,
+	       p_mem_head->p_node_first,
+	       p_mem_head->p_node_tail,
+	       p_mem_head->size,
+	       (mp_u32) sizeof(struct mp_mem_head_t),
+	       (mp_u32) sizeof(struct mp_node_t),
+	       p_mem_head->max_node_num, p_mem_head->used_node_num);
 	printf("------------------------\n");
 	p_node = (struct mp_node_t *)(p_mem_head + 1);
 	for (cnt = 0; cnt < p_mem_head->max_node_num; cnt++, p_node++) {
 		printf("node: %p\tprev: %p\tnext: %p\tused: %d\tid: %d\n",
-				p_node, p_node->p_prev, p_node->p_next,
-				p_node->used, p_node->node_id);
+		       p_node, p_node->p_prev, p_node->p_next,
+		       p_node->used, p_node->node_id);
 	}
 }
 
@@ -219,7 +217,7 @@ void mp_dump_pool(mp_i32 *p_mem_base)
  * @param    node_id -i- node id in struct mp_node_t
  * @return   node pointer
  */
-struct mp_node_t *mp_get_node(mp_i32 *p_mem_base, mp_u32 node_id)
+struct mp_node_t *mp_get_node(mp_i32 * p_mem_base, mp_u32 node_id)
 {
 	struct mp_mem_head_t *p_mem_head = NULL;
 	struct mp_node_t *p_node = NULL;

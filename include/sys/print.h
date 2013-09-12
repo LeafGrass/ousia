@@ -117,7 +117,6 @@ regs Kusti, 23.10.2004
 #ifndef __SYS_PRINT_H__
 #define __SYS_PRINT_H__
 
-
 #include <sys/debug.h>
 
 void _init_printf(void);
@@ -136,6 +135,5 @@ void tfp_sprintf(char *s, const char *fmt, ...);
 #define os_sprintf	tfp_sprintf
 #define os_lldbg	tfp_lldbg
 #define os_llputc	tfp_llputc
-
 
 #endif /* __SYS_PRINT_H__ */

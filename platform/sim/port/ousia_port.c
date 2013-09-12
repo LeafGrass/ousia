@@ -39,7 +39,7 @@
 uint8 *__heap_start;
 uint8 *__heap_end;
 
-static void (*__hard_fault_call)(void *args);
+static void (*__hard_fault_call) (void *args);
 
 /*
  * @brief   porting related init
@@ -49,7 +49,7 @@ static void (*__hard_fault_call)(void *args);
  */
 void port_init(void)
 {
-	__heap_start = (uint8 *)malloc(OUSIA_MM_HEAP_SIZE);
+	__heap_start = (uint8 *) malloc(OUSIA_MM_HEAP_SIZE);
 	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
 }
 
@@ -70,7 +70,7 @@ void port_bsp_init(void)
  * @return  none
  * @note    none
  */
-void port_hard_fault_attach(void (*fn)(void *args))
+void port_hard_fault_attach(void (*fn) (void *args))
 {
 	__hard_fault_call = fn;
 }
@@ -95,7 +95,7 @@ void port_assert_fail(void)
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
  */
-void port_dump_stack(const pt_regs_t *pt)
+void port_dump_stack(const pt_regs_t * pt)
 {
 	if (pt == NULL)
 		return;
@@ -108,8 +108,8 @@ void port_dump_stack(const pt_regs_t *pt)
  * @return  none
  * @note    none
  */
-void port_printf_init(void (**stdout_putf)(void *dev, char ch),
-		      char (**stdin_getf)(void *dev))
+void port_printf_init(void (**stdout_putf) (void *dev, char ch),
+		      char (**stdin_getf) (void *dev))
 {
 	*stdout_putf = utils_io_putc;
 	*stdin_getf = utils_io_getc;
@@ -121,7 +121,7 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
  * @return  none
  * @note    none
  */
-void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
+void port_lldbg_init(void (**lldbg_putf) (void *dev, char ch))
 {
 	*lldbg_putf = utils_io_putc;
 }
@@ -132,7 +132,7 @@ void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void port_systick_init(void (*callback)(void))
+void port_systick_init(void (*callback) (void))
 {
 	utils_attach_systick_callback(callback);
 	/* here call fake systick enable */

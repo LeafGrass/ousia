@@ -5,7 +5,7 @@
 #include <ulib/stdlib.h>
 #include <sys/time.h>
 #include <sys/mm.h>
-#include <sys/sched.h> /* FIXME This bull shit expose the _pcb_t... */
+#include <sys/sched.h>		/* FIXME This bull shit expose the _pcb_t... */
 #include <sys/print.h>
 
 /* FIXME for temporary debug only */
@@ -15,7 +15,7 @@
 
 #include "eeprom.h"
 
-static inline i2c_dev* i2c_bus_to_dev(int id)
+static inline i2c_dev *i2c_bus_to_dev(int id)
 {
 	switch (id) {
 	case 1:
@@ -42,7 +42,7 @@ static void i2c_send_byte(uint8 slave, uint8 data)
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
 }
 
-static void i2c_recv_byte(uint8 slave, uint8 *pdata)
+static void i2c_recv_byte(uint8 slave, uint8 * pdata)
 {
 	i2c_msg msg;
 	int ret;
@@ -56,13 +56,14 @@ static void i2c_recv_byte(uint8 slave, uint8 *pdata)
 		os_log(LOG_ERROR, "%s - ret = %d.\n", __func__, ret);
 }
 
-int eeprom_byte_write(struct eeprom_priv_s *ee, uint8 data, uint32 offset, uint32 nb)
+int eeprom_byte_write(struct eeprom_priv_s *ee, uint8 data, uint32 offset,
+		      uint32 nb)
 {
 	return 0;
 }
 
 /* page read */
-int eeprom_read(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
+int eeprom_read(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset, uint32 nb)
 {
 	int ret;
 	i2c_msg msgs[2];
@@ -74,7 +75,7 @@ int eeprom_read(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
 	msgs[0].flags = 0;
 	msgs[0].length = 1;
 	offset &= 0xFF;
-	msgs[0].data = (uint8 *)&offset;
+	msgs[0].data = (uint8 *) & offset;
 
 	msgs[1].addr = ee->dev_addr;
 	msgs[1].flags = I2C_MSG_READ;
@@ -93,7 +94,8 @@ int eeprom_read(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
 }
 
 /* page write */
-int eeprom_write(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
+int eeprom_write(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset,
+		 uint32 nb)
 {
 	int ret;
 	i2c_msg msg;
@@ -126,7 +128,7 @@ int eeprom_erase(struct eeprom_priv_s *ee, uint32 offset, uint32 nb)
 	uint8 *buf = NULL;
 	int32 ret;
 
-	buf = (uint8 *)malloc(17);
+	buf = (uint8 *) malloc(17);
 	os_assert(buf != NULL);
 	memset(buf, 0xFF, 17);
 	buf[0] = offset;
@@ -138,7 +140,8 @@ int eeprom_erase(struct eeprom_priv_s *ee, uint32 offset, uint32 nb)
 /* FIXME malloc them! */
 static uint8 buf_r[64];
 
-int eeprom_verify(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb)
+int eeprom_verify(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset,
+		  uint32 nb)
 {
 	memset(buf_r, 0, sizeof(buf_r));
 	eeprom_read(ee, buf_r, offset, nb);

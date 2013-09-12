@@ -35,15 +35,15 @@
 #define CONFIG_MM_REGIONS	1
 #define CONFIG_DEBUG_MM
 
-typedef uint32	uintptr_t;
-typedef uint32	mmsize_t;
+typedef uint32 uintptr_t;
+typedef uint32 mmsize_t;
 
 #ifdef CONFIG_MM_SMALL
-#  define MM_MIN_SIZE_SHIFT	2	/* 4 bytes */
-#  define MM_MAX_SIZE_SHIFT	15	/* 32 Kb */
+#define MM_MIN_SIZE_SHIFT	2	/* 4 bytes */
+#define MM_MAX_SIZE_SHIFT	15	/* 32 Kb */
 #else
-#  define MM_MIN_SIZE_SHIFT	2	/* 4 bytes, orig: 16 bytes */
-#  define MM_MAX_SIZE_SHIFT	22	/* 4 Mb */
+#define MM_MIN_SIZE_SHIFT	2	/* 4 bytes, orig: 16 bytes */
+#define MM_MAX_SIZE_SHIFT	22	/* 4 Mb */
 #endif
 
 #define MM_MIN_SIZE		(1<<MM_MIN_SIZE_SHIFT)

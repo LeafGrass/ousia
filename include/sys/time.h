@@ -27,7 +27,6 @@
 #ifndef __SYS_TIME_H__
 #define __SYS_TIME_H__
 
-
 /*
  * process timer control block
  * FIXME some of these members are
@@ -41,7 +40,6 @@ struct _ptcb_t {
 
 uint32 os_systime_get(void);
 void _sys_time_systick_init(void);
-void _sys_time_register_hook(void (*fn)(void));
-
+void _sys_time_register_hook(void (*fn) (void));
 
 #endif /* __SYS_TIME_H__ */

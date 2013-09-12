@@ -101,16 +101,16 @@
  */
 
 #ifdef CONFIG_MM_SMALL
-#  define MM_ALLOC_BIT	0x8000
+#define MM_ALLOC_BIT	0x8000
 #else
-#  define MM_ALLOC_BIT	0x80000000
+#define MM_ALLOC_BIT	0x80000000
 #endif
 
 /* Determines the size of the chunk size/offset type */
 #ifdef CONFIG_MM_SMALL
-#  define MMSIZE_MAX	0xffff
+#define MMSIZE_MAX	0xffff
 #else
-#  define MMSIZE_MAX	0xffffffff
+#define MMSIZE_MAX	0xffffffff
 #endif
 
 /*
@@ -118,8 +118,7 @@
  * distinguished from a free chunk by bit 15/31 of the 'preceding' chunk
  * size.  If set, then this is an allocated chunk.
  */
-struct mm_allocnode_s
-{
+struct mm_allocnode_s {
 	/* Size of this chunk */
 	mmsize_t size;
 
@@ -127,16 +126,15 @@ struct mm_allocnode_s
 	mmsize_t preceding;
 };
 #ifdef CONFIG_MM_SMALL
-#  define SIZEOF_MM_ALLOCNODE	4
+#define SIZEOF_MM_ALLOCNODE	4
 #else
-#  define SIZEOF_MM_ALLOCNODE	8
+#define SIZEOF_MM_ALLOCNODE	8
 #endif
 
 /*
  * This describes a free chunk
  */
-struct mm_freenode_s
-{
+struct mm_freenode_s {
 	/* Size of this chunk */
 	mmsize_t size;
 
@@ -148,13 +146,13 @@ struct mm_freenode_s
 	struct mm_freenode_s *blink;
 };
 #ifdef CONFIG_MM_SMALL
-#  ifdef CONFIG_SMALL_MEMORY
-#    define SIZEOF_MM_FREENODE	8
-#  else
-#    define SIZEOF_MM_FREENODE	12
-#  endif
+#ifdef CONFIG_SMALL_MEMORY
+#define SIZEOF_MM_FREENODE	8
 #else
-#  define SIZEOF_MM_FREENODE	16
+#define SIZEOF_MM_FREENODE	12
+#endif
+#else
+#define SIZEOF_MM_FREENODE	16
 #endif
 
 struct mm_heap {

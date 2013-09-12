@@ -27,14 +27,12 @@
 #ifndef __CMD_H__
 #define __CMD_H__
 
-
 struct cmd_handle {
 	char *cmd_word;
-	int32 (*cmd_fn)(void *args);
+	 int32(*cmd_fn) (void *args);
 };
 
 struct console_cmd;
 void commands_register(struct console_cmd *conc);
-
 
 #endif /* __CONSOLE_H__ */

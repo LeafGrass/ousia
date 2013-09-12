@@ -77,7 +77,7 @@ void do_irq_vector(void)
 {
 #define APB_ICTL_IRQ_FINALSTATUS_L	0x10000000 + 0x30
 	uint32 irqreg = 0;
-	irqreg = *(uint32 *)(APB_ICTL_IRQ_FINALSTATUS_L);
+	irqreg = *(uint32 *) (APB_ICTL_IRQ_FINALSTATUS_L);
 	return;
 }
 

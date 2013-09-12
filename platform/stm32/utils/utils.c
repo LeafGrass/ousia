@@ -41,7 +41,6 @@
 
 #include "utils/utils.h"
 
-
 #define USB_TIMEOUT 2
 
 extern int32 os_process_sleep(uint32 tms);
@@ -93,7 +92,7 @@ static enum reset_state_t reset_state = DTR_UNSET;
 
 static void usb_iface_setup_hook(unsigned hook, void *requestvp)
 {
-	uint8 request = *(uint8*)requestvp;
+	uint8 request = *(uint8 *) requestvp;
 
 	/* Ignore requests we're not interested in. */
 	if (request != USB_CDCACM_SET_CONTROL_LINE_STATE)
@@ -132,7 +131,7 @@ static void wait_reset(void)
 static void usb_rx_hook(unsigned hook, void *ignored)
 {
 	uint32 i, target;
-	static const uint8 magic[4] = {'1', 'E', 'A', 'F'};
+	static const uint8 magic[4] = { '1', 'E', 'A', 'F' };
 
 	/*
 	 * FIXME this is mad buggy; we need a new reset sequence. E.g. NAK
@@ -156,28 +155,22 @@ static void usb_rx_hook(unsigned hook, void *ignored)
 
 			/* Got the magic sequence -> reset, presumably into the bootloader. */
 			/* Return address is wait_reset, but we must set the thumb bit. */
-			target = (uint32)wait_reset | 0x1;
-			asm volatile("mov r0, %[stack_top]      \n\t" // Reset stack
-					"mov sp, r0                \n\t"
-					"mov r0, #1                \n\t"
-					"mov r1, %[target_addr]    \n\t"
-					"mov r2, %[cpsr]           \n\t"
-					"push {r2}                 \n\t" // Fake xPSR
-					"push {r1}                 \n\t" // PC target addr
-					"push {r0}                 \n\t" // Fake LR
-					"push {r0}                 \n\t" // Fake R12
-					"push {r0}                 \n\t" // Fake R3
-					"push {r0}                 \n\t" // Fake R2
-					"push {r0}                 \n\t" // Fake R1
-					"push {r0}                 \n\t" // Fake R0
-					"mov lr, %[exc_return]     \n\t"
-					"bx lr"
-					:
-					: [stack_top] "r" (STACK_TOP),
-					[target_addr] "r" (target),
-					[exc_return] "r" (EXC_RETURN),
-					[cpsr] "r" (DEFAULT_CPSR)
-					: "r0", "r1", "r2");
+			target = (uint32) wait_reset | 0x1;
+			asm volatile ("mov r0, %[stack_top]      \n\t"	// Reset stack
+				      "mov sp, r0                \n\t" "mov r0, #1                \n\t" "mov r1, %[target_addr]    \n\t" "mov r2, %[cpsr]           \n\t" "push {r2}                 \n\t"	// Fake xPSR
+				      "push {r1}                 \n\t"	// PC target addr
+				      "push {r0}                 \n\t"	// Fake LR
+				      "push {r0}                 \n\t"	// Fake R12
+				      "push {r0}                 \n\t"	// Fake R3
+				      "push {r0}                 \n\t"	// Fake R2
+				      "push {r0}                 \n\t"	// Fake R1
+				      "push {r0}                 \n\t"	// Fake R0
+				      "mov lr, %[exc_return]     \n\t"
+				      "bx lr"::[stack_top] "r"(STACK_TOP),
+				      [target_addr] "r"(target),
+				      [exc_return] "r"(EXC_RETURN),
+				      [cpsr] "r"(DEFAULT_CPSR)
+				      :"r0", "r1", "r2");
 			/* Can't happen. */
 			ASSERT_FAULT(0);
 		}
@@ -191,7 +184,7 @@ static void usb_rx_hook(unsigned hook, void *ignored)
  * @return  none
  * @note    none
  */
-static void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
+static void usb_enable(gpio_dev * disc_dev, uint8 disc_bit)
 {
 	usb_cdcacm_enable(disc_dev, disc_bit);
 	usb_cdcacm_set_hooks(USB_CDCACM_HOOK_RX, usb_rx_hook);
@@ -205,7 +198,7 @@ static void usb_enable(gpio_dev *disc_dev, uint8 disc_bit)
  * @return  none
  * @note    none
  */
-static void usb_disable(gpio_dev *disc_dev, uint8 disc_bit)
+static void usb_disable(gpio_dev * disc_dev, uint8 disc_bit)
 {
 	usb_cdcacm_disable(disc_dev, disc_bit);
 }
@@ -223,7 +216,7 @@ static int32 usb_getc(void *p, char *buf)
 	uint32 len = 0;
 	if (!buf)
 		return -1;
-	len = usb_cdcacm_rx((uint8 *)buf, 1);
+	len = usb_cdcacm_rx((uint8 *) buf, 1);
 	if (len == 0)
 		return -1;
 	return 0;
@@ -273,8 +266,8 @@ static void clocks_setup(void)
 #define BOARD_RCC_PLLMUL RCC_PLLMUL_9
 #endif
 
-	static stm32f1_rcc_pll_data pll_data = {BOARD_RCC_PLLMUL};
-	rcc_pll_cfg w_board_pll_cfg = {RCC_PLLSRC_HSE, &pll_data};
+	static stm32f1_rcc_pll_data pll_data = { BOARD_RCC_PLLMUL };
+	rcc_pll_cfg w_board_pll_cfg = { RCC_PLLSRC_HSE, &pll_data };
 
 	/*
 	 * Turn on HSI. We'll switch to and run off of this while we're
@@ -303,8 +296,7 @@ static void clocks_setup(void)
 
 	/* Enable HSE, and wait until it's ready. */
 	rcc_turn_on_clk(RCC_CLK_HSE);
-	while (!rcc_is_clk_ready(RCC_CLK_HSE))
-		;
+	while (!rcc_is_clk_ready(RCC_CLK_HSE)) ;
 
 	/* Configure AHBx, APBx, etc. prescalers and the main PLL. */
 
@@ -317,8 +309,7 @@ static void clocks_setup(void)
 
 	/* Enable the PLL, and wait until it's ready. */
 	rcc_turn_on_clk(RCC_CLK_PLL);
-	while(!rcc_is_clk_ready(RCC_CLK_PLL))
-		;
+	while (!rcc_is_clk_ready(RCC_CLK_PLL)) ;
 
 	/* Finally, switch to the now-ready PLL as the main clock source. */
 	rcc_switch_sysclk(RCC_CLKSRC_PLL);
@@ -340,7 +331,7 @@ static void nvic_setup(void)
 #elif defined VECT_TAB_RAM
 	nvic_init(USER_ADDR_RAM, 0);
 #elif defined VECT_TAB_BASE
-	nvic_init((uint32)0x08000000, 0);
+	nvic_init((uint32) 0x08000000, 0);
 #else
 #error "You must select a base address for the vector table."
 #endif
@@ -353,7 +344,7 @@ static void nvic_setup(void)
  * @return  none
  * @note    none
  */
-static void adc_defconfig(const adc_dev* dev)
+static void adc_defconfig(const adc_dev * dev)
 {
 	adc_init(dev);
 	adc_set_extsel(dev, ADC_SWSTART);
@@ -381,7 +372,8 @@ static void adc_setup(void)
  * @return  none
  * @note    none
  */
-static void timer_defconfig(timer_dev *dev) {
+static void timer_defconfig(timer_dev * dev)
+{
 	timer_adv_reg_map *regs = (dev->regs).adv;
 	const uint16 full_overflow = 0xFFFF;
 	const uint16 half_duty = 0x8FFF;
@@ -405,7 +397,8 @@ static void timer_defconfig(timer_dev *dev) {
 
 		for (channel = 1; channel <= 4; channel++) {
 			timer_set_compare(dev, channel, half_duty);
-			timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1, TIMER_OC_PE);
+			timer_oc_set_mode(dev, channel, TIMER_OC_MODE_PWM_1,
+					  TIMER_OC_PE);
 		}
 		/* fall-through */
 	case TIMER_BASIC:
@@ -433,12 +426,11 @@ static void timers_setup(void)
  * @return  none
  * @note    none
  */
-static void usart_setup(usart_dev *dev, uint32 baud)
+static void usart_setup(usart_dev * dev, uint32 baud)
 {
 	usart_config_gpios_async(dev,
 				 USART_CONSOLE_PORT, USART_CONSOLE_RX,
-				 USART_CONSOLE_PORT, USART_CONSOLE_TX,
-				 0);
+				 USART_CONSOLE_PORT, USART_CONSOLE_TX, 0);
 	usart_init(dev);
 	usart_set_baud_rate(dev, USART_USE_PCLK, baud);
 	usart_enable(dev);
@@ -510,7 +502,7 @@ char utils_io_getc(void *p)
  */
 void utils_usb_putc(void *p, char ch)
 {
-	const uint8 buf[] = {ch};
+	const uint8 buf[] = { ch };
 	usb_putstr(buf, 1);
 }
 

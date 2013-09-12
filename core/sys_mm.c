@@ -47,13 +47,13 @@ int32 _mm_heap_init(void)
 {
 	mmsize_t heap_size = 0;
 	if (__heap_start == NULL || __heap_end == NULL ||
-			__heap_end < __heap_start) {
+	    __heap_end < __heap_start) {
 		lldbg("%s - failed.\n", __func__);
 		return OS_EFAIL;
 	}
-	heap_size = (mmsize_t)(__heap_end - __heap_start);
+	heap_size = (mmsize_t) (__heap_end - __heap_start);
 	lldbg("%s - 0x%08p ~ 0x%08p (%dKB)\n", __func__,
-			__heap_start, __heap_end, heap_size/1024);
+	      __heap_start, __heap_end, heap_size / 1024);
 	memset(__heap_start, 0, heap_size);
 	return _mm_init(__heap_start, heap_size);
 }
@@ -69,15 +69,15 @@ int32 _mm_heap_init(void)
  */
 void _mm_dump(void *addr, int32 nb, int32 type)
 {
-	uint8 *m = (uint8 *)addr;
+	uint8 *m = (uint8 *) addr;
 	int32 i, row;
-	row = nb/8;
+	row = nb / 8;
 	for (i = 0; i < row; i++) {
-		m = (uint8 *)addr + i*8;
+		m = (uint8 *) addr + i * 8;
 		os_printk(LOG_INFO,
 			  "%08x: %02x %02x %02x %02x %02x %02x %02x %02x\n",
-			  m, *m, *(m+1), *(m+2), *(m+3),
-			  *(m+4), *(m+5), *(m+6), *(m+7));
+			  m, *m, *(m + 1), *(m + 2), *(m + 3),
+			  *(m + 4), *(m + 5), *(m + 6), *(m + 7));
 	}
 }
 
@@ -126,7 +126,7 @@ inline void *mm_zalloc(mmsize_t size)
  * @param   info -i/o- a copy of updated current heap information.
  * @return  status code
  */
-inline int32 mm_mallinfo(struct mallinfo *info)
+inline int32 mm_mallinfo(struct mallinfo * info)
 {
 	return _mm_mallinfo(info);
 }

@@ -52,20 +52,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <port/ousia_port.h>
 #include <sys/print.h>
 
-typedef void (*putcf)(void *dev, char ch);
-typedef char (*getcf)(void *dev);
+typedef void (*putcf) (void *dev, char ch);
+typedef char (*getcf) (void *dev);
 static putcf stdout_putf;
 static putcf lldbg_putf;
 static getcf stdin_getf;
 static void *stdout_putp;
 
-static void tfp_format(void *putp, void (*putf)(void *, char), const char *fmt, va_list va);
+static void tfp_format(void *putp, void (*putf) (void *, char), const char *fmt,
+		       va_list va);
 
 static void ui2a(unsigned int num, unsigned int base, int uc, char *bf)
 {
 	int n = 0;
 	unsigned int d = 1;
-	while (num/d >= base)
+	while (num / d >= base)
 		d *= base;
 	while (d != 0) {
 		int dgt = num / d;
@@ -82,7 +83,7 @@ static void ui2a(unsigned int num, unsigned int base, int uc, char *bf)
 static void i2a(int num, char *bf)
 {
 	if (num < 0) {
-		num =- num;
+		num = -num;
 		*bf++ = '-';
 	}
 	ui2a(num, 10, 0, bf);
@@ -96,7 +97,8 @@ static int a2d(char ch)
 		return ch - 'a' + 10;
 	else if (ch >= 'A' && ch <= 'F')
 		return ch - 'A' + 10;
-	else return -1;
+	else
+		return -1;
 }
 
 static char a2i(char ch, const char **src, int base, int *nump)
@@ -105,8 +107,9 @@ static char a2i(char ch, const char **src, int base, int *nump)
 	int num = 0;
 	int digit;
 	while ((digit = a2d(ch)) >= 0) {
-		if (digit > base) break;
-		num = num*base + digit;
+		if (digit > base)
+			break;
+		num = num * base + digit;
 		ch = *p++;
 	}
 	*src = p;
@@ -139,8 +142,7 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 				putf(putp, '\r');
 #endif
 			putf(putp, ch);
-		}
-		else {
+		} else {
 			char lz = 0;
 			int w = 0;
 			ch = *(fmt++);
@@ -166,7 +168,8 @@ static void tfp_format(void *putp, putcf putf, const char *fmt, va_list va)
 			case 'p':
 			case 'x':
 			case 'X':
-				ui2a(va_arg(va, unsigned int), 16, (ch == 'X'), bf);
+				ui2a(va_arg(va, unsigned int), 16, (ch == 'X'),
+				     bf);
 				putchw(putp, putf, w, lz, bf);
 				break;
 			case 'c':
@@ -229,7 +232,7 @@ void tfp_lldbg(const char *fmt, ...)
 
 static void putcp(void *p, char c)
 {
-	*(*((char**)p))++ = c;
+	*(*((char **)p))++ = c;
 }
 
 void tfp_sprintf(char *s, const char *fmt, ...)

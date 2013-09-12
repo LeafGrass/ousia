@@ -27,7 +27,6 @@
 #ifndef __OUSIA_PORT_H__
 #define __OUSIA_PORT_H__
 
-
 #include <port/ousia_cfg.h>
 
 #define OS_SET_INTERRUPT_MASK()
@@ -43,16 +42,15 @@ typedef struct pt_regs pt_regs_t;
 
 void port_init(void);
 void port_bsp_init(void);
-void port_hard_fault_attach(void (*fn)(void *args));
-void port_printf_init(void (**stdout_putf)(void *dev, char ch),
-		      char (**stdin_getf)(void *dev));
-void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch));
-void port_systick_init(void (*callback)(void));
+void port_hard_fault_attach(void (*fn) (void *args));
+void port_printf_init(void (**stdout_putf) (void *dev, char ch),
+		      char (**stdin_getf) (void *dev));
+void port_lldbg_init(void (**lldbg_putf) (void *dev, char ch));
+void port_systick_init(void (*callback) (void));
 void *port_context_init(void *pentry, void *args, void *stack_base);
 void port_assert_fail(void);
-void port_dump_stack(const pt_regs_t *pt);
+void port_dump_stack(const pt_regs_t * pt);
 void port_context_switch(uint32 curr_pcb, uint32 target_pcb);
 void port_first_switch(uint32 target_pcb);
-
 
 #endif /* OUSIA_PORT_H */

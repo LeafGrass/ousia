@@ -5,7 +5,7 @@
 #include <ulib/stdlib.h>
 #include <sys/time.h>
 #include <sys/mm.h>
-#include <sys/sched.h> /* FIXME This bull shit expose the _pcb_t... */
+#include <sys/sched.h>		/* FIXME This bull shit expose the _pcb_t... */
 #include <sys/print.h>
 
 #include "console/console.h"
@@ -46,16 +46,16 @@ static void eeprom_test_setup(void)
 
 	i2c_master_enable(I2C1, I2C_BUS_RESET);
 
-	buffer_r = (uint8 *)zalloc(BUFFER_SIZE);
+	buffer_r = (uint8 *) zalloc(BUFFER_SIZE);
 	os_assert(buffer_r != NULL);
-	buffer_w = (uint8 *)zalloc(BUFFER_SIZE + 1);
+	buffer_w = (uint8 *) zalloc(BUFFER_SIZE + 1);
 	os_assert(buffer_w != NULL);
 
 	buffer_w[0] = 0x0;
 	for (i = 1; i < BUFFER_SIZE + 1; i++)
 		buffer_w[i] = i - 1;
 	os_log(LOG_DEBUG, "buffers are ready: r: 0x%x, w: 0x%x\n",
-			  buffer_r, buffer_w);
+	       buffer_r, buffer_w);
 }
 
 static void ps_debug(void *args)

@@ -27,7 +27,6 @@
 #ifndef __MEMPOOL_H__
 #define __MEMPOOL_H__
 
-
 /*
  * customization area
  */
@@ -35,10 +34,10 @@
 #define mp_malloc(x)	malloc(x)
 #define mp_free(x)	free(x)
 
-typedef int		mp_i32;
-typedef char		mp_i8;
-typedef unsigned int	mp_u32;
-typedef unsigned char	mp_u8;
+typedef int mp_i32;
+typedef char mp_i8;
+typedef unsigned int mp_u32;
+typedef unsigned char mp_u8;
 
 struct test_t {
 	int z;
@@ -51,8 +50,8 @@ struct item_t {
 	struct test_t t;
 };
 
-typedef struct item_t	elem_t;
-typedef int		status_t;
+typedef struct item_t elem_t;
+typedef int status_t;
 
 /*
  * memory pool definition
@@ -83,12 +82,11 @@ struct mp_node_t {
 	struct mp_node_t *p_next;
 };
 
-struct mp_mem_head_t *mp_alloc(mp_i32 **pp_mem_base, mp_u32 max_node_num);
-status_t mp_clean(mp_i32 **pp_mem_base);
-struct mp_node_t *mp_new_node(mp_i32 *p_mem_base);
-status_t mp_del_node(mp_i32 *p_mem_base, struct mp_node_t *p_node);
-void mp_dump_pool(mp_i32 *p_mem_base);
-struct mp_node_t *mp_get_node(mp_i32 *p_mem_base, mp_u32 node_id);
-
+struct mp_mem_head_t *mp_alloc(mp_i32 ** pp_mem_base, mp_u32 max_node_num);
+status_t mp_clean(mp_i32 ** pp_mem_base);
+struct mp_node_t *mp_new_node(mp_i32 * p_mem_base);
+status_t mp_del_node(mp_i32 * p_mem_base, struct mp_node_t *p_node);
+void mp_dump_pool(mp_i32 * p_mem_base);
+struct mp_node_t *mp_get_node(mp_i32 * p_mem_base, mp_u32 node_id);
 
 #endif /* __MEMPOOL_H__ */

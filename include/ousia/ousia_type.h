@@ -27,17 +27,16 @@
 #ifndef __OUSIA_TYPE_H__
 #define __OUSIA_TYPE_H__
 
-
 #include <port/ousia_cfg.h>
 
-typedef signed char		int8;
-typedef unsigned char		uint8;
-typedef signed short		int16;
-typedef unsigned short		uint16;
-typedef signed int		int32;
-typedef unsigned int		uint32;
-typedef signed long long	int64;
-typedef unsigned long long	uint64;
+typedef signed char int8;
+typedef unsigned char uint8;
+typedef signed short int16;
+typedef unsigned short uint16;
+typedef signed int int32;
+typedef unsigned int uint32;
+typedef signed long long int64;
+typedef unsigned long long uint64;
 
 #ifndef NULL
 #define NULL	((void *)(0))
@@ -45,7 +44,7 @@ typedef unsigned long long	uint64;
 
 typedef enum {
 	FALSE = 0,
-	TRUE  = !FALSE
+	TRUE = !FALSE
 } bool;
 
 #define OS_OK		0

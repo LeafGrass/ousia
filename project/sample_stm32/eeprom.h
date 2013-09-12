@@ -13,9 +13,12 @@ struct eeprom_priv_s {
 	int pages;
 };
 
-int eeprom_read(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb);
-int eeprom_write(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb);
+int eeprom_read(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset,
+		uint32 nb);
+int eeprom_write(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset,
+		 uint32 nb);
 int eeprom_erase(struct eeprom_priv_s *ee, uint32 offset, uint32 nb);
-int eeprom_verify(struct eeprom_priv_s *ee, uint8 *buf, uint32 offset, uint32 nb);
+int eeprom_verify(struct eeprom_priv_s *ee, uint8 * buf, uint32 offset,
+		  uint32 nb);
 
 #endif

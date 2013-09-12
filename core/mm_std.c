@@ -114,9 +114,9 @@ static int32 __mm_addfreechunk(struct mm_heap *heap, struct mm_freenode_s *node)
 
 	/* Now put the new node int the next */
 	for (prev = &heap->mm_nodelist[ndx],
-			next = heap->mm_nodelist[ndx].flink;
-			next && next->size && next->size < node->size;
-			prev = next, next = next->flink);
+	     next = heap->mm_nodelist[ndx].flink;
+	     next && next->size && next->size < node->size;
+	     prev = next, next = next->flink) ;
 
 	/* Does it go in mid next or at the end? */
 	prev->flink = node;
@@ -138,7 +138,7 @@ static int32 __mm_addfreechunk(struct mm_heap *heap, struct mm_freenode_s *node)
  * @return  status code
  */
 static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
-		mmsize_t heapsize)
+			    mmsize_t heapsize)
 {
 	struct mm_freenode_s *node;
 	uintptr_t heapbase;
@@ -146,7 +146,7 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
 #if CONFIG_MM_REGIONS > 1
 	int IDX = heap->mm_nregions;
 #else
-#  define IDX 0
+#define IDX 0
 #endif
 
 	/*
@@ -155,19 +155,19 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
 	 * not doing something crazy.
 	 */
 #if defined(CONFIG_MM_SMALL) && !defined(CONFIG_SMALL_MEMORY)
-	os_assert(heapsize <= MMSIZE_MAX+1);
+	os_assert(heapsize <= MMSIZE_MAX + 1);
 #endif
 
 	/*
 	 * Adjust the provide heap start and size so that they are both aligned
 	 * with the MM_MIN_CHUNK size.
 	 */
-	heapbase = MM_ALIGN_UP((uintptr_t)heapstart);
-	heapend  = MM_ALIGN_DOWN((uintptr_t)heapstart + (uintptr_t)heapsize);
+	heapbase = MM_ALIGN_UP((uintptr_t) heapstart);
+	heapend = MM_ALIGN_DOWN((uintptr_t) heapstart + (uintptr_t) heapsize);
 	heapsize = heapend - heapbase;
 
 	lldbg("%s - region %d: base: 0x%p size: %u\n",
-			__func__, IDX, heapstart, heapsize);
+	      __func__, IDX, heapstart, heapsize);
 
 	/* Add the size of this region to the total size of the heap */
 	heap->mm_heapsize += heapsize;
@@ -185,11 +185,11 @@ static int32 __mm_addregion(struct mm_heap *heap, void *heapstart,
 	heap->mm_heapstart[IDX]->preceding = MM_ALLOC_BIT;
 
 	node = (struct mm_freenode_s *)(heapbase + SIZEOF_MM_ALLOCNODE);
-	node->size = heapsize - 2*SIZEOF_MM_ALLOCNODE;
+	node->size = heapsize - 2 * SIZEOF_MM_ALLOCNODE;
 	node->preceding = SIZEOF_MM_ALLOCNODE;
 
 	heap->mm_heapend[IDX] =
-		(struct mm_allocnode_s *)(heapend - SIZEOF_MM_ALLOCNODE);
+	    (struct mm_allocnode_s *)(heapend - SIZEOF_MM_ALLOCNODE);
 	heap->mm_heapend[IDX]->size = SIZEOF_MM_ALLOCNODE;
 	heap->mm_heapend[IDX]->preceding = node->size | MM_ALLOC_BIT;
 
@@ -234,7 +234,8 @@ void __mm_shrinkchunk(struct mm_allocnode_s *node, mmsize_t size)
 		 * Get the chunk next the next node
 		 * (which could be the tail chunk)
 		 */
-		andbeyond = (struct mm_allocnode_s *)((char *)next + next->size);
+		andbeyond =
+		    (struct mm_allocnode_s *)((char *)next + next->size);
 
 		/*
 		 * Remove the next node. There must be a predecessor,
@@ -252,11 +253,11 @@ void __mm_shrinkchunk(struct mm_allocnode_s *node, mmsize_t size)
 		newnode = (struct mm_freenode_s *)((char *)node + size);
 
 		/* Set up the size of the new node */
-		newnode->size        = next->size + node->size - size;
-		newnode->preceding   = size;
-		node->size           = size;
+		newnode->size = next->size + node->size - size;
+		newnode->preceding = size;
+		node->size = size;
 		andbeyond->preceding =
-			newnode->size | (andbeyond->preceding & MM_ALLOC_BIT);
+		    newnode->size | (andbeyond->preceding & MM_ALLOC_BIT);
 
 		/* Add the new node to the freenodelist */
 		__mm_addfreechunk(heap, newnode);
@@ -274,10 +275,10 @@ void __mm_shrinkchunk(struct mm_allocnode_s *node, mmsize_t size)
 		newnode = (struct mm_freenode_s *)((char *)node + size);
 
 		/* Set up the size of the new node */
-		newnode->size        = node->size - size;
-		newnode->preceding   = size;
-		node->size           = size;
-		next->preceding      = newnode->size | MM_ALLOC_BIT;
+		newnode->size = node->size - size;
+		newnode->preceding = size;
+		node->size = size;
+		next->preceding = newnode->size | MM_ALLOC_BIT;
 
 		/* Add the new node to the freenodelist */
 		__mm_addfreechunk(heap, newnode);
@@ -303,8 +304,8 @@ int32 _mm_init(void *heap_start, mmsize_t size)
 
 	memset(heap->mm_nodelist, 0, sizeof(struct mm_freenode_s) * MM_NNODES);
 	for (i = 1; i < MM_NNODES; i++) {
-		heap->mm_nodelist[i-1].flink = &heap->mm_nodelist[i];
-		heap->mm_nodelist[i].blink   = &heap->mm_nodelist[i-1];
+		heap->mm_nodelist[i - 1].flink = &heap->mm_nodelist[i];
+		heap->mm_nodelist[i].blink = &heap->mm_nodelist[i - 1];
 	}
 
 	mm_sem_init(heap);
@@ -358,8 +359,7 @@ void *_mm_malloc(mmsize_t size)
 	 * other mm_nodelist[] entries.
 	 */
 	for (node = heap->mm_nodelist[ndx].flink;
-			node && node->size < size;
-			node = node->flink);
+	     node && node->size < size; node = node->flink) ;
 
 	/*
 	 * If we found a node with non-zero size, then this is one to use. Since
@@ -391,11 +391,11 @@ void *_mm_malloc(mmsize_t size)
 		if (remaining >= SIZEOF_MM_FREENODE) {
 			/* Get a pointer to the next node in physical memory */
 			next = (struct mm_freenode_s *)
-				(((char *)node) + node->size);
+			    (((char *)node) + node->size);
 
 			/* Create the remainder node */
 			remainder = (struct mm_freenode_s *)
-				(((char *)node) + size);
+			    (((char *)node) + size);
 			remainder->size = remaining;
 			remainder->preceding = size;
 
@@ -407,7 +407,7 @@ void *_mm_malloc(mmsize_t size)
 			 * preserving the allocated flag.
 			 */
 			next->preceding =
-				remaining | (next->preceding & MM_ALLOC_BIT);
+			    remaining | (next->preceding & MM_ALLOC_BIT);
 
 			/* Add the remainder back into the nodelist */
 			__mm_addfreechunk(heap, remainder);
@@ -452,7 +452,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 	struct mm_allocnode_s *node;
 	mmsize_t rawchunk;
 	mmsize_t alignedchunk;
-	mmsize_t mask = (mmsize_t)(alignment - 1);
+	mmsize_t mask = (mmsize_t) (alignment - 1);
 	mmsize_t allocsize;
 
 	/*
@@ -475,11 +475,11 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 	 * NOTE:  These are sizes given to malloc and not chunk sizes. They do
 	 * not include SIZEOF_MM_ALLOCNODE.
 	 */
-	size      = MM_ALIGN_UP(size);	/* Make multiples of our granule size */
-	allocsize = size + 2*alignment;	/* Add double full alignment size */
+	size = MM_ALIGN_UP(size);	/* Make multiples of our granule size */
+	allocsize = size + 2 * alignment;	/* Add double full alignment size */
 
 	/* Then malloc that size */
-	rawchunk = (mmsize_t)_mm_malloc(allocsize);
+	rawchunk = (mmsize_t) _mm_malloc(allocsize);
 	if (rawchunk == 0)
 		return NULL;
 
@@ -499,8 +499,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 	alignedchunk = (rawchunk + mask) & ~mask;
 
 	/* Check if there is free space at the beginning of the aligned chunk */
-	if (alignedchunk != rawchunk)
-	{
+	if (alignedchunk != rawchunk) {
 		struct mm_allocnode_s *newnode;
 		struct mm_allocnode_s *next;
 		mmsize_t precedingsize;
@@ -516,13 +515,13 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 		os_assert(alignedchunk >= rawchunk + 8);
 
 		newnode = (struct mm_allocnode_s *)
-			(alignedchunk - SIZEOF_MM_ALLOCNODE);
+		    (alignedchunk - SIZEOF_MM_ALLOCNODE);
 
 		/*
 		 * Preceding size is full size of the new 'node,' including
 		 * SIZEOF_MM_ALLOCNODE
 		 */
-		precedingsize = (mmsize_t)newnode - (mmsize_t)node;
+		precedingsize = (mmsize_t) newnode - (mmsize_t) node;
 
 		/*
 		 * If we were unlucky, then the alignedchunk can lie in such a
@@ -533,16 +532,15 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 		 * alignment points. In this case, we will simply use the second
 		 * alignment point.
 		 */
-		if (precedingsize < SIZEOF_MM_FREENODE)
-		{
+		if (precedingsize < SIZEOF_MM_FREENODE) {
 			alignedchunk += alignment;
-			newnode       = (struct mm_allocnode_s *)
-				(alignedchunk - SIZEOF_MM_ALLOCNODE);
-			precedingsize = (mmsize_t)newnode - (mmsize_t)node;
+			newnode = (struct mm_allocnode_s *)
+			    (alignedchunk - SIZEOF_MM_ALLOCNODE);
+			precedingsize = (mmsize_t) newnode - (mmsize_t) node;
 		}
 
 		/* Set up the size of the new node */
-		newnode->size = (mmsize_t)next - (mmsize_t)newnode;
+		newnode->size = (mmsize_t) next - (mmsize_t) newnode;
 		newnode->preceding = precedingsize | MM_ALLOC_BIT;
 
 		/*
@@ -554,7 +552,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 
 		/* Fix the preceding size of the next node */
 		next->preceding = newnode->size |
-			(next->preceding & MM_ALLOC_BIT);
+		    (next->preceding & MM_ALLOC_BIT);
 
 		/*
 		 * Convert the newnode chunk size back into malloc-compatible
@@ -563,7 +561,7 @@ void *_mm_memalign(mmsize_t alignment, mmsize_t size)
 		allocsize = newnode->size - SIZEOF_MM_ALLOCNODE;
 
 		/* Add the original, newly freed node to the free nodelist */
-		__mm_addfreechunk(heap, (struct mm_freenode_s * )node);
+		__mm_addfreechunk(heap, (struct mm_freenode_s *)node);
 
 		/*
 		 * Replace the original node with the newlay realloaced,
@@ -625,7 +623,7 @@ void _mm_free(void *mem)
 		 * index past the tail chunk because it is always allocated.
 		 */
 		andbeyond = (struct mm_allocnode_s *)
-			((char *)next + next->size);
+		    ((char *)next + next->size);
 
 		/*
 		 * Remove the next node.  There must be a predecessor,
@@ -637,10 +635,10 @@ void _mm_free(void *mem)
 			next->flink->blink = next->blink;
 
 		/* Then merge the two chunks */
-		node->size          += next->size;
+		node->size += next->size;
 		andbeyond->preceding = node->size |
-			(andbeyond->preceding & MM_ALLOC_BIT);
-		next                 = (struct mm_freenode_s *)andbeyond;
+		    (andbeyond->preceding & MM_ALLOC_BIT);
+		next = (struct mm_freenode_s *)andbeyond;
 	}
 
 	/*
@@ -659,9 +657,9 @@ void _mm_free(void *mem)
 			prev->flink->blink = prev->blink;
 
 		/* Then merge the two chunks */
-		prev->size     += node->size;
+		prev->size += node->size;
 		next->preceding = prev->size | (next->preceding & MM_ALLOC_BIT);
-		node            = prev;
+		node = prev;
 	}
 
 	/* Add the merged node to the nodelist */
@@ -687,18 +685,18 @@ void *_mm_zalloc(mmsize_t size)
  * @param   info -i/o- a copy of updated current heap information.
  * @return  status code
  */
-int32 _mm_mallinfo(struct mallinfo *info)
+int32 _mm_mallinfo(struct mallinfo * info)
 {
 	struct mm_heap *heap = &__mm_heap_priv;
 	struct mm_allocnode_s *node;
 	size_t mxordblk = 0;
-	int    ordblks  = 0;  /* Number of non-inuse chunks */
-	size_t uordblks = 0;  /* Total allocated space */
-	size_t fordblks = 0;  /* Total non-inuse space */
+	int ordblks = 0;	/* Number of non-inuse chunks */
+	size_t uordblks = 0;	/* Total allocated space */
+	size_t fordblks = 0;	/* Total non-inuse space */
 #if CONFIG_MM_REGIONS > 1
 	int region;
 #else
-# define region 0
+#define region 0
 #endif
 
 	os_assert(info);
@@ -717,11 +715,10 @@ int32 _mm_mallinfo(struct mallinfo *info)
 		for (node = heap->mm_heapstart[region];
 		     node < heap->mm_heapend[region];
 		     node = (struct mm_allocnode_s *)
-			    ((char*)node + node->size)) {
+		     ((char *)node + node->size)) {
 			os_printk(LOG_DEBUG, "region: %d node: 0x%p size: 0x%p "
-					     "preceding: 0x%p\n",
-					     region, node, node->size,
-					     node->preceding);
+				  "preceding: 0x%p\n",
+				  region, node, node->size, node->preceding);
 			if (node->preceding & MM_ALLOC_BIT) {
 				uordblks += node->size;
 			} else {
@@ -735,16 +732,16 @@ int32 _mm_mallinfo(struct mallinfo *info)
 		mm_sem_give(heap);
 
 		os_printk(LOG_DEBUG, "region: %d node: 0x%p heapend: 0x%p\n",
-				     region, node, heap->mm_heapend[region]);
+			  region, node, heap->mm_heapend[region]);
 		os_assert(node == heap->mm_heapend[region]);
-		uordblks += SIZEOF_MM_ALLOCNODE; /* account for the tail node */
+		uordblks += SIZEOF_MM_ALLOCNODE;	/* account for the tail node */
 	}
 #undef region
 
 	os_assert(uordblks + fordblks == heap->mm_heapsize);
 
-	info->arena    = heap->mm_heapsize;
-	info->ordblks  = ordblks;
+	info->arena = heap->mm_heapsize;
+	info->ordblks = ordblks;
 	info->mxordblk = mxordblk;
 	info->uordblks = uordblks;
 	info->fordblks = fordblks;

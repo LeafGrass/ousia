@@ -35,7 +35,6 @@
 #include <sys/mm.h>
 #include <sys/sched.h>
 
-
 /*
  * FIXME Use memory pool here?
  */
@@ -136,7 +135,7 @@ static inline struct _pcb_t *__pq_get_tail(const struct _pqcb_t *p_pqcb)
  * @return  int32
  * @note
  */
-static struct _pcb_t* __do_strategy_edfs(struct _pqcb_t *pqcb)
+static struct _pcb_t *__do_strategy_edfs(struct _pqcb_t *pqcb)
 {
 	struct _pcb_t *pcb = curr_pcb;
 	return pcb;
@@ -150,7 +149,7 @@ static struct _pcb_t* __do_strategy_edfs(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static struct _pcb_t* __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
+static struct _pcb_t *__do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
 {
 	struct _pcb_t *pcb = curr_pcb;
 	return pcb;
@@ -164,7 +163,7 @@ static struct _pcb_t* __do_strategy_edfs_optimized(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static struct _pcb_t* __do_strategy_cfs(struct _pqcb_t *pqcb)
+static struct _pcb_t *__do_strategy_cfs(struct _pqcb_t *pqcb)
 {
 	struct _pcb_t *pcb = curr_pcb;
 	return pcb;
@@ -178,7 +177,7 @@ static struct _pcb_t* __do_strategy_cfs(struct _pqcb_t *pqcb)
  * @return  int32
  * @note
  */
-static struct _pcb_t* __do_strategy_hpfs(struct _pqcb_t *pqcb)
+static struct _pcb_t *__do_strategy_hpfs(struct _pqcb_t *pqcb)
 {
 	struct _pcb_t *pcb = curr_pcb;
 	return pcb;
@@ -193,7 +192,7 @@ static struct _pcb_t* __do_strategy_hpfs(struct _pqcb_t *pqcb)
  * @note    A rough scheduling indicates that the processes are being
  *          scheduled to run one by one in an apple-pie order. :P
  */
-static struct _pcb_t* __do_strategy_rghs(struct _pqcb_t *pqcb)
+static struct _pcb_t *__do_strategy_rghs(struct _pqcb_t *pqcb)
 {
 	struct _pcb_t *pcb = curr_pcb;
 
@@ -295,17 +294,16 @@ void _sched_dump_pq(void)
 
 	os_printk(LOG_INFO, "%d processes in queue:\n", p_pqcb->n_pcb);
 	os_printk(LOG_INFO, "   pid   pcb      state  prio      "
-			    "run      sleep   name\n");
+		  "run      sleep   name\n");
 	list_for_each_entry(pcb, &p_pqcb->pq, list) {
 		os_printk(LOG_INFO, " %4d  0x%8p  %2d   %4d "
-				"%7d.%03d %4d.%03d   "
-				"%s\n",
-				pcb->pid, pcb, pcb->stat, pcb->prio,
-				pcb->tcb.ticks_running/1000,
-				pcb->tcb.ticks_running%1000,
-				pcb->tcb.ticks_sleeping/1000,
-				pcb->tcb.ticks_sleeping%1000,
-				pcb->name);
+			  "%7d.%03d %4d.%03d   "
+			  "%s\n",
+			  pcb->pid, pcb, pcb->stat, pcb->prio,
+			  pcb->tcb.ticks_running / 1000,
+			  pcb->tcb.ticks_running % 1000,
+			  pcb->tcb.ticks_sleeping / 1000,
+			  pcb->tcb.ticks_sleeping % 1000, pcb->name);
 	}
 }
 
@@ -315,7 +313,7 @@ void _sched_dump_pq(void)
  * @return  process control block, basically for collecting statistics
  * @note    none
  */
-const struct _pqcb_t* _sched_init(void)
+const struct _pqcb_t *_sched_init(void)
 {
 	INIT_LIST_HEAD(&pqcb.pq);
 	sched_class.sched_hook = NULL;
@@ -345,7 +343,7 @@ void _sched_schedule(void)
 	if (ready != curr_pcb) {
 		curr_pcb = ready;
 		curr_pcb->stat = PSTAT_RUNNING;
-		port_context_switch((uint32)tmp, (uint32)curr_pcb);
+		port_context_switch((uint32) tmp, (uint32) curr_pcb);
 	}
 }
 
@@ -360,7 +358,7 @@ void _sched_startup(void)
 {
 	curr_pcb = __pq_get_head(&pqcb);
 	curr_pcb->stat = PSTAT_RUNNING;
-	port_first_switch((uint32)__pq_get_head(&pqcb));
+	port_first_switch((uint32) __pq_get_head(&pqcb));
 	os_printk(LOG_ERROR, "%s, shoud never be here!\n", __func__);
 	os_assert(0);
 }
@@ -382,7 +380,7 @@ inline struct _pcb_t *_sched_get_curr_pcb(void)
  * @return  none
  * @note    WARNING This hook should not take a long time!
  */
-void _sched_attach_hook(void (*fn)(const void *args))
+void _sched_attach_hook(void (*fn) (const void *args))
 {
 	sched_class.sched_hook = fn;
 }
@@ -395,7 +393,7 @@ void _sched_attach_hook(void (*fn)(const void *args))
 void os_dump_stack(void)
 {
 	_sched_dump_pcb(curr_pcb);
-	port_dump_stack((pt_regs_t *)curr_pcb->stack_ptr);
+	port_dump_stack((pt_regs_t *) curr_pcb->stack_ptr);
 }
 
 /*
@@ -421,7 +419,7 @@ int32 __os_process_create(void *pentry, char *name, void *args, uint32 stack_sz)
 	if (new_pcb == NULL)
 		goto err_pcb;
 
-	stk = (uint8 *)czalloc(stack_sz);
+	stk = (uint8 *) czalloc(stack_sz);
 	if (stk == NULL)
 		goto err_stk;
 
@@ -504,7 +502,7 @@ int32 os_process_suspend(void)
 {
 	curr_pcb->stat = PSTAT_BLOCKED;
 	os_printk(LOG_DEBUG, "%s, pid: %d %s\n",
-			     __func__, curr_pcb->pid, curr_pcb->name);
+		  __func__, curr_pcb->pid, curr_pcb->name);
 	_sched_schedule();
 	return OS_OK;
 }

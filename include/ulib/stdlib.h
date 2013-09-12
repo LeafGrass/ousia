@@ -27,16 +27,15 @@
 #ifndef __ULIB_STDLIB_H__
 #define __ULIB_STDLIB_H__
 
-struct mallinfo
-{
-	int arena;    /* This is the total size of memory allocated
-		       * for use by malloc in bytes. */
-	int ordblks;  /* This is the number of free (not in use) chunks */
-	int mxordblk; /* Size of the largest free (not in use) chunk */
-	int uordblks; /* This is the total size of memory occupied by
-		       * chunks handed out by malloc. */
-	int fordblks; /* This is the total size of memory occupied
-		       * by free (not in use) chunks.*/
+struct mallinfo {
+	int arena;		/* This is the total size of memory allocated
+				 * for use by malloc in bytes. */
+	int ordblks;		/* This is the number of free (not in use) chunks */
+	int mxordblk;		/* Size of the largest free (not in use) chunk */
+	int uordblks;		/* This is the total size of memory occupied by
+				 * chunks handed out by malloc. */
+	int fordblks;		/* This is the total size of memory occupied
+				 * by free (not in use) chunks.*/
 };
 
 #endif /* __ULIB_STDLIB_H__ */

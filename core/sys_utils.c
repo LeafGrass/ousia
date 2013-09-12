@@ -37,15 +37,14 @@
 #include <sys/debug.h>
 
 static const char __logo1[] =
-	"                     _\n"
-	"     _              / /\n"
-	"    | |  ___  __ _ _| |_ __ _ _  __  __ _   _   _\n"
-	"    | | / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\n"
-	"    | |_  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\n"
-	"    |_ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"
-	"                    /_/ \\_ _/\n\n";
-static const char __logo2[] =
-	"\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
+    "                     _\n"
+    "     _              / /\n"
+    "    | |  ___  __ _ _| |_ __ _ _  __  __ _   _   _\n"
+    "    | | / _ \\/ _` |_   _/ _` | \\/ _)/ _` | / / / /\n"
+    "    | |_  __( (_| | | |  (_| | | | ( (_| | \\ \\ \\ \\\n"
+    "    |_ _\\___|\\__,_| | | \\__, / | |  \\__,_| /_/ /_/\n"
+    "                    /_/ \\_ _/\n\n";
+static const char __logo2[] = "\t\tby LeafGrass - leafgrass.g@gmail.com\n\n";
 
 #define CPS_INIT_STACK_SIZE	512
 #define CPS_IDLE_STACK_SIZE	1024
@@ -57,7 +56,7 @@ struct idle_statistics {
 	const struct _pcb_t *pcb_curr_hook;
 };
 
-static struct idle_statistics stat = {0, NULL, NULL};
+static struct idle_statistics stat = { 0, NULL, NULL };
 
 #define STATISTICS_TIME		(10*1000)
 
@@ -96,16 +95,16 @@ static void __cps_idle(void *args)
 		curr = os_systime_get();
 
 		if (curr - last > STATISTICS_TIME - 1) {
-			/*os_putchar(0x0c);*/
+			/*os_putchar(0x0c); */
 			last = os_systime_get();
 			ticks_delta = idle->tcb.ticks_running - last_ticks;
 			last_ticks = idle->tcb.ticks_running;
 			/* TODO Collect the statistics and **store** them */
 			os_printk(LOG_DEBUG, "%d sched in last %ds, "
-					"cpu usage: %%%d\n",
-					stat.n_sched_per_stat,
-					STATISTICS_TIME/1000,
-					100 - 100*ticks_delta/STATISTICS_TIME);
+				  "cpu usage: %%%d\n",
+				  stat.n_sched_per_stat,
+				  STATISTICS_TIME / 1000,
+				  100 - 100 * ticks_delta / STATISTICS_TIME);
 		}
 
 		/*

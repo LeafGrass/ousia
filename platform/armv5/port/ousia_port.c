@@ -33,7 +33,6 @@
 #include "utils/utils.h"
 #include "port/ousia_port.h"
 
-
 /*
  * CPU Mode
  */
@@ -56,7 +55,7 @@ static uint32 critical_nest = 0;
 static volatile uint32 old_pcb = 0;
 static volatile uint32 new_pcb = 0;
 
-static void (*__hard_fault_call)(void *args);
+static void (*__hard_fault_call) (void *args);
 
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
@@ -76,10 +75,10 @@ void port_init(void)
 	old_pcb = 0;
 	new_pcb = 0;
 	critical_nest = 0;
-	__heap_start = (uint8 *)&_lm_heap_start;
+	__heap_start = (uint8 *) & _lm_heap_start;
 	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
-	__heap_end = (__heap_end > (uint8 *)&_lm_heap_end) ?
-		(uint8 *)&_lm_heap_end : __heap_end;
+	__heap_end = (__heap_end > (uint8 *) & _lm_heap_end) ?
+	    (uint8 *) & _lm_heap_end : __heap_end;
 }
 
 /*
@@ -99,7 +98,7 @@ void port_bsp_init(void)
  * @return  none
  * @note    none
  */
-void port_hard_fault_attach(void (*fn)(void *args))
+void port_hard_fault_attach(void (*fn) (void *args))
 {
 	__hard_fault_call = fn;
 }
@@ -111,8 +110,8 @@ void port_hard_fault_attach(void (*fn)(void *args))
  * @return  none
  * @note    none
  */
-void port_printf_init(void (**stdout_putf)(void *dev, char ch),
-		      char (**stdin_getf)(void *dev))
+void port_printf_init(void (**stdout_putf) (void *dev, char ch),
+		      char (**stdin_getf) (void *dev))
 {
 	*stdout_putf = __io_putc;
 	*stdin_getf = __io_getc;
@@ -124,7 +123,7 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
  * @return  none
  * @note    none
  */
-void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
+void port_lldbg_init(void (**lldbg_putf) (void *dev, char ch))
 {
 	*lldbg_putf = __io_putc;
 }
@@ -134,7 +133,7 @@ void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
  * @param   callback -i- pointer to callback function
  * @return  none
  */
-void port_systick_init(void (*callback)(void))
+void port_systick_init(void (*callback) (void))
 {
 }
 
@@ -150,25 +149,25 @@ void port_systick_init(void (*callback)(void))
 uint32 *port_context_init(void *pentry, void *args, void *stack_base)
 {
 	uint32 *stack = NULL;
-	stack = (uint32 *)stack_base;
+	stack = (uint32 *) stack_base;
 
-	*stack     = (uint32)pentry;	/* pc */
-	*(--stack) = (uint32)pentry;	/* lr */
-	*(--stack) = 0;			/* r12 */
-	*(--stack) = 0;			/* r11 */
-	*(--stack) = 0;			/* r10 */
-	*(--stack) = 0;			/* r9 */
-	*(--stack) = 0;			/* r8 */
-	*(--stack) = 0;			/* r7 */
-	*(--stack) = 0;			/* r6 */
-	*(--stack) = 0;			/* r5 */
-	*(--stack) = 0;			/* r4 */
-	*(--stack) = 0;			/* r3 */
-	*(--stack) = 0;			/* r2 */
-	*(--stack) = 0;			/* r1 */
-	*(--stack) = (uint32)args;	/* r0 */
-	*(--stack) = SVCMODE;		/* cpsr */
-	*(--stack) = SVCMODE;		/* spsr */
+	*stack = (uint32) pentry;	/* pc */
+	*(--stack) = (uint32) pentry;	/* lr */
+	*(--stack) = 0;		/* r12 */
+	*(--stack) = 0;		/* r11 */
+	*(--stack) = 0;		/* r10 */
+	*(--stack) = 0;		/* r9 */
+	*(--stack) = 0;		/* r8 */
+	*(--stack) = 0;		/* r7 */
+	*(--stack) = 0;		/* r6 */
+	*(--stack) = 0;		/* r5 */
+	*(--stack) = 0;		/* r4 */
+	*(--stack) = 0;		/* r3 */
+	*(--stack) = 0;		/* r2 */
+	*(--stack) = 0;		/* r1 */
+	*(--stack) = (uint32) args;	/* r0 */
+	*(--stack) = SVCMODE;	/* cpsr */
+	*(--stack) = SVCMODE;	/* spsr */
 
 	/* return task's current stack address */
 	return stack;
@@ -192,10 +191,11 @@ void port_assert_fail(void)
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
  */
-void port_dump_stack(const pt_regs_t *pt)
+void port_dump_stack(const pt_regs_t * pt)
 {
 	if (pt == NULL) {
-		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
+		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n",
+			  __func__);
 		return;
 	}
 	os_printk(LOG_CRITICAL, "pc:   0x%08X\n", pt->pc);
@@ -227,9 +227,7 @@ void port_dump_stack(const pt_regs_t *pt)
 void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 	__asm volatile
-	(
-	 "	bx	lr				\n"
-	);
+	 ("	bx	lr				\n");
 }
 
 /*
@@ -241,9 +239,7 @@ void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 void port_first_switch(uint32 target_pcb)
 {
 	__asm volatile
-	(
-	 "	bx	lr				\n"
-	);
+	 ("	bx	lr				\n");
 }
 
 /*
@@ -255,9 +251,7 @@ void port_first_switch(uint32 target_pcb)
 void __exc_pendsv(void)
 {
 	__asm volatile
-	(
-	 "	bx	lr				\n"
-	);
+	 ("	bx	lr				\n");
 }
 
 /*

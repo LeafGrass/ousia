@@ -27,7 +27,7 @@
 #ifndef __ULIB_STDDEF_H__
 #define __ULIB_STDDEF_H__
 
-typedef unsigned int	size_t;
+typedef unsigned int size_t;
 
 #undef NULL
 #if defined(__cplusplus)
@@ -37,6 +37,5 @@ typedef unsigned int	size_t;
 #endif
 
 #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
-
 
 #endif /* __ULIB_STDDEF_H__ */

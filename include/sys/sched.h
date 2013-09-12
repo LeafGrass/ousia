@@ -34,11 +34,11 @@
  * FIXME need an exact requirement for each state
  */
 enum _pstate {
-	PSTAT_KILLED    = -2,
-	PSTAT_BLOCKED   = -1,
-	PSTAT_RUNNING   = 0,
-	PSTAT_SLEEPING  = 1,
-	PSTAT_READY     = 2,
+	PSTAT_KILLED = -2,
+	PSTAT_BLOCKED = -1,
+	PSTAT_RUNNING = 0,
+	PSTAT_SLEEPING = 1,
+	PSTAT_READY = 2,
 };
 
 /*
@@ -46,7 +46,7 @@ enum _pstate {
  */
 struct _pcb_t {
 	void *stack_ptr;
-	void (*pentry)(void *args);
+	void (*pentry) (void *args);
 	char *name;
 	uint32 stack_sz;
 	uint32 pid;
@@ -70,17 +70,17 @@ struct _pqcb_t {
  * scheduler class
  */
 struct _sched_class_t {
-	void (*sched_hook)(const void *args);
-	struct _pcb_t* (*do_schedule)(struct _pqcb_t *pq);
+	void (*sched_hook) (const void *args);
+	struct _pcb_t *(*do_schedule) (struct _pqcb_t * pq);
 };
 
 void _sched_dump_pcb(const struct _pcb_t *p_pcb);
 void _sched_dump_pq(void);
-const struct _pqcb_t* _sched_init(void);
+const struct _pqcb_t *_sched_init(void);
 void _sched_schedule(void);
 void _sched_startup(void);
 inline struct _pcb_t *_sched_get_curr_pcb(void);
-void _sched_attach_hook(void (*fn)(const void *args));
+void _sched_attach_hook(void (*fn) (const void *args));
 void _sched_systick_call(void);
 void os_dump_stack(void);
 int32 __os_process_create(void *pentry, char *name,
@@ -97,6 +97,5 @@ int32 os_process_sleep(uint32 tms);
 int32 os_process_suspend(void);
 int32 os_process_resume(uint32 pid);
 int32 os_process_yield(void);
-
 
 #endif /* __SYS_SCHED_H__ */

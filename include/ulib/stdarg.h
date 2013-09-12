@@ -27,7 +27,6 @@
 #ifndef __ULIB_STDARG_H__
 #define __ULIB_STDARG_H__
 
-
 typedef char *va_list;
 
 /* Amount of space required in an argument list for an arg of type TYPE.
@@ -45,12 +44,11 @@ typedef char *va_list;
          AP = ((char *) &(LASTARG) + __va_rounded_size (LASTARG)))
 #endif
 
-void va_end (va_list);		/* Defined in gnulib */
+void va_end(va_list);		/* Defined in gnulib */
 #define va_end(AP)
 
 #define va_arg(AP, TYPE) \
         (AP += __va_rounded_size (TYPE), \
          *((TYPE *) (AP - __va_rounded_size (TYPE))))
-
 
 #endif /* __ULIB_STDARG_H__ */

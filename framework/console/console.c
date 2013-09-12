@@ -36,7 +36,6 @@
 #include "console/cmd.h"
 #include "console/console.h"
 
-
 #define PS_CMDEXEC_STACK_SIZE	512
 
 static struct console_cmd conc;
@@ -44,7 +43,7 @@ static struct console_cmd conc;
 static void ps_cmdexec(void *args)
 {
 	int32 ret = 0;
-	int32 index = (int32)args;
+	int32 index = (int32) args;
 
 	ret = conc.hcmd_arr[index].cmd_fn(NULL);
 	if (ret != 0)
@@ -99,7 +98,7 @@ static int32 parse_cmd(struct console_cmd *conc)
 {
 	int32 index;
 	int32 i;
-	char cw[16] = {0};
+	char cw[16] = { 0 };
 
 	for (i = 0; i < conc->ccs.nc; i++) {
 		cw[i] = conc->cbuf[i].c;

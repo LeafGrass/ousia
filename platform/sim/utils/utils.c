@@ -36,7 +36,7 @@
 #define X86_MILLISEC_PER_SEC	1000000
 #define TIME_TO_START		1
 
-static void (*systick_user_callback)(void);
+static void (*systick_user_callback) (void);
 static unsigned long long _uptime;
 
 /**
@@ -52,7 +52,7 @@ static void __timer_init(void)
 	_uptime = 0;
 
 	itv.it_interval.tv_sec = 0;
-	itv.it_interval.tv_usec = X86_MILLISEC_PER_SEC/OS_THROB_RATE;
+	itv.it_interval.tv_usec = X86_MILLISEC_PER_SEC / OS_THROB_RATE;
 	itv.it_value.tv_sec = TIME_TO_START;
 	itv.it_value.tv_usec = 0;
 
@@ -83,7 +83,7 @@ void utils_system_init(void)
 	__timer_init();
 }
 
-extern int putchar (int __c);
+extern int putchar(int __c);
 /**
  * @brief   sim io putchar routine
  * @param   p -i- device pointer
@@ -96,7 +96,7 @@ void utils_io_putc(void *p, char ch)
 	putchar(ch);
 }
 
-extern int getchar (void);
+extern int getchar(void);
 /**
  * @brief   sim io getchar routine
  * @param   none
@@ -114,7 +114,7 @@ char utils_io_getc(void *p)
  * @return  none
  * @note    none
  */
-void utils_attach_systick_callback(void (*callback_fn)(void))
+void utils_attach_systick_callback(void (*callback_fn) (void))
 {
 	systick_user_callback = callback_fn;
 }

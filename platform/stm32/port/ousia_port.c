@@ -38,7 +38,6 @@
 #include "utils/utils.h"
 #include "port/ousia_port.h"
 
-
 #define PSR_INIT_VALUE	0x01000000L
 
 extern uint32 _lm_heap_start;
@@ -51,7 +50,7 @@ static uint32 critical_nest = 0;
 static volatile uint32 old_pcb = 0;
 static volatile uint32 new_pcb = 0;
 
-static void (*__hard_fault_call)(void *args);
+static void (*__hard_fault_call) (void *args);
 
 void __exc_pendsv(void) __attribute__ ((naked));
 void __exc_svc(void) __attribute__ ((naked));
@@ -83,9 +82,9 @@ static void __hard_fault_handler(uint32 psp, uint32 exc_num)
 	 *       mode leads to **incorrect** might because the stack is mussed
 	 *       by us!
 	 */
-	p = (pt_regs_t *)(psp - 32);
+	p = (pt_regs_t *) (psp - 32);
 	os_printk(LOG_CRITICAL, "%s - psp: 0x%08X, exception number: %d\n",
-			__func__, psp, exc_num);
+		  __func__, psp, exc_num);
 	port_dump_stack(p);
 
 	__hard_fault_call((void *)psp);
@@ -102,10 +101,10 @@ void port_init(void)
 	old_pcb = 0;
 	new_pcb = 0;
 	critical_nest = 0;
-	__heap_start = (uint8 *)&_lm_heap_start;
+	__heap_start = (uint8 *) & _lm_heap_start;
 	__heap_end = __heap_start + OUSIA_MM_HEAP_SIZE;
-	__heap_end = (__heap_end > (uint8 *)&_lm_heap_end) ?
-		(uint8 *)&_lm_heap_end : __heap_end;
+	__heap_end = (__heap_end > (uint8 *) & _lm_heap_end) ?
+	    (uint8 *) & _lm_heap_end : __heap_end;
 	attach_exc_hook(__hard_fault_handler);
 }
 
@@ -139,7 +138,7 @@ void port_bsp_init(void)
  * @return  none
  * @note    none
  */
-void port_hard_fault_attach(void (*fn)(void *args))
+void port_hard_fault_attach(void (*fn) (void *args))
 {
 	__hard_fault_call = fn;
 }
@@ -151,8 +150,8 @@ void port_hard_fault_attach(void (*fn)(void *args))
  * @return  none
  * @note    none
  */
-void port_printf_init(void (**stdout_putf)(void *dev, char ch),
-		      char (**stdin_getf)(void *dev))
+void port_printf_init(void (**stdout_putf) (void *dev, char ch),
+		      char (**stdin_getf) (void *dev))
 {
 #if (OUSIA_PRINT_TYPE == OUSIA_PRINT_TYPE_USB)
 	*stdout_putf = utils_usb_putc;
@@ -169,7 +168,7 @@ void port_printf_init(void (**stdout_putf)(void *dev, char ch),
  * @return  none
  * @note    none
  */
-void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
+void port_lldbg_init(void (**lldbg_putf) (void *dev, char ch))
 {
 	*lldbg_putf = utils_io_putc;
 }
@@ -180,7 +179,7 @@ void port_lldbg_init(void (**lldbg_putf)(void *dev, char ch))
  * @return  none
  * @note    WARNING if libmaple for stm32 is used, this function must be called
  */
-void port_systick_init(void (*callback)(void))
+void port_systick_init(void (*callback) (void))
 {
 	/* api of libmaple */
 	systick_attach_callback(callback);
@@ -199,24 +198,24 @@ void port_systick_init(void (*callback)(void))
 uint32 *port_context_init(void *pentry, void *args, void *stack_base)
 {
 	uint32 *stack = NULL;
-	stack = (uint32 *)stack_base;
+	stack = (uint32 *) stack_base;
 
-	*stack     = PSR_INIT_VALUE;	/* xpsr */
-	*(--stack) = (uint32)pentry;	/* pc */
-	*(--stack) = (uint32)pentry;	/* lr */
-	*(--stack) = 0;			/* r12 */
-	*(--stack) = 0;			/* r3 */
-	*(--stack) = 0;			/* r2 */
-	*(--stack) = 0;			/* r1 */
-	*(--stack) = (uint32)args;	/* r0 */
-	*(--stack) = 0;			/* r11 */
-	*(--stack) = 0;			/* r10 */
-	*(--stack) = 0;			/* r9 */
-	*(--stack) = 0;			/* r8 */
-	*(--stack) = 0;			/* r7 */
-	*(--stack) = 0;			/* r6 */
-	*(--stack) = 0;			/* r5 */
-	*(--stack) = 0;			/* r4 */
+	*stack = PSR_INIT_VALUE;	/* xpsr */
+	*(--stack) = (uint32) pentry;	/* pc */
+	*(--stack) = (uint32) pentry;	/* lr */
+	*(--stack) = 0;		/* r12 */
+	*(--stack) = 0;		/* r3 */
+	*(--stack) = 0;		/* r2 */
+	*(--stack) = 0;		/* r1 */
+	*(--stack) = (uint32) args;	/* r0 */
+	*(--stack) = 0;		/* r11 */
+	*(--stack) = 0;		/* r10 */
+	*(--stack) = 0;		/* r9 */
+	*(--stack) = 0;		/* r8 */
+	*(--stack) = 0;		/* r7 */
+	*(--stack) = 0;		/* r6 */
+	*(--stack) = 0;		/* r5 */
+	*(--stack) = 0;		/* r4 */
 
 	return stack;
 }
@@ -241,10 +240,11 @@ void port_assert_fail(void)
  * @return  nothing
  * @note    FIXME need to resolve big/little endian
  */
-void port_dump_stack(const pt_regs_t *pt)
+void port_dump_stack(const pt_regs_t * pt)
 {
 	if (pt == NULL) {
-		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n", __func__);
+		os_printk(LOG_ERROR, "%s - pt_regs is NULL, ignored\n",
+			  __func__);
 		return;
 	}
 	os_printk(LOG_CRITICAL, "xpsr: 0x%08X\n", pt->xpsr);
@@ -275,22 +275,21 @@ void port_dump_stack(const pt_regs_t *pt)
 void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 {
 	__asm volatile
-	(
-	 /* store necessary regs */
-	 "	push	{r4, r5}			\n"
-	 /* store pcb instances to local */
-	 "	ldr	r4, =old_pcb			\n"
-	 "	str	r0, [r4]			\n"
-	 "	ldr	r5, =new_pcb			\n"
-	 "	str	r1, [r5]			\n"
-	 /* trigger a pendsv exception */
-	 "	ldr	r4, =0xE000ED04			\n"
-	 "	ldr	r5, =0x10000000			\n"
-	 "	str	r5, [r4]			\n"
-	 /* restore pushed regs and go back to wait pendsv */
-	 "	pop	{r4, r5}			\n"
-	 "	bx	lr				\n"
-	);
+	 (
+		 /* store necessary regs */
+		 "	push	{r4, r5}			\n"
+		 /* store pcb instances to local */
+		 "	ldr	r4, =old_pcb			\n"
+		 "	str	r0, [r4]			\n"
+		 "	ldr	r5, =new_pcb			\n"
+		 "	str	r1, [r5]			\n"
+		 /* trigger a pendsv exception */
+		 "	ldr	r4, =0xE000ED04			\n"
+		 "	ldr	r5, =0x10000000			\n"
+		 "	str	r5, [r4]			\n"
+		 /* restore pushed regs and go back to wait pendsv */
+		 "	pop	{r4, r5}			\n"
+		 "	bx	lr				\n");
 }
 
 /*
@@ -302,30 +301,29 @@ void port_context_switch(uint32 curr_pcb, uint32 target_pcb)
 void port_first_switch(uint32 target_pcb)
 {
 	__asm volatile
-	(
-	 /* store necessary regs */
-	 "	push	{r4, r5}			\n"
-	 /* reset psp */
-	 "	mov	r4, #0				\n"
-	 "	msr	psp, r4				\n"
-	 /* load addr of new_pcb in ram to local*/
-	 "	ldr	r5, =new_pcb			\n"
-	 /* update new_pcb by target_pcb */
-	 "	str	r0, [r5]			\n"
-	 /* set pendsv interrupt priority as lowest */
-	 "	ldr	r4, =0xE000ED20			\n"
-	 "	ldr	r5, =0x00FF0000			\n"
-	 "	str	r5, [r4]			\n"
-	 /* trigger a pendsv exception */
-	 "	ldr	r4, =0xE000ED04			\n"
-	 "	ldr	r5, =0x10000000			\n"
-	 "	str	r5, [r4]			\n"
-	 /* restore pushed regs and go back to wait pendsv */
-	 "	pop	{r4, r5}			\n"
-	 /* enable interrupts at processer level */
-	 "	cpsie	i				\n"
-	 "	bx	lr				\n"
-	);
+	 (
+		 /* store necessary regs */
+		 "	push	{r4, r5}			\n"
+		 /* reset psp */
+		 "	mov	r4, #0				\n"
+		 "	msr	psp, r4				\n"
+		 /* load addr of new_pcb in ram to local */
+		 "	ldr	r5, =new_pcb			\n"
+		 /* update new_pcb by target_pcb */
+		 "	str	r0, [r5]			\n"
+		 /* set pendsv interrupt priority as lowest */
+		 "	ldr	r4, =0xE000ED20			\n"
+		 "	ldr	r5, =0x00FF0000			\n"
+		 "	str	r5, [r4]			\n"
+		 /* trigger a pendsv exception */
+		 "	ldr	r4, =0xE000ED04			\n"
+		 "	ldr	r5, =0x10000000			\n"
+		 "	str	r5, [r4]			\n"
+		 /* restore pushed regs and go back to wait pendsv */
+		 "	pop	{r4, r5}			\n"
+		 /* enable interrupts at processer level */
+		 "	cpsie	i				\n"
+		 "	bx	lr				\n");
 }
 
 /*
@@ -337,41 +335,40 @@ void port_first_switch(uint32 target_pcb)
 void __exc_pendsv(void)
 {
 	__asm volatile
-	(
-	 /* backup interrupts' mask status */
-	 "	mrs	r2, primask			\n"
-	 /* disable interrups in processor level */
-	 "	cpsid	i				\n"
-	 /* get current psp */
-	 "	mrs	r0, psp				\n"
-	 /* if first switch, skip regs save and old_pcb load */
-	 "	cbz	r0, __pendsv_skip		\n"
-	 /* store r4-r11*/
-	 "	stmfd	r0!, {r4-r11}			\n"
-	 /* load ram addr of old_pcb into r1 */
-	 "	ldr	r1, =old_pcb			\n"
-	 /* load content of old_pcb (addr of sp) into r1 */
-	 "	ldr	r1, [r1]			\n"
-	 /* save psp to this sp */
-	 "	str	r0, [r1]			\n"
-	 "__pendsv_skip:				\n"
-	 /* load new pcb to into r0 */
-	 "	ldr	r0, =new_pcb			\n"
-	 /* load ram addr of new pcb into r0 */
-	 "	ldr	r0, [r0]			\n"
-	 /* load sp of new pcb into r0 */
-	 "	ldr	r0, [r0]			\n"
-	 /* restore r4-r11 */
-	 "	ldmfd	r0!, {r4-r11}			\n"
-	 /* save sp of new pcb to psp*/
-	 "	msr	psp, r0				\n"
-	 /* restore interrupts' mask status */
-	 "	msr	primask, r2			\n"
-	 /* ensure exception returns uses psp */
-	 "	orr	lr, lr, #0x04			\n"
-	 /* let's move! */
-	 "	bx	lr				\n"
-	);
+	 (
+		 /* backup interrupts' mask status */
+		 "	mrs	r2, primask			\n"
+		 /* disable interrups in processor level */
+		 "	cpsid	i				\n"
+		 /* get current psp */
+		 "	mrs	r0, psp				\n"
+		 /* if first switch, skip regs save and old_pcb load */
+		 "	cbz	r0, __pendsv_skip		\n"
+		 /* store r4-r11 */
+		 "	stmfd	r0!, {r4-r11}			\n"
+		 /* load ram addr of old_pcb into r1 */
+		 "	ldr	r1, =old_pcb			\n"
+		 /* load content of old_pcb (addr of sp) into r1 */
+		 "	ldr	r1, [r1]			\n"
+		 /* save psp to this sp */
+		 "	str	r0, [r1]			\n"
+		 "__pendsv_skip:				\n"
+		 /* load new pcb to into r0 */
+		 "	ldr	r0, =new_pcb			\n"
+		 /* load ram addr of new pcb into r0 */
+		 "	ldr	r0, [r0]			\n"
+		 /* load sp of new pcb into r0 */
+		 "	ldr	r0, [r0]			\n"
+		 /* restore r4-r11 */
+		 "	ldmfd	r0!, {r4-r11}			\n"
+		 /* save sp of new pcb to psp */
+		 "	msr	psp, r0				\n"
+		 /* restore interrupts' mask status */
+		 "	msr	primask, r2			\n"
+		 /* ensure exception returns uses psp */
+		 "	orr	lr, lr, #0x04			\n"
+		 /* let's move! */
+		 "	bx	lr				\n");
 }
 
 /*

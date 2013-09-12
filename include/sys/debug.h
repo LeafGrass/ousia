@@ -27,7 +27,6 @@
 #ifndef __SYS_DEBUG_H__
 #define __SYS_DEBUG_H__
 
-
 #define LOG_ALL		0
 #define LOG_DEBUG	1
 #define LOG_INFO	2
@@ -77,6 +76,5 @@ inline void _os_assert_fail(const char *p_file, int line, const char *p_exp);
 #else
 #define lldbg(msg, args...)
 #endif
-
 
 #endif /* __SYS_DEBUG_H__ */

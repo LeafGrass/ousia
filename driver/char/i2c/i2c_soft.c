@@ -31,7 +31,6 @@
 
 #include <char/i2c/i2c_soft.h>
 
-
 #define I2C_SOFT_EEPROM_ADDR	0xA0
 #define I2C_SOFT_EEPROM_CMD_W	0x00
 #define I2C_SOFT_EEPROM_CMD_R	0x01
@@ -48,14 +47,12 @@ struct i2c_soft_io_t {
 	uint8 pin;
 };
 
-static struct i2c_soft_io_t __scl =
-{
+static struct i2c_soft_io_t __scl = {
 	.dev = &gpiob,
 	.pin = 6
 };
 
-static struct i2c_soft_io_t __sda =
-{
+static struct i2c_soft_io_t __sda = {
 	.dev = &gpiob,
 	.pin = 7
 };
@@ -98,9 +95,9 @@ void i2c_soft_init(void)
 	__io_out(__sda.dev, __sda.pin);
 }
 
-int8 i2c_soft_eeprom_write(uint8 addr, uint8 *pbuf, uint32 nb)
+int8 i2c_soft_eeprom_write(uint8 addr, uint8 * pbuf, uint32 nb)
 {
-	uint32 i= 0;
+	uint32 i = 0;
 
 	if (pbuf == NULL)
 		return I2C_SOFT_RET_ERR;
@@ -122,7 +119,7 @@ int8 i2c_soft_eeprom_write(uint8 addr, uint8 *pbuf, uint32 nb)
 	return I2C_SOFT_RET_OK;
 }
 
-int8 i2c_soft_eeprom_read(uint8 addr, uint8 *pbuf, uint32 nb)
+int8 i2c_soft_eeprom_read(uint8 addr, uint8 * pbuf, uint32 nb)
 {
 	uint32 i = 0;
 
