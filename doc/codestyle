@@ -322,7 +322,7 @@ Statements
   more indent is recommended.
 
 	while (cnt < 20 && this_variable_name_is_too_long &&
-			ep != NULL)
+	       ep != NULL)
 		z = a + really + long + statement + that + needs +
 			two + lines + gets + indented + four + spaces +
 			on + the + second + and + subsequent + lines;
@@ -331,12 +331,11 @@ Statements
   spaces to form the indentation. Do not use more spaces than a tab will produce
   and do not use spaces in front of tabs.
 
-- Closing and opening braces go on the same line as the else. Braces that are
-  not necessary may be left out.
+- Closing and opening braces go on the same line as the else.
 
-	if (test)
+	if (test) {
 		STATEMENT;
-	else if (bar) {
+	} else if (bar) {
 		STATEMENT;
 		STATEMENT;
 	} else
@@ -456,3 +455,7 @@ Style in Ousia
 	int os_foo(void);	/* external interfaces, that is, syscall, etc. */
 	int _mod_foo(void);	/* internal interfaces, can be called in ousia core */
 	static int __foo(void); /* basic functions, can only be called locally */
+
+Tip
+---
+If not sure, just take it easy and use /script/Lindent to format the code.
