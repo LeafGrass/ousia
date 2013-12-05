@@ -50,6 +50,11 @@
 #define RESET_DELAY		(100000)
 #define USB_CONFIG_MAX_POWER	(100 >> 1)
 
+#define GPIO_MEMLCD_EXTMODE	15
+#define GPIO_MEMLCD_DISP	14
+#define GPIO_MEMLCD_EXTCOMIN	13
+#define GPIO_MEMLCD_CS		4
+
 void utils_board_init(void);
 void utils_io_putc(void *p, char ch);
 char utils_io_getc(void *p);

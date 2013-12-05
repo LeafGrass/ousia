@@ -482,17 +482,64 @@ static spi_baud_rate determine_baud_rate(spi_dev *dev, SPIFrequency freq)
  * @brief   initialize spi on chip
  * @param   dev -i- spi device pointer
  * @return  none
- * @note    use default configurations here
+ * @note    use default configurations here, for spi1 only
  */
 static void spi_setup(spi_dev *dev)
 {
 	spi_cfg_flag end = SPI_FRAME_LSB;
 	spi_mode m = SPI_MODE_0;
 	spi_baud_rate baud = determine_baud_rate(dev, SPI_1_125MHZ);
-	uint32 cfg_flags = end | SPI_DFF_8_BIT | SPI_SW_SLAVE;
+	uint32 cfg_flags = end | SPI_DFF_8_BIT | SPI_SW_SLAVE | SPI_SOFT_SS;
+
 	spi_init(dev);
-//	configure_gpios(dev, as_master);
+
+	timer_set_mode(TIMER3, 1, TIMER_DISABLED); // PA6 MISO
+	timer_set_mode(TIMER3, 2, TIMER_DISABLED); // PA7 MOSI
+	spi_config_gpios(dev, 1, GPIOA, 4, GPIOA, 5, 6, 7);
+
 	spi_master_enable(dev, baud, m, cfg_flags);
+}
+
+static void spi_send(uint8 *data, uint32 length)
+{
+	uint32 txed = 0;
+	while (txed < length)
+		txed += spi_tx(SPI1, data + txed, length - txed);
+}
+
+static void memlcd_disp(uint32 on)
+{
+	if (on)
+		gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 1);
+	else
+		gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 0);
+}
+
+#define LS013B7DH03_CMD_UPDATE     (0x01)
+#define LS013B7DH03_CMD_ALL_CLEAR  (0x04)
+
+void memlcd_clear(void)
+{
+	uint16 cmd = LS013B7DH03_CMD_ALL_CLEAR;
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 1);
+	delay_us(6);
+	spi_send((uint8 *)&cmd, 2);
+	delay_us(2);
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
+}
+
+static void memlcd_init(void)
+{
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTMODE, 0);
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 0);
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN, 0);
+	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
+	spi_setup(SPI1);
+	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTMODE, GPIO_OUTPUT_PP);
+	gpio_set_mode(GPIOA, GPIO_MEMLCD_DISP, GPIO_OUTPUT_PP);
+	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTCOMIN, GPIO_OUTPUT_PP);
+	memlcd_disp(1);
+	memlcd_clear();
 }
 
 /*
@@ -518,15 +565,15 @@ void utils_board_init(void)
 	adc_setup();
 	timers_setup();
 	usart_setup(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
-	spi_setup(SPI1);
+	memlcd_init();
 
 	usb_disable(USB_DISC_DEV, USB_DISC_BIT);
 	usb_enable(USB_DISC_DEV, USB_DISC_BIT);
 
 	usb_putstr("", 0);
 	usart_putc(USART_CONSOLE_BANK, 0x0c);
-	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 	gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
+	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 }
 
 /*

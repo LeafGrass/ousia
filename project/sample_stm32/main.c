@@ -58,7 +58,7 @@ static void eeprom_test_setup(void)
 	       buffer_r, buffer_w);
 }
 
-static void ps_debug(void *args)
+static void eeprom_test(void)
 {
 	int ret;
 
@@ -82,15 +82,37 @@ static void ps_debug(void *args)
 	}
 }
 
+void memlcd_clear(void);
+
+static void memlcd_test(void)
+{
+	for (;;) {
+		if (!signal) {
+			os_process_sleep(50);
+			continue;
+		} else
+			signal = 0;
+		memlcd_clear();
+	}
+}
+
+static void ps_debug(void *args)
+{
+	memlcd_test();
+}
+
 static void ps_button(void *args)
 {
 	signal = 0;
+	uint32 val = 0;
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN)) {
 			os_log(LOG_INFO, "%s - pressed.\n", __func__);
 			signal = 1;
 		}
-		os_process_sleep(100);
+		os_process_sleep(31);
+		val = !val;
+		gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN, val);
 	}
 }
 
