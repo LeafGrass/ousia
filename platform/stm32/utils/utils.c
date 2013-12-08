@@ -505,6 +505,7 @@ static void spi_send(uint8 *data, uint32 length)
 	uint32 txed = 0;
 	while (txed < length)
 		txed += spi_tx(SPI1, data + txed, length - txed);
+	while (!spi_is_tx_empty(SPI1));
 }
 
 static void memlcd_disp(uint32 on)
@@ -522,22 +523,23 @@ void memlcd_clear(void)
 {
 	uint16 cmd = LS013B7DH03_CMD_ALL_CLEAR;
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 1);
-	delay_us(6);
-	spi_send((uint8 *)&cmd, 2);
 	delay_us(2);
+	spi_send((uint8 *)&cmd, 2);
+	delay_us(10);
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
 }
 
 static void memlcd_init(void)
 {
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTMODE, 0);
+//	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTMODE, 0);
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 0);
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN, 0);
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
 	spi_setup(SPI1);
-	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTMODE, GPIO_OUTPUT_PP);
+//	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTMODE, GPIO_OUTPUT_PP);
 	gpio_set_mode(GPIOA, GPIO_MEMLCD_DISP, GPIO_OUTPUT_PP);
 	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTCOMIN, GPIO_OUTPUT_PP);
+	gpio_set_mode(GPIOA, GPIO_MEMLCD_CS, GPIO_OUTPUT_PP);
 	memlcd_disp(1);
 	memlcd_clear();
 }

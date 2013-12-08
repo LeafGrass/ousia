@@ -53,7 +53,7 @@
 #define GPIO_MEMLCD_EXTMODE	15
 #define GPIO_MEMLCD_DISP	14
 #define GPIO_MEMLCD_EXTCOMIN	13
-#define GPIO_MEMLCD_CS		4
+#define GPIO_MEMLCD_CS		15
 
 void utils_board_init(void);
 void utils_io_putc(void *p, char ch);
