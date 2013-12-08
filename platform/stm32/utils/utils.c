@@ -500,47 +500,6 @@ static void spi_setup(spi_dev *dev)
 	spi_master_enable(dev, baud, m, cfg_flags);
 }
 
-static void spi_send(uint8 *data, uint32 length)
-{
-	uint32 txed = 0;
-//	while (spi_is_busy(SPI1));
-	while (txed < length)
-		txed += spi_tx(SPI1, data + txed, length - txed);
-	while (spi_is_busy(SPI1));
-}
-
-void memlcd_disp(uint32 on)
-{
-	if (on)
-		gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 1);
-	else
-		gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 0);
-}
-
-#define LS013B7DH03_CMD_UPDATE     (0x01)
-#define LS013B7DH03_CMD_ALL_CLEAR  (0x04)
-
-void memlcd_clear(void)
-{
-	uint16 cmd = LS013B7DH03_CMD_ALL_CLEAR;
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 1);
-	delay_us(2);
-	spi_send((uint8 *)&cmd, 2);
-	delay_us(6);
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
-}
-
-static void memlcd_init(void)
-{
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_DISP, 0);
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN, 0);
-	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
-	spi_setup(SPI1);
-	gpio_set_mode(GPIOA, GPIO_MEMLCD_DISP, GPIO_OUTPUT_PP);
-	gpio_set_mode(GPIOA, GPIO_MEMLCD_EXTCOMIN, GPIO_OUTPUT_PP);
-	gpio_set_mode(GPIOA, GPIO_MEMLCD_CS, GPIO_OUTPUT_PP);
-}
-
 /*
  * @brief   stm32 board specific init
  * @param   none
@@ -565,7 +524,7 @@ void utils_board_init(void)
 	adc_setup();
 	timers_setup();
 	usart_setup(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
-	memlcd_init();
+	spi_setup(SPI1);
 
 	usb_disable(USB_DISC_DEV, USB_DISC_BIT);
 	usb_enable(USB_DISC_DEV, USB_DISC_BIT);

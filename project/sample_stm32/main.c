@@ -82,14 +82,16 @@ static void eeprom_test(void)
 	}
 }
 
-void memlcd_clear(void);
-void memlcd_disp(uint32 on);
-
+extern void memlcd_clear(void);
+extern void memlcd_disp(uint32 on);
+extern void memlcd_init(void);
+extern void memlcd_draw(void);
 
 static void ps_debug(void *args)
 {
 	memlcd_disp(1);
 	memlcd_clear();
+	memlcd_draw();
 	for (;;) {
 		if (!signal) {
 			os_process_sleep(50);
@@ -127,6 +129,7 @@ static void ps_child(void *args)
  */
 void ps_main(void *args)
 {
+	memlcd_init();
 	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
 	os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
 	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
