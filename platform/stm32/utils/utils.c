@@ -562,6 +562,7 @@ void utils_board_init(void)
 #endif
 	gpio_init_all();
 	afio_init();
+	afio_cfg_debug_ports(AFIO_DEBUG_NONE);
 	adc_setup();
 	timers_setup();
 	usart_setup(USART_CONSOLE_BANK, SERIAL_BAUDRATE);

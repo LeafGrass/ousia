@@ -104,25 +104,21 @@ static void ps_debug(void *args)
 static void ps_button(void *args)
 {
 	signal = 0;
-	uint32 val = 0;
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN)) {
 			os_log(LOG_INFO, "%s - pressed.\n", __func__);
 			signal = 1;
 		}
-		os_process_sleep(31);
-		val = !val;
-		gpio_write_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN, val);
+		os_process_sleep(100);
 	}
 }
 
 static void ps_child(void *args)
 {
 	for (;;) {
-		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
-		os_process_sleep(25);
-		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
-		os_process_sleep(4974);
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		gpio_toggle_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN);
+		os_process_sleep(31);
 	}
 }
 
