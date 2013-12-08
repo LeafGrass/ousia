@@ -85,20 +85,26 @@ static void eeprom_test(void)
 extern void memlcd_clear(void);
 extern void memlcd_disp(uint32 on);
 extern void memlcd_init(void);
-extern void memlcd_draw(void);
+extern void memlcd_draw(int index);
 
 static void ps_debug(void *args)
 {
+	int index = 0;
 	memlcd_disp(1);
 	memlcd_clear();
-	memlcd_draw();
 	for (;;) {
+#if 1
 		if (!signal) {
-			os_process_sleep(50);
+			os_process_sleep(1);
 			continue;
 		} else
 			signal = 0;
-		memlcd_clear();
+#else
+		os_process_sleep(1);
+#endif
+		index++;
+		index = index >= 128 ? 0 : index;
+		memlcd_draw(index);
 	}
 }
 
@@ -107,10 +113,10 @@ static void ps_button(void *args)
 	signal = 0;
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN)) {
-			os_log(LOG_INFO, "%s - pressed.\n", __func__);
+//			os_log(LOG_INFO, "%s - pressed.\n", __func__);
 			signal = 1;
 		}
-		os_process_sleep(100);
+		os_process_sleep(10);
 	}
 }
 
