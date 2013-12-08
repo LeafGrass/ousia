@@ -202,7 +202,7 @@ void PixelMatrixDraw(
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 1);
 
 	/* SCS setup time: min 6us */
-	delay_us(6);
+//	delay_us(6);
 
 	/* Send update command and first line address */
 	cmd = LS013B7DH03_CMD_UPDATE | (startRow << 8);
@@ -227,7 +227,7 @@ void PixelMatrixDraw(
 	}
 
 	/* SCS hold time: min 2us */
-	delay_us(2);
+//	delay_us(2);
 
 	/* De-assert SCS */
 	gpio_write_bit(GPIOA, GPIO_MEMLCD_CS, 0);
