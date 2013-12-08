@@ -83,9 +83,13 @@ static void eeprom_test(void)
 }
 
 void memlcd_clear(void);
+void memlcd_disp(uint32 on);
 
-static void memlcd_test(void)
+
+static void ps_debug(void *args)
 {
+	memlcd_disp(1);
+	memlcd_clear();
 	for (;;) {
 		if (!signal) {
 			os_process_sleep(50);
@@ -94,11 +98,6 @@ static void memlcd_test(void)
 			signal = 0;
 		memlcd_clear();
 	}
-}
-
-static void ps_debug(void *args)
-{
-	memlcd_test();
 }
 
 static void ps_button(void *args)
