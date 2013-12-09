@@ -17,6 +17,7 @@
 
 #include "stm32/utils/utils.h"
 #include "mlcd_img.h"
+#include "mlcd.h"
 
 #define LS013B7DH03_CMD_UPDATE     (0x01)
 #define LS013B7DH03_CMD_ALL_CLEAR  (0x04)

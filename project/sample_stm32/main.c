@@ -17,6 +17,7 @@
 #include "stm32/utils/utils.h"
 
 #include "eeprom.h"
+#include "mlcd.h"
 
 #define PS_CHILD_STACK_SIZE	256
 #define PS_BUTTON_STACK_SIZE	256
