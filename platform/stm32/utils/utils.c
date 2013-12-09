@@ -438,14 +438,14 @@ static void usart_setup(usart_dev * dev, uint32 baud)
 }
 
 typedef enum SPIFrequency {
-	SPI_18MHZ       = 0, /**< 18 MHz */
-	SPI_9MHZ        = 1, /**< 9 MHz */
-	SPI_4_5MHZ      = 2, /**< 4.5 MHz */
-	SPI_2_25MHZ     = 3, /**< 2.25 MHz */
-	SPI_1_125MHZ    = 4, /**< 1.125 MHz */
-	SPI_562_500KHZ  = 5, /**< 562.500 KHz */
-	SPI_281_250KHZ  = 6, /**< 281.250 KHz */
-	SPI_140_625KHZ  = 7, /**< 140.625 KHz */
+	SPI_18MHZ = 0,	     /**< 18 MHz */
+	SPI_9MHZ = 1,	     /**< 9 MHz */
+	SPI_4_5MHZ = 2,	     /**< 4.5 MHz */
+	SPI_2_25MHZ = 3,     /**< 2.25 MHz */
+	SPI_1_125MHZ = 4,    /**< 1.125 MHz */
+	SPI_562_500KHZ = 5,  /**< 562.500 KHz */
+	SPI_281_250KHZ = 6,  /**< 281.250 KHz */
+	SPI_140_625KHZ = 7,  /**< 140.625 KHz */
 } SPIFrequency;
 
 #define MAX_SPI_FREQS 8
@@ -465,18 +465,16 @@ static const spi_baud_rate baud_rates[MAX_SPI_FREQS] = {
  * Note: This assumes you're on a LeafLabs-style board
  * (CYCLES_PER_MICROSECOND == 72, APB2 at 72MHz, APB1 at 36MHz).
  */
-static spi_baud_rate determine_baud_rate(spi_dev *dev, SPIFrequency freq)
+static spi_baud_rate determine_baud_rate(spi_dev * dev, SPIFrequency freq)
 {
 	if (rcc_dev_clk(dev->clk_id) == RCC_APB2 && freq == SPI_140_625KHZ) {
 		/* APB2 peripherals are too fast for 140.625 KHz */
 		ASSERT(0);
-		return (spi_baud_rate)~0;
+		return (spi_baud_rate) ~ 0;
 	}
 	return (rcc_dev_clk(dev->clk_id) == RCC_APB2 ?
-			baud_rates[freq + 1] :
-			baud_rates[freq]);
+		baud_rates[freq + 1] : baud_rates[freq]);
 }
-
 
 /*
  * @brief   initialize spi on chip
@@ -484,7 +482,7 @@ static spi_baud_rate determine_baud_rate(spi_dev *dev, SPIFrequency freq)
  * @return  none
  * @note    use default configurations here, for spi1 only
  */
-static void spi_setup(spi_dev *dev)
+static void spi_setup(spi_dev * dev)
 {
 	spi_cfg_flag end = SPI_FRAME_LSB;
 	spi_mode m = SPI_MODE_0;
@@ -493,8 +491,8 @@ static void spi_setup(spi_dev *dev)
 
 	spi_init(dev);
 
-	timer_set_mode(TIMER3, 1, TIMER_DISABLED); // PA6 MISO
-	timer_set_mode(TIMER3, 2, TIMER_DISABLED); // PA7 MOSI
+	timer_set_mode(TIMER3, 1, TIMER_DISABLED);	// PA6 MISO
+	timer_set_mode(TIMER3, 2, TIMER_DISABLED);	// PA7 MOSI
 	spi_config_gpios(dev, 1, GPIOA, 4, GPIOA, 5, 6, 7);
 
 	spi_master_enable(dev, baud, m, cfg_flags);

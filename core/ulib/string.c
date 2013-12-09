@@ -53,8 +53,8 @@ int memcmp(const void *s1, const void *s2, size_t n)
 
 void *memcpy(void *dest, const void *src, size_t n)
 {
-	unsigned char *pout = (unsigned char*)dest;
-	unsigned char *pin  = (unsigned char*)src;
+	unsigned char *pout = (unsigned char *)dest;
+	unsigned char *pin = (unsigned char *)src;
 	while (n-- > 0)
 		*pout++ = *pin++;
 	return dest;

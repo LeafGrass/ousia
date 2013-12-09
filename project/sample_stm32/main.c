@@ -113,7 +113,7 @@ static void ps_button(void *args)
 	signal = 0;
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN)) {
-//			os_log(LOG_INFO, "%s - pressed.\n", __func__);
+//                      os_log(LOG_INFO, "%s - pressed.\n", __func__);
 			signal = 1;
 		}
 		os_process_sleep(10);
