@@ -486,7 +486,7 @@ static void spi_setup(spi_dev * dev)
 {
 	spi_cfg_flag end = SPI_FRAME_LSB;
 	spi_mode m = SPI_MODE_0;
-	spi_baud_rate baud = determine_baud_rate(dev, SPI_1_125MHZ);
+	spi_baud_rate baud = determine_baud_rate(dev, SPI_2_25MHZ);
 	uint32 cfg_flags = end | SPI_DFF_8_BIT | SPI_SW_SLAVE | SPI_SOFT_SS;
 
 	spi_init(dev);

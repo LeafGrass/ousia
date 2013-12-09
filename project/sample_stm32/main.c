@@ -97,8 +97,9 @@ static void ps_debug(void *args)
 		if (!signal) {
 			os_process_sleep(1);
 			continue;
-		} else
+		} else {
 			signal = 0;
+		}
 #else
 		os_process_sleep(1);
 #endif
@@ -125,7 +126,7 @@ static void ps_child(void *args)
 	for (;;) {
 		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
 		gpio_toggle_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN);
-		os_process_sleep(31);
+		os_process_sleep(40);
 	}
 }
 
