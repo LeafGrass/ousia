@@ -38,6 +38,7 @@
 #include "libmaple/util.h"
 #include "libmaple/usb.h"
 #include "libmaple/usb_cdcacm.h"
+#include "libmaple/spi.h"
 
 #include "utils/utils.h"
 
@@ -436,6 +437,67 @@ static void usart_setup(usart_dev * dev, uint32 baud)
 	usart_enable(dev);
 }
 
+typedef enum SPIFrequency {
+	SPI_18MHZ = 0,	     /**< 18 MHz */
+	SPI_9MHZ = 1,	     /**< 9 MHz */
+	SPI_4_5MHZ = 2,	     /**< 4.5 MHz */
+	SPI_2_25MHZ = 3,     /**< 2.25 MHz */
+	SPI_1_125MHZ = 4,    /**< 1.125 MHz */
+	SPI_562_500KHZ = 5,  /**< 562.500 KHz */
+	SPI_281_250KHZ = 6,  /**< 281.250 KHz */
+	SPI_140_625KHZ = 7,  /**< 140.625 KHz */
+} SPIFrequency;
+
+#define MAX_SPI_FREQS 8
+
+static const spi_baud_rate baud_rates[MAX_SPI_FREQS] = {
+	SPI_BAUD_PCLK_DIV_2,
+	SPI_BAUD_PCLK_DIV_4,
+	SPI_BAUD_PCLK_DIV_8,
+	SPI_BAUD_PCLK_DIV_16,
+	SPI_BAUD_PCLK_DIV_32,
+	SPI_BAUD_PCLK_DIV_64,
+	SPI_BAUD_PCLK_DIV_128,
+	SPI_BAUD_PCLK_DIV_256,
+};
+
+/*
+ * Note: This assumes you're on a LeafLabs-style board
+ * (CYCLES_PER_MICROSECOND == 72, APB2 at 72MHz, APB1 at 36MHz).
+ */
+static spi_baud_rate determine_baud_rate(spi_dev * dev, SPIFrequency freq)
+{
+	if (rcc_dev_clk(dev->clk_id) == RCC_APB2 && freq == SPI_140_625KHZ) {
+		/* APB2 peripherals are too fast for 140.625 KHz */
+		ASSERT(0);
+		return (spi_baud_rate) ~ 0;
+	}
+	return (rcc_dev_clk(dev->clk_id) == RCC_APB2 ?
+		baud_rates[freq + 1] : baud_rates[freq]);
+}
+
+/*
+ * @brief   initialize spi on chip
+ * @param   dev -i- spi device pointer
+ * @return  none
+ * @note    use default configurations here, for spi1 only
+ */
+static void spi_setup(spi_dev * dev)
+{
+	spi_cfg_flag end = SPI_FRAME_LSB;
+	spi_mode m = SPI_MODE_0;
+	spi_baud_rate baud = determine_baud_rate(dev, SPI_2_25MHZ);
+	uint32 cfg_flags = end | SPI_DFF_8_BIT | SPI_SW_SLAVE | SPI_SOFT_SS;
+
+	spi_init(dev);
+
+	timer_set_mode(TIMER3, 1, TIMER_DISABLED);	// PA6 MISO
+	timer_set_mode(TIMER3, 2, TIMER_DISABLED);	// PA7 MOSI
+	spi_config_gpios(dev, 1, GPIOA, 4, GPIOA, 5, 6, 7);
+
+	spi_master_enable(dev, baud, m, cfg_flags);
+}
+
 /*
  * @brief   stm32 board specific init
  * @param   none
@@ -456,16 +518,19 @@ void utils_board_init(void)
 #endif
 	gpio_init_all();
 	afio_init();
+	afio_cfg_debug_ports(AFIO_DEBUG_NONE);
 	adc_setup();
 	timers_setup();
 	usart_setup(USART_CONSOLE_BANK, SERIAL_BAUDRATE);
+	spi_setup(SPI1);
+
 	usb_disable(USB_DISC_DEV, USB_DISC_BIT);
 	usb_enable(USB_DISC_DEV, USB_DISC_BIT);
 
 	usb_putstr("", 0);
 	usart_putc(USART_CONSOLE_BANK, 0x0c);
-	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 	gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
+	gpio_set_mode(ERROR_LED_PORT, ERROR_LED_PIN, GPIO_OUTPUT_PP);
 }
 
 /*

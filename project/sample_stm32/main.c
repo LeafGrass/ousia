@@ -17,6 +17,7 @@
 #include "stm32/utils/utils.h"
 
 #include "eeprom.h"
+#include "mlcd.h"
 
 #define PS_CHILD_STACK_SIZE	256
 #define PS_BUTTON_STACK_SIZE	256
@@ -58,7 +59,7 @@ static void eeprom_test_setup(void)
 	       buffer_r, buffer_w);
 }
 
-static void ps_debug(void *args)
+static void eeprom_test(void)
 {
 	int ret;
 
@@ -82,25 +83,51 @@ static void ps_debug(void *args)
 	}
 }
 
+extern void memlcd_clear(void);
+extern void memlcd_disp(uint32 on);
+extern void memlcd_init(void);
+extern void memlcd_draw(int index);
+
+static void ps_debug(void *args)
+{
+	int index = 0;
+	memlcd_disp(1);
+	memlcd_clear();
+	for (;;) {
+#if 1
+		if (!signal) {
+			os_process_sleep(1);
+			continue;
+		} else {
+			signal = 0;
+		}
+#else
+		os_process_sleep(1);
+#endif
+		index++;
+		index = index >= 128 ? 0 : index;
+		memlcd_draw(index);
+	}
+}
+
 static void ps_button(void *args)
 {
 	signal = 0;
 	for (;;) {
 		if (gpio_read_bit(USR_BUT_PORT, USR_BUT_PIN)) {
-			os_log(LOG_INFO, "%s - pressed.\n", __func__);
+//                      os_log(LOG_INFO, "%s - pressed.\n", __func__);
 			signal = 1;
 		}
-		os_process_sleep(100);
+		os_process_sleep(10);
 	}
 }
 
 static void ps_child(void *args)
 {
 	for (;;) {
-		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 1);
-		os_process_sleep(25);
-		gpio_write_bit(ERROR_LED_PORT, ERROR_LED_PIN, 0);
-		os_process_sleep(4974);
+		gpio_toggle_bit(ERROR_LED_PORT, ERROR_LED_PIN);
+		gpio_toggle_bit(GPIOA, GPIO_MEMLCD_EXTCOMIN);
+		os_process_sleep(40);
 	}
 }
 
@@ -110,6 +137,7 @@ static void ps_child(void *args)
  */
 void ps_main(void *args)
 {
+	memlcd_init();
 	os_process_create(ps_child, NULL, PS_CHILD_STACK_SIZE);
 	os_process_create(ps_button, NULL, PS_BUTTON_STACK_SIZE);
 	os_process_create(ps_console, NULL, PS_CONSOLE_STACK_SIZE);
