@@ -29,7 +29,7 @@
 
 struct cmd_handle {
 	char *cmd_word;
-	 int32(*cmd_fn) (void *args);
+	int32(*cmd_fn) (void *args);
 };
 
 struct console_cmd;
