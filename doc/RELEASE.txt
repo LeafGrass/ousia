@@ -1,6 +1,23 @@
 Ousia Release Notes
 ===================
 
+2014-08-27 v0.2.3
+--------------------
+Brief:
+	license: bsd style
+	doc: rename files
+	project: add mlcd support
+	typo: a complete codestyle update using indent
+	doc: update for codestyle things
+	makefile: update devnum
+	plat: stm32: update usart io related things
+Bug fixes:
+	None.
+New features:
+	None.
+Known issues:
+	Remained not changed.
+
 2013-09-04 v0.2.2
 --------------------
 Brief:
