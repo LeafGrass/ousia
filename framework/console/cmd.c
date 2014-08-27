@@ -42,29 +42,29 @@ static int32 cmd_free(void *args);
 
 const struct cmd_handle hcmd_arr[] = {
 	{
-	 .cmd_word = "help",
-	 .cmd_fn = cmd_help,
-	 },
+		.cmd_word = "help",
+		.cmd_fn = cmd_help,
+	},
 	{
-	 .cmd_word = "?",
-	 .cmd_fn = cmd_help,
-	 },
+		.cmd_word = "?",
+		.cmd_fn = cmd_help,
+	},
 	{
-	 .cmd_word = "debug",
-	 .cmd_fn = cmd_debug,
-	 },
+		.cmd_word = "debug",
+		.cmd_fn = cmd_debug,
+	},
 	{
-	 .cmd_word = "reboot",
-	 .cmd_fn = cmd_reboot,
-	 },
+		.cmd_word = "reboot",
+		.cmd_fn = cmd_reboot,
+	},
 	{
-	 .cmd_word = "free",
-	 .cmd_fn = cmd_free,
-	 },
+		.cmd_word = "free",
+		.cmd_fn = cmd_free,
+	},
 	{
-	 .cmd_word = NULL,
-	 .cmd_fn = NULL,
-	 }
+		.cmd_word = NULL,
+		.cmd_fn = NULL,
+	}
 };
 
 void commands_register(struct console_cmd *conc)
