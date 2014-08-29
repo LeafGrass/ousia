@@ -45,6 +45,8 @@ struct console_cmd {
 	const struct cmd_handle *hcmd_arr;
 	struct cmd_char_stack ccs;
 	struct cmd_char cbuf[CMD_CHAR_BUF_SIZE];
+	char args[CMD_CHAR_BUF_SIZE];
+	int32 index;
 };
 
 void ps_console(void *args);

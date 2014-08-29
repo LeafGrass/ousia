@@ -31,5 +31,9 @@ void *memset(void *, int, size_t);
 int memcmp(const void *s1, const void *s2, size_t n);
 void *memcpy(void *dest, const void *src, size_t n);
 int strcmp(const char *, const char *);
+char *strcpy(char *dest, const char *src);
+char *strchr(const char *s, int c);
+char *strtok_r(char *str, const char *delim, char **saveptr);
+char *strtok(char *str, const char *delim);
 
 #endif /* __ULIB_STRING_H__ */

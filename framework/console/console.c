@@ -38,16 +38,16 @@
 
 #define PS_CMDEXEC_STACK_SIZE	512
 
-static struct console_cmd conc;
+static struct console_cmd concmd;
 
 static void ps_cmdexec(void *args)
 {
 	int32 ret = 0;
-	int32 index = (int32) args;
+	struct console_cmd *conc = (struct console_cmd *)args;
 
-	ret = conc.hcmd_arr[index].cmd_fn(NULL);
+	ret = conc->hcmd_arr[conc->index].cmd_fn(conc->args);
 	if (ret != 0)
-		os_printf("exec fail %d\n", index);
+		os_printf("exec fail %d\n", conc->index);
 	os_process_delete(0);
 }
 
@@ -94,52 +94,63 @@ static void __cmd_char_stack_flush(struct console_cmd *conc)
 	memset(conc->cbuf, 0, sizeof(conc->cbuf));
 }
 
+static char *cmd_saveptr = NULL;
+
 static int32 parse_cmd(struct console_cmd *conc)
 {
 	int32 index;
 	int32 i;
-	char cw[16] = { 0 };
+	int32 ret;
+	char str[32] = { 0 };
+	char *cmd = NULL;
+	char *args = NULL;
 
-	for (i = 0; i < conc->ccs.nc; i++) {
-		cw[i] = conc->cbuf[i].c;
-		if (cw[i] == ' ' || cw[i] == '\0')
-			break;
-	}
+	for (i = 0; i < conc->ccs.nc; i++)
+		str[i] = conc->cbuf[i].c;
+
+	cmd = strtok_r(str, " ", &cmd_saveptr);
 
 	for (index = 0; conc->hcmd_arr[index].cmd_word != NULL; index++) {
-		if (strcmp(cw, conc->hcmd_arr[index].cmd_word) == 0)
-			return index;
-		else
-			continue;
+		if (strcmp(cmd, conc->hcmd_arr[index].cmd_word) == 0) {
+			conc->index = index;
+		} else {
+			os_printf("%s: command not found\n", cmd);
+			return -1;
+		}
 	}
 
-	return -1;
-}
+	args = strtok_r(NULL, "&", &cmd_saveptr);
+	if (args == NULL) {
+		args = strtok_r(NULL, "\r", &cmd_saveptr);
+		ret = 0;
+	} else {
+		ret = 1;
+	}
+	os_printf("args: %s\n", args);
+	strcpy(conc->args, args);
 
-static int32 parse_args(struct console_cmd *conc)
-{
-	return 0;
+	return ret;
 }
 
 static int32 process_enter(struct console_cmd *conc)
 {
 #ifndef DEBUG_CONSOLE
-	int32 cmd_index = 0;
 	int32 backend = 0;
 	int32 ret;
 
-	cmd_index = parse_cmd(conc);
-	backend = parse_args(conc);
-	if (cmd_index >= 0) {
+	conc->index = -1;
+	if (conc->ccs.nc > 0)
+		backend = parse_cmd(conc);
+
+	if (conc->index >= 0) {
 		if (backend) {
 			/* FIXME Create a process like will still crash */
-			ret = os_process_create(ps_cmdexec, (void *)cmd_index,
+			ret = os_process_create(ps_cmdexec, conc,
 						PS_CMDEXEC_STACK_SIZE);
 			if (ret < 0)
 				os_printf("command exec failed %d\n", ret);
 		} else {
-			/* TODO Pass in buffer of args instead of NULL */
-			conc->hcmd_arr[cmd_index].cmd_fn(NULL);
+			conc->hcmd_arr[conc->index].cmd_fn(NULL);
 		}
 	}
 #else
@@ -184,12 +195,13 @@ static void console_echo(struct console_cmd *conc)
 
 void ps_console(void *args)
 {
-	INIT_LIST_HEAD(&conc.ccs.s);
-	commands_register(&conc);
+	memset(&concmd, 0, sizeof(struct console_cmd));
+	INIT_LIST_HEAD(&concmd.ccs.s);
+	commands_register(&concmd);
 	os_printf("\nWelcome to Ousia console. :)\n");
 	os_printf("Please press ENTER to activate it.\n");
 	for (;;) {
-		console_echo(&conc);
+		console_echo(&concmd);
 		os_process_sleep(10);
 	}
 }

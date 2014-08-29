@@ -75,3 +75,59 @@ int strcmp(const char *s1, const char *s2)
 
 	return d;
 }
+
+char *strcpy(char *dest, const char *src)
+{
+	char *tmp = dest;
+	while ((*dest++ = *src++) != '\0') ;
+	return tmp;
+}
+
+char *strchr(const char *s, int c)
+{
+	if (s) {
+		for (;; s++) {
+			if (*s == c)
+				return (char *)s;
+
+			if (!*s)
+				break;
+		}
+	}
+
+	return NULL;
+}
+
+static char *g_saveptr = NULL;
+
+char *strtok_r(char *str, const char *delim, char **saveptr)
+{
+	char *pbegin;
+	char *pend = NULL;
+
+	if (str)
+		pbegin = str;
+	else if (saveptr && *saveptr)
+		pbegin = *saveptr;
+	else
+		return NULL;
+
+	for (; *pbegin && strchr(delim, *pbegin) != NULL; pbegin++) ;
+
+	if (!*pbegin)
+		return NULL;
+
+	for (pend = pbegin + 1; *pend && strchr(delim, *pend) == NULL; pend++) ;
+
+	if (*pend)
+		*pend++ = '\0';
+
+	if (saveptr)
+		*saveptr = pend;
+	return pbegin;
+}
+
+char *strtok(char *str, const char *delim)
+{
+	return strtok_r(str, delim, &g_saveptr);
+}
