@@ -98,12 +98,11 @@ static char *cmd_saveptr = NULL;
 
 static int32 parse_cmd(struct console_cmd *conc)
 {
-	int32 index;
-	int32 i;
-	int32 ret;
 	char str[32] = { 0 };
 	char *cmd = NULL;
 	char *args = NULL;
+	int32 index;
+	int32 i;
 
 	for (i = 0; i < conc->ccs.nc; i++)
 		str[i] = conc->cbuf[i].c;
@@ -113,23 +112,18 @@ static int32 parse_cmd(struct console_cmd *conc)
 	for (index = 0; conc->hcmd_arr[index].cmd_word != NULL; index++) {
 		if (strcmp(cmd, conc->hcmd_arr[index].cmd_word) == 0) {
 			conc->index = index;
-		} else {
-			os_printf("%s: command not found\n", cmd);
-			return -1;
+			break;
 		}
 	}
-
-	args = strtok_r(NULL, "&", &cmd_saveptr);
-	if (args == NULL) {
-		args = strtok_r(NULL, "\r", &cmd_saveptr);
-		ret = 0;
-	} else {
-		ret = 1;
+	if (conc->index < 0) {
+		os_printf("%s: command not found\n", cmd);
+		return 0;
 	}
-	os_printf("args: %s\n", args);
+
+	args = strtok_r(NULL, "\r", &cmd_saveptr);
 	strcpy(conc->args, args);
 
-	return ret;
+	return strchr(args, '&') == NULL ? 0 : 1;
 }
 
 static int32 process_enter(struct console_cmd *conc)
@@ -150,7 +144,7 @@ static int32 process_enter(struct console_cmd *conc)
 			if (ret < 0)
 				os_printf("command exec failed %d\n", ret);
 		} else {
-			conc->hcmd_arr[conc->index].cmd_fn(NULL);
+			conc->hcmd_arr[conc->index].cmd_fn(conc->args);
 		}
 	}
 #else

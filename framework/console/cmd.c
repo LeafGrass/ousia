@@ -27,6 +27,7 @@
 #include <ousia/ousia.h>
 #include <ousia/ousia_type.h>
 #include <ulib/stdlib.h>
+#include <ulib/string.h>
 #include <sys/time.h>
 #include <sys/sched.h>
 #include <sys/print.h>
@@ -83,6 +84,16 @@ static int32 cmd_help(void *args)
 
 static int32 cmd_debug(void *args)
 {
+	char *tok = NULL;
+	char *save = NULL;
+	int32 i = 0;
+	if (args != NULL) {
+		tok = strtok_r((char *)args, " ", &save);
+		while (tok != NULL) {
+			os_printf("args[%d]: %s\n", ++i, tok);
+			tok = strtok_r(NULL, " ", &save);
+		}
+	}
 	_sched_dump_pq();
 	return 0;
 }

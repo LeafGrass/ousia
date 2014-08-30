@@ -133,7 +133,7 @@ static void __cps_init(void *args)
 	int32 ret;
 
 	os_putchar(0x0c);
-//	BOOT_LOGO(__logo1, __logo2);
+	BOOT_LOGO(__logo1, __logo2);
 	ret = os_process_create(__cps_idle, NULL, CPS_IDLE_STACK_SIZE);
 	os_assert(ret > 0);
 	ret = os_process_create(ps_main, NULL, PS_MAIN_STACK_SIZE);
