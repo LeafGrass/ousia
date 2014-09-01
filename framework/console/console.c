@@ -147,9 +147,21 @@ static int32 parse_cmd(struct console_cmd *conc)
 	return strchr(args, '&') == NULL ? 0 : 1;
 }
 
+#ifdef DEBUG_CONSOLE
 static int32 process_enter(struct console_cmd *conc)
 {
-#ifndef DEBUG_CONSOLE
+	struct cmd_char *cc;
+	list_for_each_entry_reverse(cc, &conc->ccs.s, list) {
+		os_printf("%c", cc->c);
+	}
+	os_printf("\nnc: %d, tot: %d\n", conc->ccs.nc, conc->ccs.nc_tot);
+	__cmd_char_stack_flush(conc);
+	os_printf("$ ");
+	return 0;
+}
+#else
+static int32 process_enter(struct console_cmd *conc)
+{
 	int32 backend = 0;
 	int32 ret;
 
@@ -157,30 +169,29 @@ static int32 process_enter(struct console_cmd *conc)
 	if (conc->ccs.nc > 0)
 		backend = parse_cmd(conc);
 
-	if (conc->index >= 0) {
-		/* FIXME Create a process like will still crash */
-		if (backend) {
-			ret = os_process_create(ps_cmdexec, conc,
-						PS_CMDEXEC_STACK_SIZE);
-			if (ret < 0)
-				os_printf("command exec failed %d\n", ret);
-		} else {
-			conc->hcmd_arr[conc->index].cmd_fn(argc, argv);
-		}
-	}
-#else
-	struct cmd_char *cc;
-	list_for_each_entry_reverse(cc, &conc->ccs.s, list) {
-		os_printf("%c", cc->c);
-	}
-	os_printf("\nnc: %d, tot: %d\n", conc->ccs.nc, conc->ccs.nc_tot);
-#endif
+	if (conc->index < 0)
+		goto finish_enter;
 
+	/* FIXME Create a process like will still crash */
+	if (backend)
+		ret = os_process_create(ps_cmdexec, conc,
+					PS_CMDEXEC_STACK_SIZE);
+	else
+		ret = conc->hcmd_arr[conc->index].cmd_fn(argc, argv);
+
+	/* TODO Distinguish different kinds of errors per ret value */
+	if (ret < 0) {
+		os_printf("%s: exec failed %d\n",
+			  conc->hcmd_arr[conc->index].cmd_word, ret);
+	}
+
+finish_enter:
 	__cmd_char_stack_flush(conc);
 	os_printf("$ ");
 
 	return 0;
 }
+#endif /* DEBUG_CONSOLE */
 
 static void console_echo(struct console_cmd *conc)
 {

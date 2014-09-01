@@ -167,6 +167,8 @@ static int32 cmd_xd(int argc, char **argv)
 
 static int32 cmd_mr(int argc, char **argv)
 {
+	if (argv[1] == NULL)
+		return -1;
 	return 0;
 }
 
