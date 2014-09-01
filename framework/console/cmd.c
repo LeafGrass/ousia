@@ -36,13 +36,13 @@
 #include "console/console.h"
 #include "console/cmd.h"
 
-static int32 cmd_help(void *args);
-static int32 cmd_debug(void *args);
-static int32 cmd_reboot(void *args);
-static int32 cmd_free(void *args);
-static int32 cmd_xd(void *args);
-static int32 cmd_mr(void *args);
-static int32 cmd_mw(void *args);
+static int32 cmd_help(int argc, char **argv);
+static int32 cmd_debug(int argc, char **argv);
+static int32 cmd_reboot(int argc, char **argv);
+static int32 cmd_free(int argc, char **argv);
+static int32 cmd_xd(int argc, char **argv);
+static int32 cmd_mr(int argc, char **argv);
+static int32 cmd_mw(int argc, char **argv);
 
 const struct cmd_handle hcmd_arr[] = {
 	{
@@ -88,7 +88,7 @@ void commands_register(struct console_cmd *conc)
 	conc->hcmd_arr = hcmd_arr;
 }
 
-static int32 cmd_help(void *args)
+static int32 cmd_help(int argc, char **argv)
 {
 	const struct cmd_handle *c;
 	os_printf("available commands:\n");
@@ -97,23 +97,13 @@ static int32 cmd_help(void *args)
 	return 0;
 }
 
-static int32 cmd_debug(void *args)
+static int32 cmd_debug(int argc, char **argv)
 {
-	char *tok = NULL;
-	char *save = NULL;
-	int32 i = 0;
-	if (args != NULL) {
-		tok = strtok_r((char *)args, " ", &save);
-		while (tok != NULL) {
-			os_printf("args[%d]: %s\n", ++i, tok);
-			tok = strtok_r(NULL, " ", &save);
-		}
-	}
 	_sched_dump_pq();
 	return 0;
 }
 
-static int32 cmd_reboot(void *args)
+static int32 cmd_reboot(int argc, char **argv)
 {
 #define DO_SOMETHING()	os_process_sleep(1000)
 	/* TODO Prepare things before reboot */
@@ -124,7 +114,7 @@ static int32 cmd_reboot(void *args)
 	return 0;
 }
 
-static int32 cmd_free(void *args)
+static int32 cmd_free(int argc, char **argv)
 {
 	struct mallinfo data;
 	mallinfo(&data);
@@ -134,17 +124,17 @@ static int32 cmd_free(void *args)
 	return 0;
 }
 
-static int32 cmd_xd(void *args)
+static int32 cmd_xd(int argc, char **argv)
 {
 	return 0;
 }
 
-static int32 cmd_mr(void *args)
+static int32 cmd_mr(int argc, char **argv)
 {
 	return 0;
 }
 
-static int32 cmd_mw(void *args)
+static int32 cmd_mw(int argc, char **argv)
 {
 	return 0;
 }

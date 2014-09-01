@@ -37,15 +37,19 @@
 #include "console/console.h"
 
 #define PS_CMDEXEC_STACK_SIZE	512
+#define MAX_ARGV_ENTRIES	4 /* 1 cmd word and MAX_ARGV_ENTRIES - 1 args */
 
 static struct console_cmd concmd;
+static char *argv[MAX_ARGV_ENTRIES];
+static int32 argc;
 
 static void ps_cmdexec(void *args)
 {
 	int32 ret = 0;
 	struct console_cmd *conc = (struct console_cmd *)args;
 
-	ret = conc->hcmd_arr[conc->index].cmd_fn(conc->args);
+	/* FIXME args shall be corrected once backend is supported */
+	ret = conc->hcmd_arr[conc->index].cmd_fn(1, NULL);
 	if (ret != 0)
 		os_printf("exec fail %d\n", conc->index);
 	os_process_delete(0);
@@ -94,34 +98,51 @@ static void __cmd_char_stack_flush(struct console_cmd *conc)
 	memset(conc->cbuf, 0, sizeof(conc->cbuf));
 }
 
-static char *cmd_saveptr = NULL;
-
 static int32 parse_cmd(struct console_cmd *conc)
 {
 	char str[32] = { 0 };
-	char *cmd = NULL;
 	char *args = NULL;
-	int32 index;
+	char *tok = NULL;
+	static char *cmd_saveptr = NULL;
 	int32 i;
 
 	for (i = 0; i < conc->ccs.nc; i++)
 		str[i] = conc->cbuf[i].c;
 
-	cmd = strtok_r(str, " ", &cmd_saveptr);
+	tok = strtok_r(str, " ", &cmd_saveptr);
 
-	for (index = 0; conc->hcmd_arr[index].cmd_word != NULL; index++) {
-		if (strcmp(cmd, conc->hcmd_arr[index].cmd_word) == 0) {
-			conc->index = index;
+	for (i = 0; conc->hcmd_arr[i].cmd_word != NULL; i++) {
+		if (strcmp(tok, conc->hcmd_arr[i].cmd_word) == 0) {
+			conc->index = i;
 			break;
 		}
 	}
 	if (conc->index < 0) {
-		os_printf("%s: command not found\n", cmd);
+		os_printf("%s: command not found\n", tok);
 		return 0;
 	}
 
+	memset(argv, 0, MAX_ARGV_ENTRIES * sizeof(char *));
+	argv[0] = conc->hcmd_arr[conc->index].cmd_word;
+
 	args = strtok_r(NULL, "\r", &cmd_saveptr);
-	strcpy(conc->args, args);
+
+	memset(conc->args, 0, CMD_CHAR_BUF_SIZE);
+	if (args != NULL) {
+		strcpy(conc->args, args);
+		cmd_saveptr = NULL;
+		i = 0;
+		tok = strtok_r((char *)conc->args, " ", &cmd_saveptr);
+		while (tok != NULL) {
+			os_printf("argv[%d]: %s\n", ++i, tok);
+			argv[i] = tok;
+			if (i == MAX_ARGV_ENTRIES - 1)
+				break;
+			tok = strtok_r(NULL, " ", &cmd_saveptr);
+		}
+	}
+	argc = i;
+	os_printf("argc: %d\n", argc);
 
 	return strchr(args, '&') == NULL ? 0 : 1;
 }
@@ -144,7 +165,7 @@ static int32 process_enter(struct console_cmd *conc)
 			if (ret < 0)
 				os_printf("command exec failed %d\n", ret);
 		} else {
-			conc->hcmd_arr[conc->index].cmd_fn(conc->args);
+			conc->hcmd_arr[conc->index].cmd_fn(argc, argv);
 		}
 	}
 #else
