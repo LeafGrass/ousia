@@ -70,10 +70,6 @@ const struct cmd_handle hcmd_arr[] = {
 		.cmd_fn = cmd_xd,
 	},
 	{
-		.cmd_word = "mr",
-		.cmd_fn = cmd_mr,
-	},
-	{
 		.cmd_word = "mw",
 		.cmd_fn = cmd_mw,
 	},
@@ -165,14 +161,66 @@ static int32 cmd_xd(int argc, char **argv)
 	return 0;
 }
 
-static int32 cmd_mr(int argc, char **argv)
+struct debug_memory
 {
-	if (argv[1] == NULL)
-		return -1;
+	bool         write;	/* true: perfrom write operation */
+	void        *addr;	/* Address to access */
+	uint32       value;	/* Value to write */
+	unsigned int count;	/* The number of bytes to access */
+};
+
+static int dm_parse(int argc, char **argv, struct debug_memory *dm)
+{
+	char *pcvalue = strchr(argv[1], '=');
+	unsigned long lvalue = 0;
+
+	if (pcvalue) {
+		*pcvalue = '\0';
+		pcvalue++;
+
+		lvalue = (unsigned long)atoul(pcvalue);
+		if (lvalue > 0xffffffffL)
+			return -1;
+
+		dm->write = 1;
+		dm->value = (uint32)lvalue;
+	} else {
+		dm->write = 0;
+		dm->value = 0;
+	}
+
+	dm->addr = (void*)((uintptr_t)atol(argv[1]));
+
+	if (argc > 2)
+		dm->count = (unsigned int)atol(argv[2]);
+	else
+		dm->count = 1;
+
 	return 0;
 }
 
 static int32 cmd_mw(int argc, char **argv)
 {
-	return 0;
+	struct debug_memory dm;
+	volatile uint32 *ptr;
+	unsigned int i;
+	int ret;
+
+	if (argc <= 1)
+		return -1;
+
+	ret = dm_parse(argc, argv, &dm);
+	if (ret != 0)
+		return ret;
+
+	for (i = 0, ptr = (uint32 *)dm.addr; i < dm.count; i += 4, ptr++) {
+		os_printf("  %p = 0x%08x", ptr, *ptr);
+		if (dm.write) {
+			*ptr = dm.value;
+			os_printf(" -> 0x%08x", *ptr);
+		}
+		os_printf("\n");
+	}
+
+	return ret;
 }
