@@ -38,4 +38,10 @@ struct mallinfo {
 				 * by free (not in use) chunks.*/
 };
 
+long atol(const char *str);
+unsigned long atoul(const char *num);
+unsigned long long atoull(const char *num);
+inline int isdigit(int c);
+inline int isxdigit(int c);
+
 #endif /* __ULIB_STDLIB_H__ */

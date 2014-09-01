@@ -25,7 +25,7 @@ cSRCS_$(d) := \
 	sys_ds.c
 
 # ulib
-cSRCS_$(d) += ulib/string.c
+cSRCS_$(d) += ulib/string.c ulib/stdlib.c
 
 sSRCS_$(d) :=
 

@@ -108,9 +108,8 @@ static int32 cmd_reboot(int argc, char **argv)
 #define DO_SOMETHING()	os_process_sleep(1000)
 	/* TODO Prepare things before reboot */
 	os_printf("Rebooting...\n");
-	DO_SOMETHING();
-	os_printf("Ousia warm down.\n\n");
 	/* TODO Do real hardware reset here */
+	DO_SOMETHING();
 	return 0;
 }
 
@@ -126,6 +125,44 @@ static int32 cmd_free(int argc, char **argv)
 
 static int32 cmd_xd(int argc, char **argv)
 {
+	char *addr;
+	int32 nbytes;
+
+	if (argv[1] == NULL || argv[2] == NULL)
+		return -1;
+
+	addr = (char *)((uintptr_t)atol(argv[1]));
+	os_printf("addr: 0x%x\n", addr);
+
+	nbytes = (int)atol(argv[2]);
+	os_printf("nb: %d\n", nbytes);
+
+	char line[128];
+	unsigned char *buffer = (unsigned char *)addr;
+	int ch;
+	int i;
+	int j;
+
+	os_printf("memory dump\n");
+	for (i = 0; i < nbytes; i += 16) {
+		os_sprintf(line, "%04x: ", i);
+
+		for ( j = 0; j < 16; j++) {
+			if (i + j < nbytes)
+				os_sprintf(&line[strlen(line)], "%02x ", buffer[i+j] );
+			else
+				strcpy(&line[strlen(line)], "   ");
+		}
+
+		for ( j = 0; j < 16; j++) {
+			if (i + j < nbytes) {
+				ch = buffer[i+j];
+				os_sprintf(&line[strlen(line)], "%c", ch >= 0x20 && ch <= 0x7e ? ch : '.');
+			}
+		}
+
+		os_printf("%s\n", line);
+	}
 	return 0;
 }
 

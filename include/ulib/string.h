@@ -33,6 +33,7 @@ void *memcpy(void *dest, const void *src, size_t n);
 int strcmp(const char *, const char *);
 char *strcpy(char *dest, const char *src);
 char *strchr(const char *s, int c);
+size_t strlen(const char *s);
 char *strtok_r(char *str, const char *delim, char **saveptr);
 char *strtok(char *str, const char *delim);
 

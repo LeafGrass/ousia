@@ -98,6 +98,13 @@ char *strchr(const char *s, int c)
 	return NULL;
 }
 
+size_t strlen(const char *s)
+{
+	const char *sc;
+	for (sc = s; *sc != '\0'; ++sc);
+	return sc - s;
+}
+
 static char *g_saveptr = NULL;
 
 char *strtok_r(char *str, const char *delim, char **saveptr)
