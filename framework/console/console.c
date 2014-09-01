@@ -48,8 +48,7 @@ static void ps_cmdexec(void *args)
 	int32 ret = 0;
 	struct console_cmd *conc = (struct console_cmd *)args;
 
-	/* FIXME args shall be corrected once backend is supported */
-	ret = conc->hcmd_arr[conc->index].cmd_fn(1, NULL);
+	ret = conc->hcmd_arr[conc->index].cmd_fn(argc, argv);
 	if (ret != 0)
 		os_printf("exec fail %d\n", conc->index);
 	os_process_delete(0);
@@ -128,10 +127,10 @@ static int32 parse_cmd(struct console_cmd *conc)
 	args = strtok_r(NULL, "\r", &cmd_saveptr);
 
 	memset(conc->args, 0, CMD_CHAR_BUF_SIZE);
+	i = 0;
 	if (args != NULL) {
 		strcpy(conc->args, args);
 		cmd_saveptr = NULL;
-		i = 0;
 		tok = strtok_r((char *)conc->args, " ", &cmd_saveptr);
 		while (tok != NULL) {
 			os_printf("argv[%d]: %s\n", ++i, tok);
@@ -141,8 +140,9 @@ static int32 parse_cmd(struct console_cmd *conc)
 			tok = strtok_r(NULL, " ", &cmd_saveptr);
 		}
 	}
-	argc = i;
-	os_printf("argc: %d\n", argc);
+	argc = i + 1;
+	if (argc > 1)
+		os_printf("argc: %d\n", argc);
 
 	return strchr(args, '&') == NULL ? 0 : 1;
 }
@@ -158,8 +158,8 @@ static int32 process_enter(struct console_cmd *conc)
 		backend = parse_cmd(conc);
 
 	if (conc->index >= 0) {
+		/* FIXME Create a process like will still crash */
 		if (backend) {
-			/* FIXME Create a process like will still crash */
 			ret = os_process_create(ps_cmdexec, conc,
 						PS_CMDEXEC_STACK_SIZE);
 			if (ret < 0)
