@@ -125,39 +125,38 @@ static int32 cmd_free(int argc, char **argv)
 
 static int32 cmd_xd(int argc, char **argv)
 {
-	char *addr;
-	int32 nbytes;
+	unsigned char *addr;
+	char line[128];
+	int ch;
+	int i;
+	int j;
+	int nbytes;
 
 	if (argv[1] == NULL || argv[2] == NULL)
 		return -1;
 
-	addr = (char *)((uintptr_t)atol(argv[1]));
+	addr = (unsigned char *)((unsigned int)atol(argv[1]));
 	os_printf("addr: 0x%x\n", addr);
-
 	nbytes = (int)atol(argv[2]);
 	os_printf("nb: %d\n", nbytes);
 
-	char line[128];
-	unsigned char *buffer = (unsigned char *)addr;
-	int ch;
-	int i;
-	int j;
-
 	os_printf("memory dump\n");
 	for (i = 0; i < nbytes; i += 16) {
-		os_sprintf(line, "%04x: ", i);
+		os_sprintf(line, "%08x: ", i + (int)addr);
 
 		for ( j = 0; j < 16; j++) {
 			if (i + j < nbytes)
-				os_sprintf(&line[strlen(line)], "%02x ", buffer[i+j] );
+				os_sprintf(&line[strlen(line)], "%02x ",
+					   addr[i + j]);
 			else
 				strcpy(&line[strlen(line)], "   ");
 		}
 
 		for ( j = 0; j < 16; j++) {
 			if (i + j < nbytes) {
-				ch = buffer[i+j];
-				os_sprintf(&line[strlen(line)], "%c", ch >= 0x20 && ch <= 0x7e ? ch : '.');
+				ch = addr[i + j];
+				os_sprintf(&line[strlen(line)], "%c",
+					   ch >= 0x20 && ch <= 0x7e ? ch : '.');
 			}
 		}
 
