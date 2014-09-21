@@ -8,6 +8,7 @@ OBJCOPY := $(CROSS)objcopy
 DISAS   := $(CROSS)objdump
 OBJDUMP := $(CROSS)objdump
 SIZE    := $(CROSS)size
+NM      := $(CROSS)nm
 
 # Suppress annoying output unless V is set
 #define V
@@ -20,6 +21,7 @@ ifndef V
 	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
 	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).lss;
 	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
+	SILENT_NM       = @echo '  [NM]       ' $(@F);
 endif
 #endef
 
