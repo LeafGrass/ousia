@@ -1,13 +1,14 @@
-        Ousia
-=======================
-COPYRIGHT (C) LEAFGRASS
+Ousia - A Modest Stupid Embedded Operating System
+=================================================
+            COPYRIGHT (C) LEAFGRASS
 
 
 Introduction
 ------------
-"Ousia" is picked from Greek.
-Mainly intend to represent the essence of Real-Time Theory.
-Developed following K-I-S-S principle.
+* Ousia is picked from Greek.
+* Mainly intend to represent the essence of and operating system core.
+* Developed following KISS principle.
+* Use it anywhere/anyway as you wish!
 
 
 Source Tree Architecture
