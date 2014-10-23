@@ -1,17 +1,17 @@
 ==================================================
-Real-Time Ousia (would) contain these components:
+Ousia (would) contain these components:
 
-    (+) User interface
-        (+) Shell
+    (*) User Interface
+        (*) Shell
     (+) Kernel
-        (+) Scheduler
+        (*) Scheduler
         (+) Interrupt Handler
         (+) Memory Management/Protection
-        (+) Multitasking
+        (*) Multitasking
         (-) File System
             (-) Virtual File System
         (+) Device Driver
-        (-) Multi Platform Porting
+        (+) Multi Platform Porting
     (-) Communication
         (-) IP Stack
     (-) Security
@@ -28,19 +28,21 @@ Ps: (*) Has been implemented.
 ==================================================
 
 Layer 3
-    +-----------------------------------
+    +----------------------------------+
     |           application            |
-    +-----------------------------------
+    +----------------------------------+
 
 Layer 2
-     __syscall__    ____direct_call____
-    +-----------+  +-------------------+
-    |           |  |     framework     |
-    |    core   |  +-------------------+
-    |           |   ____direct_call____
-    +   ~ ~ ~   +  +-------------------+
-    |    port   |  |       driver      |
-    +-----------+  +-------------------+
+      __syscall__  ____direct_call____
+    +----------------------------------+
+    |                                  |
+    |    core   +----------------------+
+    |           |      framework       |
+    +-----------+----------------------+
+              __direct_call____
+    +----------------------------------+
+    |              driver              |
+    +----------------------------------+
 
 Layer 1
     +-----------------+----------------+
