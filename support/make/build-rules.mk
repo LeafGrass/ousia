@@ -21,7 +21,7 @@ ifndef V
 	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
 	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).lss;
 	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
-	SILENT_NM       = @echo '  [NM]       ' $(@F);
+	SILENT_NM       = @echo '  [NM]       ' $(@:$(BUILD_PATH)/%.bin=%).sym;
 endif
 #endef
 
