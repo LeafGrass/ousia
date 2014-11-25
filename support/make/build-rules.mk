@@ -13,15 +13,15 @@ NM      := $(CROSS)nm
 # Suppress annoying output unless V is set
 #define V
 ifndef V
-	SILENT_CC       = @echo '  [CC]       ' $(<);
-	SILENT_AS       = @echo '  [AS]       ' $(<);
-	SILENT_CXX      = @echo '  [CXX]      ' $(<);
-	SILENT_LD       = @echo '  [LD]       ' $(@);
-	SILENT_AR       = @echo '  [AR]       ' $(@);
-	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@);
-	SILENT_DISAS    = @echo '  [DISAS]    ' $(@);
-	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(@);
-	SILENT_NM       = @echo '  [NM]       ' $(@);
+	SILENT_CC       = @echo '  [CC]       ' $(@:$(BUILD_PATH)/%.o=%.c);
+	SILENT_AS       = @echo '  [AS]       ' $(@:$(BUILD_PATH)/%.o=%.S);
+	SILENT_CXX      = @echo '  [CXX]      ' $(@:$(BUILD_PATH)/%.o=%.cpp);
+	SILENT_LD       = @echo '  [LD]       ' $(@F);
+	SILENT_AR       = @echo '  [AR]       ' $(@F);
+	SILENT_OBJCOPY  = @echo '  [OBJCOPY]  ' $(@F);
+	SILENT_DISAS    = @echo '  [DISAS]    ' $(@:$(BUILD_PATH)/%.bin=%).lss;
+	SILENT_OBJDUMP  = @echo '  [OBJDUMP]  ' $(OBJDUMP);
+	SILENT_NM       = @echo '  [NM]       ' $(@F);
 endif
 #endef
 
